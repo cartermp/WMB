@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * Thread class for managing route updating.
  */
 public class RouteUpdater implements Runnable {
-    private static final String TAG = MainActivity.class.getName();
+    private static final String TAG = "RouteUpdater";
 
     private BusRoute mRoute;
     private String mEtaUrl;
@@ -47,10 +47,12 @@ public class RouteUpdater implements Runnable {
         executor.shutdown();
 
         try {
-            mRoute.updatedSuccessfully = executor.awaitTermination(20, TimeUnit.SECONDS);
+            mRoute.updatedSuccessfully = executor.awaitTermination(15, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Log.d(TAG, e.toString());
         }
+
+        mRoute.lastUpdated = DateTime.now();
 
         Collections.sort(mRoute.stopList, new BusStopComparer());
 
@@ -63,8 +65,6 @@ public class RouteUpdater implements Runnable {
             int end = mRoute.stopList.size() - 1;
             mRoute.stopList = mRoute.stopList.subList(start, end);
         }
-
-        mRoute.lastUpdated = DateTime.now();
     }
 
     /**

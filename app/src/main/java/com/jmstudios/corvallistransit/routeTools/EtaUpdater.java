@@ -14,7 +14,7 @@ import java.io.InputStream;
  * Thread class which updates the ETA for a given Bus Stop which belongs to a route.
  */
 public class EtaUpdater implements Runnable {
-    private static final String TAG = MainActivity.class.getName();
+    private final String TAG = this.getClass().getName();
     private BusRouteStop mStopClosure;
     private String mEtaUrl;
 
@@ -40,11 +40,7 @@ public class EtaUpdater implements Runnable {
 
             Log.d(TAG, "Time to connect: " + ((end-start) / 1000000) + " miliseconds");
 
-            start = System.nanoTime();
             parser.parseStopEta(stream, mStopClosure);
-            end = System.nanoTime();
-
-            Log.d(TAG, "Time to parse ETA: " + ((end-start) / 1000000) + " miliseconds");
         } catch (IOException e) {
             Log.d(TAG, e.toString());
         } catch (XmlPullParserException e) {

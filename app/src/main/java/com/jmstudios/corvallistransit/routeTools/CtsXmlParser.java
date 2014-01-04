@@ -328,7 +328,7 @@ public class CtsXmlParser {
         }
 
         for (BusRouteStop stop : stops) {
-            if (stop.stopTag != null && stop.stopTag.equals(stopTag)) {
+            if (stop != null && stop.stopTag != null && stop.stopTag.equals(stopTag)) {
                 return true;
             }
         }
