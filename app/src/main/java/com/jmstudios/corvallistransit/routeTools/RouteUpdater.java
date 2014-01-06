@@ -2,7 +2,6 @@ package com.jmstudios.corvallistransit.routeTools;
 
 import android.util.Log;
 
-import com.jmstudios.corvallistransit.MainActivity;
 import com.jmstudios.corvallistransit.models.BusRoute;
 import com.jmstudios.corvallistransit.models.BusRouteStop;
 import com.jmstudios.corvallistransit.models.BusStopComparer;
@@ -69,6 +68,7 @@ public class RouteUpdater implements Runnable {
 
     /**
      * Returns the index of the first stop whose eta is not zero.
+     *
      * @param stops list of sorted Bus Route Stops
      * @return The index of the first valid ETA; otherwise, -1.
      */

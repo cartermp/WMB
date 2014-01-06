@@ -23,6 +23,7 @@ public class CtsXmlParser {
 
     /**
      * Parses CTS Bus Route information from XML feeds.
+     *
      * @param in Input stream of XML data.
      * @return A list of Bus Routes.
      * @throws org.xmlpull.v1.XmlPullParserException
@@ -50,7 +51,8 @@ public class CtsXmlParser {
 
     /**
      * Parses the ETA of a given Bus Route Stop from the CTS XML feed.
-     * @param in Input stream of XML data.
+     *
+     * @param in          Input stream of XML data.
      * @param stopClosure the Bus Route Stop whose eta will be updated.
      * @throws XmlPullParserException
      * @throws IOException
@@ -100,7 +102,8 @@ public class CtsXmlParser {
 
     /**
      * From within the CTS XML feed, parses the Eta tag out from the Route tag.
-     * @param parser the XmlPullParser that parses the XML feed.
+     *
+     * @param parser      the XmlPullParser that parses the XML feed.
      * @param stopClosure the Bus Route Stop whose eta will be updated.
      * @return the updated Bus Route Stop.
      * @throws XmlPullParserException
@@ -128,7 +131,8 @@ public class CtsXmlParser {
 
     /**
      * From the CTS XML feed, parses the ETA from the Destination tag.
-     * @param parser the XmlPullParser that parses the XML feed.
+     *
+     * @param parser      the XmlPullParser that parses the XML feed.
      * @param stopClosure the Bus Route Stop whose eta will be updated.
      * @return the updated Bus Route Stop.
      * @throws XmlPullParserException
@@ -156,6 +160,7 @@ public class CtsXmlParser {
 
     /**
      * Reads the RoutePattern XML data for bus routes.
+     *
      * @param parser the XmlPullParser that parses the XML feed.
      * @return A list of Bus Routes.
      * @throws XmlPullParserException
@@ -184,6 +189,7 @@ public class CtsXmlParser {
 
     /**
      * Skips any tags we don't "care" about.
+     *
      * @param parser the XmlPullParser that parses the XML feed.
      * @throws XmlPullParserException
      * @throws IOException
@@ -208,6 +214,7 @@ public class CtsXmlParser {
 
     /**
      * Parses a Bus Route from the XML feed.
+     *
      * @param parser The XmlPullParser that reads the XML feed.
      * @return a new Bus Route.
      * @throws XmlPullParserException
@@ -257,8 +264,9 @@ public class CtsXmlParser {
 
     /**
      * Parses a Route Pattern for a given Bus Route.
+     *
      * @param parser the XmlPullParser that parses the XML feed.
-     * @param route The Bus Route whose Route Pattern will be parsed.
+     * @param route  The Bus Route whose Route Pattern will be parsed.
      * @throws XmlPullParserException
      * @throws IOException
      */
@@ -291,6 +299,7 @@ public class CtsXmlParser {
 
     /**
      * Parses a Bus Route Stop (platform in the feed).
+     *
      * @param parser the XmlPullParser that parses the XML feed.
      * @return A new Bus Route Stop.
      * @throws XmlPullParserException
@@ -317,13 +326,14 @@ public class CtsXmlParser {
     /**
      * Helper method to determine if a route's list of stops
      * contains a stop with the specified tag.
-     * @param stops the list of stops for a given route.
+     *
+     * @param stops   the list of stops for a given route.
      * @param stopTag the stop to check
      * @return true if a stop with the specified tag is found; otherwise, false.
      */
     private static boolean containsStopWithTag(List<BusRouteStop> stops, String stopTag) {
         if (stopTag == null || stopTag.isEmpty()
-             || stops == null || stops.isEmpty()) {
+                || stops == null || stops.isEmpty()) {
             return false;
         }
 

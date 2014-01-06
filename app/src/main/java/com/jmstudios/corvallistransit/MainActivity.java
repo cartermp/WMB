@@ -1,17 +1,16 @@
 package com.jmstudios.corvallistransit;
 
-import android.app.Activity;
-
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
 
 import com.jmstudios.corvallistransit.models.BusRoute;
@@ -43,7 +42,7 @@ public class MainActivity extends Activity
 
     public static final String sundayMessage =
             "No routes run on Sundays.\n\nCheck back tomorrow, and have a wonderful day!\n\n"
-            + DateTime.now().year().getAsText() + " - PC";
+                    + DateTime.now().year().getAsText() + " - PC";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,16 +189,16 @@ public class MainActivity extends Activity
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView stopText = (TextView) rootView.findViewById(R.id.stop_text);
 
             if (dayOfWeek != Calendar.SUNDAY) {
                 int routeIndex = getArguments().getInt(ARG_SECTION_NUMBER);
                 List<BusRoute> routes = MainActivity.mRoutes;
-                BusRoute route = (routes.size() > routeIndex) ? routes.get(routeIndex) : null;
+                BusRoute route = (routes != null && routes.size() > routeIndex) ? routes.get(routeIndex) : null;
 
-                if (routes == null ||routes.isEmpty() || route == null || route.stopList == null || route.stopList.isEmpty()) {
+                if (routes == null || routes.isEmpty() || route == null || route.stopList == null || route.stopList.isEmpty()) {
                     stopText.setText("No route information to display at this time.");
                 } else {
                     stopText.setText("Stop: " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));

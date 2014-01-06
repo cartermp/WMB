@@ -54,6 +54,7 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
 
     /**
      * Fills the given list of Bus Routes with route and ETA information.
+     *
      * @param lists The list of Bus Routes to populate.
      * @return The new list of Bus Routes with updated ETA and route info.
      */
@@ -98,13 +99,13 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
         if (!updatedTuple.rhs) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
             builder.setTitle("Error retrieving route info")
-                   .setMessage("Check your connection and try again later.")
-                   .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialogInterface, int i) {
+                    .setMessage("Check your connection and try again later.")
+                    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
-                       }
-                   });
+                        }
+                    });
 
             AlertDialog failedDialog = builder.create();
             failedDialog.show();
@@ -113,6 +114,7 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
 
     /**
      * Populates Route Stops with eta info for each Bus Route.
+     *
      * @param routes The list of Bus Routes whose stop ETAs will be updated.
      * @return The updated list of Routes.
      * @throws XmlPullParserException
@@ -151,6 +153,7 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
 
     /**
      * Generates a list of Bus Routes, each with a list of stops.
+     *
      * @param urlString the URL to connect to.
      * @return A list of Bus Routes.
      * @throws XmlPullParserException
@@ -162,7 +165,7 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
         CtsXmlParser parser = new CtsXmlParser();
 
         stream = ConnectionsUtils.downloadUrl(urlString);
-        if (stream!= null) {
+        if (stream != null) {
             tempRoutes.addAll(parser.parseRouteInfo(stream));
         }
 

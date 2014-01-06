@@ -11,6 +11,7 @@ import java.net.URL;
 public class ConnectionsUtils {
     /**
      * Given a URL string, sets up a connection and gets an input stream.
+     *
      * @param urlString the URL to connect to.
      * @return A stream to the connection.
      * @throws java.io.IOException

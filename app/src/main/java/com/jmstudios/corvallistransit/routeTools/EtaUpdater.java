@@ -2,7 +2,6 @@ package com.jmstudios.corvallistransit.routeTools;
 
 import android.util.Log;
 
-import com.jmstudios.corvallistransit.MainActivity;
 import com.jmstudios.corvallistransit.models.BusRouteStop;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -38,7 +37,7 @@ public class EtaUpdater implements Runnable {
             stream = ConnectionsUtils.downloadUrl(mEtaUrl + mStopClosure.stopTag);
             long end = System.nanoTime();
 
-            Log.d(TAG, "Time to connect: " + ((end-start) / 1000000) + " miliseconds");
+            Log.d(TAG, "Time to connect: " + ((end - start) / 1000000) + " miliseconds");
 
             parser.parseStopEta(stream, mStopClosure);
         } catch (IOException e) {

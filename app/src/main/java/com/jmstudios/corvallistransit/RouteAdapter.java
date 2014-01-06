@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.models.BusRouteStop;
 
 /**
