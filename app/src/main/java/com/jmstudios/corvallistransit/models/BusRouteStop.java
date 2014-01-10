@@ -3,9 +3,6 @@ package com.jmstudios.corvallistransit.models;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-/**
- * Created by Phillip on 12/27/13.
- */
 public class BusRouteStop {
     public String name;
     public String stopTag;

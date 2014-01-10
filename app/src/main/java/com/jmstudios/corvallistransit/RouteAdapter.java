@@ -9,19 +9,16 @@ import android.widget.TextView;
 
 import com.jmstudios.corvallistransit.models.BusRouteStop;
 
+import java.util.List;
+
 /**
  * Adapter for displaying route info.
  */
 public class RouteAdapter extends ArrayAdapter<BusRouteStop> {
     private final Activity mContext;
-    private final BusRouteStop[] mRoutes;
+    private final List<BusRouteStop> mRoutes;
 
-    static class ViewHolder {
-        public TextView stopView;
-        public TextView etaView;
-    }
-
-    public RouteAdapter(Activity context, BusRouteStop[] routes) {
+    public RouteAdapter(Activity context, List<BusRouteStop> routes) {
         super(context, R.layout.fragment_main, routes);
         mContext = context;
         mRoutes = routes;
@@ -44,10 +41,15 @@ public class RouteAdapter extends ArrayAdapter<BusRouteStop> {
 
         ViewHolder holder = (ViewHolder) rowView.getTag();
 
-        BusRouteStop stop = mRoutes[position];
+        BusRouteStop stop = mRoutes.get(position);
         holder.stopView.setText(stop.name);
-        holder.etaView.setText(" - " + stop.eta);
+        holder.etaView.setText(stop.eta + "m");
 
         return rowView;
+    }
+
+    static class ViewHolder {
+        public TextView stopView;
+        public TextView etaView;
     }
 }

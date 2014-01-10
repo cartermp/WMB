@@ -2,9 +2,6 @@ package com.jmstudios.corvallistransit.models;
 
 import java.util.Comparator;
 
-/**
- * Created by Phillip on 12/27/13.
- */
 public class BusStopComparer implements Comparator<BusRouteStop> {
     @Override
     public int compare(BusRouteStop b1, BusRouteStop b2) {

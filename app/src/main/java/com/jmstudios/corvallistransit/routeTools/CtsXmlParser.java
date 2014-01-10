@@ -14,9 +14,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Phillip on 12/27/13.
- */
 public class CtsXmlParser {
     // Don't use namespaces.
     private static final String ns = null;

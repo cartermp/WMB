@@ -2,8 +2,8 @@ package com.jmstudios.corvallistransit;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
@@ -11,9 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.jmstudios.corvallistransit.models.BusRoute;
+import com.jmstudios.corvallistransit.models.BusRouteStop;
 
 import org.joda.time.DateTime;
 
@@ -24,25 +24,22 @@ import java.util.List;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
-
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
-    private CharSequence mTitle;
-
+    public static final String sundayMessage =
+            "No routes run on Sundays.\n\nCheck back tomorrow, and have a wonderful day!\n\n"
+                    + DateTime.now().year().getAsText() + " - PC";
     /**
      * Used to store Bus Routes in the application.
      */
     public static List<BusRoute> mRoutes = new ArrayList<BusRoute>();
     public static int dayOfWeek;
-
-    public static final String sundayMessage =
-            "No routes run on Sundays.\n\nCheck back tomorrow, and have a wonderful day!\n\n"
-                    + DateTime.now().year().getAsText() + " - PC";
+    /**
+     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+     */
+    private NavigationDrawerFragment mNavigationDrawerFragment;
+    /**
+     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
+     */
+    private CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +133,6 @@ public class MainActivity extends Activity
         actionBar.setTitle(mTitle);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
@@ -165,12 +161,16 @@ public class MainActivity extends Activity
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends ListFragment {
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public PlaceholderFragment() {
+        }
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -184,30 +184,29 @@ public class MainActivity extends Activity
             return fragment;
         }
 
-        public PlaceholderFragment() {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            int routeIndex = getArguments().getInt(ARG_SECTION_NUMBER) - 1;
+            List<BusRoute> routes = MainActivity.mRoutes;
+            BusRoute route = (routes != null && routes.size() > routeIndex)
+                    ? routes.get(routeIndex) : null;
+
+            RouteAdapter adapter = new RouteAdapter(getActivity(),
+                    (route == null) ? new ArrayList<BusRouteStop>() : route.stopList);
+            setListAdapter(adapter);
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView stopText = (TextView) rootView.findViewById(R.id.stop_text);
+            View rootView = null;
 
             if (dayOfWeek != Calendar.SUNDAY) {
-                int routeIndex = getArguments().getInt(ARG_SECTION_NUMBER);
-                List<BusRoute> routes = MainActivity.mRoutes;
-                BusRoute route = (routes != null && routes.size() > routeIndex) ? routes.get(routeIndex) : null;
-
-                if (routes == null || routes.isEmpty() || route == null || route.stopList == null || route.stopList.isEmpty()) {
-                    stopText.setText("No route information to display at this time.");
-                } else {
-                    stopText.setText("Stop: " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-                    TextView etaText = (TextView) rootView.findViewById(R.id.eta_text);
-                    etaText.setText("9000m");
-                }
-            } else {
-                stopText.setText(sundayMessage);
+                rootView = inflater.inflate(R.layout.route_list, null);
             }
+
             return rootView;
         }
 

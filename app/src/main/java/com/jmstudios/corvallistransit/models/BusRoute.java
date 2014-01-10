@@ -5,9 +5,6 @@ import org.joda.time.DateTimeZone;
 
 import java.util.List;
 
-/**
- * Created by Phillip on 12/27/13.
- */
 public class BusRoute {
     public String routeNumber;
     public String name;
