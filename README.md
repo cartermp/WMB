@@ -1,7 +1,7 @@
 WMB
 ===
 
-Port of Wheresmyb.us into an Android app.
+Re-imagining of Wheresmyb.us into an Android app.
 
 The goal of this app is to be able to retrieve all ETAs under 30 minutes for CTS bus stops in Corvallis, Oregon.
 
