@@ -109,6 +109,8 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
 
             AlertDialog failedDialog = builder.create();
             failedDialog.show();
+        } else {
+            // Need to update the UI with the routes
         }
     }
 
