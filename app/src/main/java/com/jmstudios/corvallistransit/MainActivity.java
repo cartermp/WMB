@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.utils.Utils;
 
 import org.joda.time.DateTime;
 
@@ -43,11 +44,11 @@ public class MainActivity extends Activity
             stopList = new ArrayList<Stop>() {{
                 add(new Stop() {{
                     name = "Test Stop 1";
-                    expectedTime = new DateTime(2014, 4, 19, 12, 45);
+                    expectedTime = Utils.convertToDateTime("19 Apr 14 13:00 -0700");
                 }});
                 add(new Stop() {{
                     name = "Test Stop 2";
-                    expectedTime = new DateTime(2014, 4, 19, 12, 46);
+                    expectedTime = Utils.convertToDateTime("19 Apr 14 13:02 -0700");
                 }});
             }};
         }});
