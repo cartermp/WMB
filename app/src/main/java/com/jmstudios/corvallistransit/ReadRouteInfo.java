@@ -7,11 +7,9 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.jmstudios.corvallistransit.models.BusRoute;
+import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Tuple;
 import com.jmstudios.corvallistransit.routeTools.ConnectionsUtils;
-import com.jmstudios.corvallistransit.routeTools.CtsXmlParser;
-import com.jmstudios.corvallistransit.routeTools.RouteUpdater;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -23,7 +21,7 @@ import java.util.List;
 /**
  * AsyncTask class which handles getting all route information for the app.
  */
-public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<BusRoute>, Boolean>> {
+public class ReadRouteInfo extends AsyncTask<List<Route>, Void, Tuple<List<Route>, Boolean>> {
 
     private static final String TAG = MainActivity.class.getName();
     public static final String CTS_URI = "http://www.corvallistransit.com/rtt/public/utility/file.aspx";
@@ -59,7 +57,7 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
      * @return The new list of Bus Routes with updated ETA and route info.
      */
     @Override
-    protected Tuple<List<BusRoute>, Boolean> doInBackground(List<BusRoute>... lists) {
+    protected Tuple<List<Route>, Boolean> doInBackground(List<Route>... lists) {
         // If this happens, something is seriously wrong...
         if (lists == null || lists.length == 0) {
             return new Tuple(null, false);
@@ -87,7 +85,7 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
     }
 
     @Override
-    protected void onPostExecute(Tuple<List<BusRoute>, Boolean> updatedTuple) {
+    protected void onPostExecute(Tuple<List<Route>, Boolean> updatedTuple) {
         if (this.dialog.isShowing()) {
             this.dialog.dismiss();
         }
@@ -122,33 +120,33 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private boolean updateRouteEtas(List<BusRoute> routes) throws XmlPullParserException, IOException {
+    private boolean updateRouteEtas(List<Route> routes) throws XmlPullParserException, IOException {
         List<Thread> routeUpdaterThreads = new ArrayList<Thread>();
         boolean updatedSuccessfully = true;
 
-        /*
-         * Threading is done such that each route gets a thread.
-         * This thread handles connecting to the XML feed for each Bus Stop,
-         * and sorts the list of stops by ETA before finishing.
-         */
-        for (BusRoute route : routes) {
-            Thread t = new Thread(new RouteUpdater(route, CTS_URI + PLATFORM_ETA_PARAM));
-            t.start();
-            routeUpdaterThreads.add(t);
-        }
-
-        /*
-         * Wait 20 seconds for each thread to finish; return failure if it couldn't finish in time.
-         */
-        for (Thread t : routeUpdaterThreads) {
-            try {
-                //t.join(20000);
-                t.join();
-            } catch (InterruptedException e) {
-                Log.d(TAG, e.toString());
-                updatedSuccessfully = false;
-            }
-        }
+//        /*
+//         * Threading is done such that each route gets a thread.
+//         * This thread handles connecting to the XML feed for each Bus Stop,
+//         * and sorts the list of stops by ETA before finishing.
+//         */
+//        for (Route route : routes) {
+//            Thread t = new Thread(new RouteUpdater(route, CTS_URI + PLATFORM_ETA_PARAM));
+//            t.start();
+//            routeUpdaterThreads.add(t);
+//        }
+//
+//        /*
+//         * Wait 20 seconds for each thread to finish; return failure if it couldn't finish in time.
+//         */
+//        for (Thread t : routeUpdaterThreads) {
+//            try {
+//                //t.join(20000);
+//                t.join();
+//            } catch (InterruptedException e) {
+//                Log.d(TAG, e.toString());
+//                updatedSuccessfully = false;
+//            }
+//        }
 
         return updatedSuccessfully;
     }
@@ -161,15 +159,14 @@ public class ReadRouteInfo extends AsyncTask<List<BusRoute>, Void, Tuple<List<Bu
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private List<BusRoute> updateRoutes(String urlString) throws XmlPullParserException, IOException {
+    private List<Route> updateRoutes(String urlString) throws XmlPullParserException, IOException {
         InputStream stream;
-        List<BusRoute> tempRoutes = new ArrayList<BusRoute>();
-        CtsXmlParser parser = new CtsXmlParser();
-
-        stream = ConnectionsUtils.downloadUrl(urlString);
-        if (stream != null) {
-            tempRoutes.addAll(parser.parseRouteInfo(stream));
-        }
+        List<Route> tempRoutes = new ArrayList<Route>();
+//
+//        stream = ConnectionsUtils.downloadUrl(urlString);
+//        if (stream != null) {
+//            tempRoutes.addAll(parser.parseRouteInfo(stream));
+//        }
 
         return tempRoutes;
     }

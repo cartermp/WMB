@@ -8,8 +8,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.jmstudios.corvallistransit.models.BusRoute;
-import com.jmstudios.corvallistransit.models.BusRouteStop;
+import com.jmstudios.corvallistransit.models.Route;
+import com.jmstudios.corvallistransit.models.Stop;
 
 import org.joda.time.DateTime;
 
@@ -26,31 +26,31 @@ public class MainActivity extends Activity
     /**
      * Used to store Bus Routes in the application.
      */
-    public static List<BusRoute> mRoutes = new ArrayList<BusRoute>() {{
-        add(new BusRoute() {{
-            stopList = new ArrayList<BusRouteStop>() {{
-                add(new BusRouteStop() {{
-                    name = "Test Stop 1 oh man is this such a long stop name or what man holy crap";
-                    eta = 12;
-                }});
-                add(new BusRouteStop() {{
-                    name = "Test Stop 2";
-                    eta = 15;
-                }});
-            }};
-        }});
-        add(new BusRoute() {{
-            stopList = new ArrayList<BusRouteStop>() {{
-                add(new BusRouteStop() {{
-                    name = "Test Stop 1";
-                    eta = 21;
-                }});
-                add(new BusRouteStop() {{
-                    name = "Test Stop 2";
-                    eta = 30;
-                }});
-            }};
-        }});
+    public static List<Route> mRoutes = new ArrayList<Route>() {{
+//        add(new Route() {{
+//            stopList = new ArrayList<Stop>() {{
+//                add(new Stop() {{
+//                    name = "Test Stop 1 oh man is this such a long stop name or what man holy crap";
+//                    eta = 12;
+//                }});
+//                add(new Stop() {{
+//                    name = "Test Stop 2";
+//                    eta = 15;
+//                }});
+//            }};
+//        }});
+//        add(new Route() {{
+//            stopList = new ArrayList<Stop>() {{
+//                add(new Stop() {{
+//                    name = "Test Stop 1";
+//                    eta = 21;
+//                }});
+//                add(new Stop() {{
+//                    name = "Test Stop 2";
+//                    eta = 30;
+//                }});
+//            }};
+//        }});
     }};
     public static int dayOfWeek;
     /**

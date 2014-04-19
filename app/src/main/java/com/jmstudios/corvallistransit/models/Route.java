@@ -5,10 +5,10 @@ import org.joda.time.DateTimeZone;
 
 import java.util.List;
 
-public class BusRoute {
+public class Route {
     public String routeNumber;
     public String name;
-    public List<BusRouteStop> stopList;
+    public List<Stop> stopList;
     public int subRouteOrder;
     public boolean routeTimeWarning;
     public boolean updatedSuccessfully;

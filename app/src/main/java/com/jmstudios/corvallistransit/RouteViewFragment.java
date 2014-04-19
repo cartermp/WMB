@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jmstudios.corvallistransit.models.BusRoute;
-import com.jmstudios.corvallistransit.models.BusRouteStop;
+import com.jmstudios.corvallistransit.models.Route;
+import com.jmstudios.corvallistransit.models.Stop;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,12 +41,12 @@ public class RouteViewFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         int routeIndex = getArguments().getInt(ARG_SECTION_NUMBER) - 1;
-        List<BusRoute> routes = MainActivity.mRoutes;
-        BusRoute route = (routes != null && routes.size() > routeIndex)
+        List<Route> routes = MainActivity.mRoutes;
+        Route route = (routes != null && routes.size() > routeIndex)
                 ? routes.get(routeIndex) : null;
 
         RouteAdapter adapter = new RouteAdapter(getActivity(),
-                (route == null) ? new ArrayList<BusRouteStop>() : route.stopList);
+                (route == null) ? new ArrayList<Stop>() : route.stopList);
         setListAdapter(adapter);
     }
 

@@ -1,16 +1,19 @@
 package com.jmstudios.corvallistransit.models;
 
+import org.joda.time.Period;
+
 import java.util.Comparator;
 
-public class BusStopComparer implements Comparator<BusRouteStop> {
+public class BusStopComparer implements Comparator<Stop> {
     @Override
-    public int compare(BusRouteStop b1, BusRouteStop b2) {
+    public int compare(Stop b1, Stop b2) {
         int diff;
 
-        if (b1.eta == b2.eta) {
-            diff = b1.stopPosition - b2.stopPosition;
+        if (b1.eta() == b2.eta()) {
+            Period period = new Period(b1.expectedTime, b2.expectedTime);
+            diff = period.getSeconds();
         } else {
-            diff = b1.eta - b2.eta;
+            diff = b1.eta() - b2.eta();
         }
 
         return (diff > 0) ? 1 : ((diff == 0) ? 0 : -1);
