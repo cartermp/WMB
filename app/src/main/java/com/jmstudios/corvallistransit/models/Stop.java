@@ -9,6 +9,7 @@ import org.joda.time.Period;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class Stop {
@@ -51,13 +52,13 @@ public class Stop {
             RetrieveJson rt = new RetrieveJson(new String[]{"Expected"},Integer.toString(id), null, null)
             {
                 @Override
-                public void onResponseReceived(TreeSet ts)
+                public void onResponseReceived(Set s)
                 {}
             };
             try
             {
                 String rtVal = rt.execute("http://www.corvallis-bus.appspot.com/arrivals?stops=" + Integer.toString(id)).get();
-                TreeSet ts = rt.fetchResultsManually(rtVal);
+                Set ts = rt.fetchResultsManually(rtVal);
                 Iterator i = ts.iterator();
                 while(i.hasNext())
                 {

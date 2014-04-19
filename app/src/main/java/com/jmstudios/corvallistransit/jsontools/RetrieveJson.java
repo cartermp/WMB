@@ -11,7 +11,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +18,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public abstract class RetrieveJson extends AsyncTask<String, Void, String>
 {
@@ -28,7 +26,7 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
     String ros;
     String[] additionalContent;
     String[] innerArrays;
-    Set<HashMap<String,String>> set;
+    Set<HashMap> set;
 
     public RetrieveJson(String[] targets, String routeOStop, String[] specifics, String[] iArrays)
     {
@@ -88,22 +86,29 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
         onResponseReceived(fetchResultsManually(aVoid));
     }
 
-    public TreeSet fetchResultsManually(String aVoid)
+    public Set<HashMap> fetchResultsManually(String aVoid)
     {
-        set = new HashSet<HashMap<String, String>>();
+        //System.out.println("What we got->"+aVoid);
+        set = new HashSet<HashMap>();
         //turn our retrieved String into a Json Object, then return a string array of it's contents
         try
         {
             JSONObject jObject = new JSONObject(aVoid);
             JSONArray jResults = jObject.getJSONArray(ros);
+
             for(int x = 0; x < jResults.length(); x++)
             {
                 if(innerArrays != null)
                 {
-                    for(String str: innerArrays)
+                    try {
+                        for (String str : innerArrays) {
+                            JSONArray jsonArray = jResults.getJSONObject(x).getJSONArray(str);
+                            addHashMap(jsonArray, str.toUpperCase());
+                        }
+                    }
+                    catch(JSONException je)
                     {
-                        JSONArray jsonArray = jResults.getJSONObject(x).getJSONArray(str);
-                        addHashMap(jsonArray, str.toUpperCase());
+                        System.out.println("error with calling addHashMap");
                     }
                 }
 
@@ -113,14 +118,18 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                     shouldAdd = false;
                     for(String aVal: comparisonValues)
                     {
-                        String inResult = jResults.getJSONObject(x).getString(aVal);
-                        for(String item: additionalContent)
-                        {
-                            if(inResult.equals(item))
-                            {
-                                shouldAdd = true;
-                                break;
+                        try {
+                            String inResult = jResults.getJSONObject(x).getString(aVal);
+                            for (String item : additionalContent) {
+                                if (inResult.equals(item)) {
+                                    shouldAdd = true;
+                                    break;
+                                }
                             }
+                        }
+                        catch(JSONException je)
+                        {
+                            System.out.println("Issue trying to retrieve values normally");
                         }
                     }
                 }
@@ -131,9 +140,15 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                 {
                     if(shouldAdd)
                     {
-                        //sb.append(aVal);
-                        //sb.append(jResults.getJSONObject(x).getString(aVal));
-                        hm.put(aVal, jResults.getJSONObject(x).getString(aVal));
+                        try
+                        {
+                            hm.put(aVal, jResults.getJSONObject(x).getString(aVal));
+                        }
+                        catch(JSONException je)
+                        {
+                            //System.out.println("Could not add:"+aVal);
+                            //je.printStackTrace();
+                        }
                     }
                 }
 
@@ -142,26 +157,29 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
         }
         catch(JSONException jse)
         {
-            System.out.println("JSON exception has occurred!");
+            System.out.println("JSON exception has occured at HIGH level");
             jse.printStackTrace();
         }
 
         //This is the key here,
         //onPostExecute is called on completion, we can have this push
         //our result onto our callback 'onResponseReceived'
-        TreeSet finalResult = new TreeSet<HashMap>(set);
-        return finalResult;
+        //TreeSet finalResult = new TreeSet<HashMap>(set);
+        return set;
     }
 
     private void addHashMap(JSONArray jArray, String tag)
     {
+
         for( int x = 0; x < jArray.length(); x++)
         {
-            try {
-                boolean shouldAdd = true;
-                if (additionalContent != null) {
-                    shouldAdd = false;
-                    for (String aVal : comparisonValues) {
+            boolean shouldAdd = true;
+            if (additionalContent != null)
+            {
+                shouldAdd = false;
+                for (String aVal : comparisonValues)
+                {
+                    try {
                         String inResult = jArray.getJSONObject(x).getString(aVal);
                         for (String item : additionalContent) {
                             if (inResult.equals(item)) {
@@ -170,29 +188,37 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                             }
                         }
                     }
-                }
-
-                HashMap<String, String> hm = new HashMap<String, String>();
-
-                for (String aVal : comparisonValues) {
-                    if (shouldAdd) {
-                        //sb.append(aVal);
-                        //sb.append(jResults.getJSONObject(x).getString(aVal));
-                        hm.put(tag+aVal, jArray.getJSONObject(x).getString(aVal));
+                    catch(JSONException e)
+                    {
+                        System.out.println("Json exception thrown for additionals:"+aVal);
+                        e.printStackTrace();
                     }
                 }
-                set.add(hm);
             }
-            catch(JSONException je)
+
+            HashMap<String, String> hm = new HashMap<String, String>();
+
+            for (String aVal : comparisonValues)
             {
-                System.out.println("Json Exception occured in 'addHashMap'");
-                je.printStackTrace();
+                if (shouldAdd)
+                {
+                    try
+                    {
+                        hm.put(tag + aVal, jArray.getJSONObject(x).getString(aVal));
+                        System.out.println("");
+                    }
+                    catch(JSONException je)
+                    {
+                        //je.printStackTrace();
+                    }
+                }
             }
+            set.add(hm);
         }
     }
 
 
     //our callback, note the 'abstract' mark in the method name,
     //this indicates that this method Must be overridden by the caller
-    public abstract void onResponseReceived(TreeSet ts);
+    public abstract void onResponseReceived(Set<HashMap> hm);
 }

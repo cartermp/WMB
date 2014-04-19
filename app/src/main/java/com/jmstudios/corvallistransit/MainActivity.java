@@ -7,21 +7,16 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
-
 import com.jmstudios.corvallistransit.jsontools.RetrieveJson;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
-import com.jmstudios.corvallistransit.utils.Utils;
-
 import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Set;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -118,60 +113,77 @@ public class MainActivity extends Activity
      */
     public static void getRoutesAndEtasAsync(String url, String[] jsonSearchList, String requestType, String[] additionalParams, final String[] arrayWithinArray)
     {
-        mRoutes = null;
-        mRoutes = new ArrayList<Route>();
-        //new ReadRouteInfo(this).execute(mRoutes);
-        RetrieveJson rt = new RetrieveJson(jsonSearchList, requestType, additionalParams, arrayWithinArray)
+        if(!isWorking)
         {
-            @Override
-            public void onResponseReceived(TreeSet result)
-            {
-                isWorking = false;
-                Iterator i = result.iterator();
-                while(i.hasNext())
-                {
-                    final HashMap<String,String> hm = (HashMap)i.next();
-                    mRoutes.add(new Route()
-                    {{
-                        name = hm.get("Name");
-                        polyLine = hm.get("Polyline");
-                        stopList = new ArrayList<Stop>()
-                        {{
-                            add(new Stop()
-                            {{
-                                String pp = "PATH";
-                                name = hm.get(pp+"Name");
-                                road = hm.get(pp+"Road");
-                                bearing = Double.parseDouble(hm.get(pp+"Bearing"));
-                                adherehancePoint = Boolean.parseBoolean(hm.get(pp+"AdherencePoint"));
-                                latitude = Double.parseDouble(hm.get(pp+"Lat"));
-                                longitude = Double.parseDouble(hm.get(pp+"Long"));
-                                id = Integer.parseInt(hm.get(pp+"ID"));
-                                distance = Double.parseDouble(pp+"Distance");
-                            }});
-                        }};
-                    }}
-                    );
-                    /*
-                    add(new Route() {{
-//            stopList = new ArrayList<Stop>() {{
-//                add(new Stop() {{
-//                    name = "Test Stop 1 oh man is this such a long stop name or what man holy crap";
-//                    eta = 12;
-//                }});
-//                add(new Stop() {{
-//                    name = "Test Stop 2";
-//                    eta = 15;
-//                }});
-//            }};
-//        }});
-                     */
+            mRoutes = null;
+            mRoutes = new ArrayList<Route>();
+            //new ReadRouteInfo(this).execute(mRoutes);
+            RetrieveJson rt = new RetrieveJson(jsonSearchList, requestType, additionalParams, arrayWithinArray) {
+                @Override
+                public void onResponseReceived(Set result) {
+                    isWorking = false;
+                    final Iterator i = result.iterator();
+                    while (i.hasNext())
+                    {
+                       final HashMap<String, String> hm = (HashMap<String,String>)i.next();
+                        mRoutes.add(new Route() {{
+                                        name = hm.get("Name");
+                                        polyLine = hm.get("Polyline");
+                                        System.out.println("Adding big Name:"+ hm.get("Name"));
+                                        while(i.hasNext())
+                                        {
+                                            final HashMap<String, String> hm2 = (HashMap<String,String>)i.next();
+                                            if(hm2.get("Polyline") != null)
+                                            {
+                                                break;
+                                            }
+                                            stopList = new ArrayList<Stop>() {{
+                                                try {
+                                                    String pp = "PATH";
+                                                    final String Oname = hm2.get(pp + "Name");
+                                                    System.out.println("---"+Oname);
+                                                    final String Oroad = hm2.get(pp + "Road");
+                                                    double dd;
+                                                    if (hm2.get(pp + "Bearing") == null)
+                                                        dd = 0.0;
+                                                    else
+                                                        dd = Double.parseDouble(hm2.get(pp + "Bearing"));
+                                                    final double Obearing = dd;
+                                                    final boolean OadherehancePoint = Boolean.parseBoolean(hm2.get(pp + "AdherencePoint"));
+                                                    final double Olatitude = Double.parseDouble((hm2.get(pp + "Lat") != null) ? hm2.get(pp + "Lat") : "0.0");
+                                                    final double Olongitude = Double.parseDouble((hm2.get(pp + "Long") != null) ? hm2.get(pp + "Long") : "0.0");
+                                                    final int Oid = Integer.parseInt(hm2.get(pp + "ID"));
 
+                                                    if (hm2.get(pp + "Distance") == null)
+                                                        dd = 0.0;
+                                                    else
+                                                        dd = Double.parseDouble(hm2.get(pp + "Distance"));
+                                                    final double Odistance = dd;
+
+                                                    //everything works above, we add a stop item, otherwise this is probably a ROUTE item instead.
+                                                    add(new Stop() {{
+                                                        name = Oname;
+                                                        road = Oroad;
+                                                        bearing = Obearing;
+                                                        adherehancePoint = OadherehancePoint;
+                                                        latitude = Olatitude;
+                                                        longitude = Olongitude;
+                                                        id = Oid;
+                                                        distance = Odistance;
+                                                    }});
+                                                } catch (Exception e) {
+                                                    //System.out.println("Scrapped an item");
+                                                }
+                                            }};
+                                        }
+                                    }}
+                        );
+                    }
                 }
-            }
-        };
-        rt.execute(url);
-        isWorking = true;
+            };
+            rt.execute(url);
+            isWorking = true;
+        }
     }
 
     @Override
