@@ -19,7 +19,7 @@ public class Stop {
     public DateTime scheduledTime;
 
     public int eta() {
-        Period period = new Period(this.expectedTime, DateTime.now());
+        Period period = new Period(DateTime.now(), this.expectedTime);
         int eta =  period.getMinutes();
         return (eta >= 1) ? eta : 1;
     }
@@ -29,11 +29,11 @@ public class Stop {
     @Override
     public boolean equals(Object obj) {
         return (obj != null) && (obj instanceof Stop)
-                && ((Stop) obj).id == this.id;
+                && ((Stop) obj).name.equals(this.name);
     }
 
     @Override
     public int hashCode() {
-        return this.id;
+        return this.name.hashCode();
     }
 }

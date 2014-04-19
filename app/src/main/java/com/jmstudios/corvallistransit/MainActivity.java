@@ -27,30 +27,30 @@ public class MainActivity extends Activity
      * Used to store Bus Routes in the application.
      */
     public static List<Route> mRoutes = new ArrayList<Route>() {{
-//        add(new Route() {{
-//            stopList = new ArrayList<Stop>() {{
-//                add(new Stop() {{
-//                    name = "Test Stop 1 oh man is this such a long stop name or what man holy crap";
-//                    eta = 12;
-//                }});
-//                add(new Stop() {{
-//                    name = "Test Stop 2";
-//                    eta = 15;
-//                }});
-//            }};
-//        }});
-//        add(new Route() {{
-//            stopList = new ArrayList<Stop>() {{
-//                add(new Stop() {{
-//                    name = "Test Stop 1";
-//                    eta = 21;
-//                }});
-//                add(new Stop() {{
-//                    name = "Test Stop 2";
-//                    eta = 30;
-//                }});
-//            }};
-//        }});
+        add(new Route() {{
+            stopList = new ArrayList<Stop>() {{
+                add(new Stop() {{
+                    name = "Test Stop 1 oh man is this such a long stop name or what man holy crap";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 30);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 2";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+            }};
+        }});
+        add(new Route() {{
+            stopList = new ArrayList<Stop>() {{
+                add(new Stop() {{
+                    name = "Test Stop 1";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 45);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 2";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 46);
+                }});
+            }};
+        }});
     }};
     public static int dayOfWeek;
     /**

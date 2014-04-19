@@ -5,11 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Tuple;
-import com.jmstudios.corvallistransit.routeTools.ConnectionsUtils;
 
 import org.xmlpull.v1.XmlPullParserException;
 

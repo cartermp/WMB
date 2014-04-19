@@ -6,12 +6,8 @@ import org.joda.time.DateTimeZone;
 import java.util.List;
 
 public class Route {
-    public String routeNumber;
     public String name;
     public List<Stop> stopList;
-    public int subRouteOrder;
-    public boolean routeTimeWarning;
-    public boolean updatedSuccessfully;
     public DateTime lastUpdated;
 
     public String LastUpdatedDisplay() {
