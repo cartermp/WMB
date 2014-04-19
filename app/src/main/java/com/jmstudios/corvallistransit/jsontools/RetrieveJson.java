@@ -16,21 +16,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public abstract class RetrieveJson extends AsyncTask<String, Void, String> {
+public abstract class RetrieveJson extends AsyncTask<String, Void, String>
+{
 
     String[] comparisonValues;
     String ros;
     String[] additionalContent;
+    String[] innerArrays;
+    Set<HashMap<String,String>> set;
 
-    public RetrieveJson(String[] targets, String routeOStop, String[] specifics)
+    public RetrieveJson(String[] targets, String routeOStop, String[] specifics, String[] iArrays)
     {
         additionalContent = specifics;
         comparisonValues = targets;
         ros = routeOStop;
+        innerArrays = iArrays;
+
     }
 
     protected String doInBackground(String... voids) {
@@ -78,28 +84,23 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String aVoid)
     {
         super.onPostExecute(aVoid);
-
+        set = new HashSet<HashMap<String, String>>();
         //turn our retrieved String into a Json Object, then return a string array of it's contents
-        Set<String> set = new HashSet<String>();
         try
         {
             JSONObject jObject = new JSONObject(aVoid);
             JSONArray jResults = jObject.getJSONArray(ros);
-            StringBuilder sb = new StringBuilder();
             for(int x = 0; x < jResults.length(); x++)
             {
-                /*
-                sb.append("Route: ");
-                sb.append(jResults.getJSONObject(x).getString("Route"));
-                sb.append("\n");
+                if(innerArrays != null)
+                {
+                    for(String str: innerArrays)
+                    {
+                        JSONArray jsonArray = jResults.getJSONObject(x).getJSONArray(str);
+                        addHashMap(jsonArray, str.toUpperCase());
+                    }
+                }
 
-                sb.append("Expected: ");
-                sb.append(jResults.getJSONObject(x).getString("Expected"));
-                sb.append("\n");
-
-                sb.append("Scheduled: ");
-                sb.append(jResults.getJSONObject(x).getString("Scheduled"));
-                */
                 boolean shouldAdd = true;
                 if(additionalContent != null)
                 {
@@ -118,20 +119,19 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String> {
                     }
                 }
 
+                HashMap<String,String> hm = new HashMap<String, String>();
+
                 for(String aVal: comparisonValues)
                 {
                     if(shouldAdd)
                     {
-                        sb.append(aVal);
-                        sb.append(": ");
-                        sb.append(jResults.getJSONObject(x).getString(aVal));
-                        sb.append("\n");
+                        //sb.append(aVal);
+                        //sb.append(jResults.getJSONObject(x).getString(aVal));
+                        hm.put(aVal, jResults.getJSONObject(x).getString(aVal));
                     }
                 }
 
-                set.add(sb.toString());
-
-                sb.delete(0,sb.length());
+                set.add(hm);
             }
         }
         catch(JSONException jse)
@@ -143,9 +143,48 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String> {
         //This is the key here,
         //onPostExecute is called on completion, we can have this push
         //our result onto our callback 'onResponseReceived'
-        TreeSet finalResult = new TreeSet<String>(set);
+        TreeSet finalResult = new TreeSet<HashMap>(set);
         onResponseReceived(finalResult);
     }
+
+    private void addHashMap(JSONArray jArray, String tag)
+    {
+        for( int x = 0; x < jArray.length(); x++)
+        {
+            try {
+                boolean shouldAdd = true;
+                if (additionalContent != null) {
+                    shouldAdd = false;
+                    for (String aVal : comparisonValues) {
+                        String inResult = jArray.getJSONObject(x).getString(aVal);
+                        for (String item : additionalContent) {
+                            if (inResult.equals(item)) {
+                                shouldAdd = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                HashMap<String, String> hm = new HashMap<String, String>();
+
+                for (String aVal : comparisonValues) {
+                    if (shouldAdd) {
+                        //sb.append(aVal);
+                        //sb.append(jResults.getJSONObject(x).getString(aVal));
+                        hm.put(tag+aVal, jArray.getJSONObject(x).getString(aVal));
+                    }
+                }
+                set.add(hm);
+            }
+            catch(JSONException je)
+            {
+                System.out.println("Json Exception occured in 'addHashMap'");
+                je.printStackTrace();
+            }
+        }
+    }
+
 
     //our callback, note the 'abstract' mark in the method name,
     //this indicates that this method Must be overridden by the caller

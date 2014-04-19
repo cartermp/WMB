@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
+import com.jmstudios.corvallistransit.jsontools.RetrieveJson;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 
@@ -15,7 +17,10 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -62,11 +67,26 @@ public class MainActivity extends Activity
      */
     private CharSequence mTitle;
 
+    /**Boolean locks async pulling once it's started, we don't want multiple request simultaneously */
+    private static boolean isWorking;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initialize();
+
+        //if it's NOT sunday, pull our data down
+        if (dayOfWeek != Calendar.SUNDAY)
+        {
+            getRoutesAndEtasAsync("http://www.corvallis-bus.appspot.com/routes?stops=true", new String[]{"Name", "Road", "AdditionalName", "Description", "Polyline", "Color", "Direction", "Bearing", "AdherencePoint", "Lat", "Long", "ID", "Distance"}, "routes", null, new String[]{"Path"});
+        }
+    }
+
+    private void initialize()
+    {
+        isWorking = false;
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -78,17 +98,62 @@ public class MainActivity extends Activity
 
         Calendar c = Calendar.getInstance();
         dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-
-        if (dayOfWeek != Calendar.SUNDAY) {
-            //getRoutesAndEtasAsync();
-        }
     }
+
 
     /**
      * Populates the list of Bus Routes for CTS.
      */
-    private void getRoutesAndEtasAsync() {
-        new ReadRouteInfo(this).execute(mRoutes);
+    private void getRoutesAndEtasAsync(String url, String[] jsonSearchList, String requestType, String[] additionalParams, final String[] arrayWithinArray)
+    {
+        //new ReadRouteInfo(this).execute(mRoutes);
+        RetrieveJson rt = new RetrieveJson(jsonSearchList, requestType, additionalParams, arrayWithinArray)
+        {
+            @Override
+            public void onResponseReceived(TreeSet result)
+            {
+                isWorking = false;
+                Iterator i = result.iterator();
+                while(i.hasNext())
+                {
+                    final HashMap<String,String> hm = (HashMap)i.next();
+                    mRoutes.add(new Route()
+                    {{
+                        name = hm.get("Name");
+                        polyLine = hm.get("Polyline");
+                        stopList = new ArrayList<Stop>()
+                        {{
+                            add(new Stop()
+                            {{
+                                String pp = "PATH";
+                                name = hm.get(pp+"Name");
+                                road = hm.get(pp+"Road");
+                                bearing = Double.parseDouble(hm.get(pp+"Bearing"));
+
+                            }});
+                        }};
+                    }}
+                    );
+                    /*
+                    add(new Route() {{
+//            stopList = new ArrayList<Stop>() {{
+//                add(new Stop() {{
+//                    name = "Test Stop 1 oh man is this such a long stop name or what man holy crap";
+//                    eta = 12;
+//                }});
+//                add(new Stop() {{
+//                    name = "Test Stop 2";
+//                    eta = 15;
+//                }});
+//            }};
+//        }});
+                     */
+
+                }
+            }
+        };
+        rt.execute(url);
+        isWorking = true;
     }
 
     @Override
