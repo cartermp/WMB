@@ -1,8 +1,15 @@
 package com.jmstudios.corvallistransit.models;
 
+import com.jmstudios.corvallistransit.jsontools.RetrieveJson;
+import com.jmstudios.corvallistransit.utils.Utils;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 public class Stop {
     public String name;
@@ -16,7 +23,7 @@ public class Stop {
 
     public Route route;
     public DateTime expectedTime;
-    public DateTime scheduledTime;
+    private DateTime scheduledTime;
 
     public int eta() {
         Period period = new Period(DateTime.now(), this.expectedTime);
@@ -35,5 +42,37 @@ public class Stop {
     @Override
     public int hashCode() {
         return this.name.hashCode();
+    }
+
+    public DateTime getScheduledTime()
+    {
+        if(scheduledTime == null)
+        {
+            RetrieveJson rt = new RetrieveJson(new String[]{"Expected"},Integer.toString(id), null, null)
+            {
+                @Override
+                public void onResponseReceived(TreeSet ts)
+                {}
+            };
+            try
+            {
+                String rtVal = rt.execute("http://www.corvallis-bus.appspot.com/arrivals?stops=" + Integer.toString(id)).get();
+                TreeSet ts = rt.fetchResultsManually(rtVal);
+                Iterator i = ts.iterator();
+                while(i.hasNext())
+                {
+                    HashMap<String, String> hm = (HashMap)i.next();
+                    scheduledTime = Utils.convertToDateTime(hm.get("Expected"));
+                    break;
+                }
+            }
+            catch(Exception e)
+            {
+                System.out.println("Error attempting to fetch the DATE in Stop.java");
+                e.printStackTrace();
+            }
+        }
+
+        return scheduledTime;
     }
 }

@@ -84,6 +84,12 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
     protected void onPostExecute(String aVoid)
     {
         super.onPostExecute(aVoid);
+
+        onResponseReceived(fetchResultsManually(aVoid));
+    }
+
+    public TreeSet fetchResultsManually(String aVoid)
+    {
         set = new HashSet<HashMap<String, String>>();
         //turn our retrieved String into a Json Object, then return a string array of it's contents
         try
@@ -144,7 +150,7 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
         //onPostExecute is called on completion, we can have this push
         //our result onto our callback 'onResponseReceived'
         TreeSet finalResult = new TreeSet<HashMap>(set);
-        onResponseReceived(finalResult);
+        return finalResult;
     }
 
     private void addHashMap(JSONArray jArray, String tag)

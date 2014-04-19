@@ -33,6 +33,7 @@ public class MainActivity extends Activity
      * Used to store Bus Routes in the application.
      */
     public static List<Route> mRoutes = new ArrayList<Route>() {{
+        /*
         add(new Route() {{
             stopList = new ArrayList<Stop>() {{
                 add(new Stop() {{
@@ -57,6 +58,7 @@ public class MainActivity extends Activity
                 }});
             }};
         }});
+        */
     }};
     public static int dayOfWeek;
     /**
@@ -81,7 +83,8 @@ public class MainActivity extends Activity
         //if it's NOT sunday, pull our data down
         if (dayOfWeek != Calendar.SUNDAY)
         {
-            getRoutesAndEtasAsync("http://www.corvallis-bus.appspot.com/routes?stops=true", new String[]{"Name", "Road", "AdditionalName", "Description", "Polyline", "Color", "Direction", "Bearing", "AdherencePoint", "Lat", "Long", "ID", "Distance"}, "routes", null, new String[]{"Path"});
+            retrieveAllRoutes();
+            //getRoutesAndEtasAsync("http://www.corvallis-bus.appspot.com/routes?stops=true", new String[]{"Name", "Road", "AdditionalName", "Description", "Polyline", "Color", "Direction", "Bearing", "AdherencePoint", "Lat", "Long", "ID", "Distance"}, "routes", null, new String[]{"Path"});
         }
     }
 
@@ -101,12 +104,22 @@ public class MainActivity extends Activity
         dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
     }
 
+    /**
+     * Static call updates ALL routes
+     */
+    public static void retrieveAllRoutes()
+    {
+        getRoutesAndEtasAsync("http://www.corvallis-bus.appspot.com/routes?stops=true", new String[]{"Name", "Road", "AdditionalName", "Description", "Polyline", "Color", "Direction", "Bearing", "AdherencePoint", "Lat", "Long", "ID", "Distance"}, "routes", null, new String[]{"Path"});
+    }
+
 
     /**
      * Populates the list of Bus Routes for CTS.
      */
-    private void getRoutesAndEtasAsync(String url, String[] jsonSearchList, String requestType, String[] additionalParams, final String[] arrayWithinArray)
+    public static void getRoutesAndEtasAsync(String url, String[] jsonSearchList, String requestType, String[] additionalParams, final String[] arrayWithinArray)
     {
+        mRoutes = null;
+        mRoutes = new ArrayList<Route>();
         //new ReadRouteInfo(this).execute(mRoutes);
         RetrieveJson rt = new RetrieveJson(jsonSearchList, requestType, additionalParams, arrayWithinArray)
         {
@@ -130,7 +143,11 @@ public class MainActivity extends Activity
                                 name = hm.get(pp+"Name");
                                 road = hm.get(pp+"Road");
                                 bearing = Double.parseDouble(hm.get(pp+"Bearing"));
-
+                                adherehancePoint = Boolean.parseBoolean(hm.get(pp+"AdherencePoint"));
+                                latitude = Double.parseDouble(hm.get(pp+"Lat"));
+                                longitude = Double.parseDouble(hm.get(pp+"Long"));
+                                id = Integer.parseInt(hm.get(pp+"ID"));
+                                distance = Double.parseDouble(pp+"Distance");
                             }});
                         }};
                     }}

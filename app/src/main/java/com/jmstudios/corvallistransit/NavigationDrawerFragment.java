@@ -264,9 +264,13 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_refresh) {
-            if (MainActivity.dayOfWeek != Calendar.SUNDAY) {
-                new ReadRouteInfo(getActivity()).execute(MainActivity.mRoutes);
-            } else {
+            if (MainActivity.dayOfWeek != Calendar.SUNDAY)
+            {
+                //new ReadRouteInfo(getActivity()).execute(MainActivity.mRoutes);
+                MainActivity.retrieveAllRoutes();
+            }
+            else
+            {
                 Toast.makeText(getActivity(), "No bus routes on Sunday!", Toast.LENGTH_SHORT).show();
             }
 
