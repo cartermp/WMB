@@ -98,20 +98,6 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
 
             for(int x = 0; x < jResults.length(); x++)
             {
-                if(innerArrays != null)
-                {
-                    try {
-                        for (String str : innerArrays) {
-                            JSONArray jsonArray = jResults.getJSONObject(x).getJSONArray(str);
-                            addHashMap(jsonArray, str.toUpperCase());
-                        }
-                    }
-                    catch(JSONException je)
-                    {
-                        System.out.println("error with calling addHashMap");
-                    }
-                }
-
                 boolean shouldAdd = true;
                 if(additionalContent != null)
                 {
@@ -143,6 +129,7 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                         try
                         {
                             hm.put(aVal, jResults.getJSONObject(x).getString(aVal));
+                            //System.out.println(aVal+":"+jResults.getJSONObject(x).getString(aVal));
                         }
                         catch(JSONException je)
                         {
@@ -153,6 +140,20 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                 }
 
                 set.add(hm);
+
+                if(innerArrays != null)
+                {
+                    try {
+                        for (String str : innerArrays) {
+                            JSONArray jsonArray = jResults.getJSONObject(x).getJSONArray(str);
+                            addHashMap(jsonArray, str.toUpperCase());
+                        }
+                    }
+                    catch(JSONException je)
+                    {
+                        System.out.println("error with calling addHashMap");
+                    }
+                }
             }
         }
         catch(JSONException jse)
@@ -205,7 +206,7 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                     try
                     {
                         hm.put(tag + aVal, jArray.getJSONObject(x).getString(aVal));
-                        System.out.println("");
+                        //System.out.println(tag+aVal+":"+jArray.getJSONObject(x).getString(aVal));
                     }
                     catch(JSONException je)
                     {
