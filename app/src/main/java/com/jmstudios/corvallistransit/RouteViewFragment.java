@@ -1,11 +1,14 @@
 package com.jmstudios.corvallistransit;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
@@ -20,6 +23,8 @@ public class RouteViewFragment extends ListFragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+    private TextView tv;
 
     public RouteViewFragment() {
     }

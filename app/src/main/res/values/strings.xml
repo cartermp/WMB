@@ -20,5 +20,9 @@
     <string name="connection_error">Error with network connection</string>
     <string name="xml_error">Error with data feed</string>
     <string name="no_route_info">No route information to display at this time.</string>
+    <string name="timer">Add a Reminder</string>
+    <string name="timer_5">5 Minutes From Now</string>
+    <string name="timer_10">10 Minutes From Now</string>
+    <string name="timer_15">15 Minutes From Now</string>
 
 </resources>
