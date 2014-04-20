@@ -3,6 +3,7 @@ package com.jmstudios.corvallistransit;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -124,6 +125,9 @@ public class MainActivity extends Activity
     {
         if(!isWorking)
         {
+            final ProgressDialog pd = new ProgressDialog(context);
+            pd.setMessage("Getting bus data...");
+            pd.show();
             mRoutes = null;
             mRoutes = new ArrayList<Route>();
             RetrieveJson rt = new RetrieveJson( context, jsonSearchList, requestType, additionalParams, arrayWithinArray) {
@@ -177,6 +181,8 @@ public class MainActivity extends Activity
                     }
                     NavigationDrawerFragment.mActiveRouteNames = tmp;
                     */
+                    if(pd.isShowing())
+                        pd.dismiss();
                 }
             };
             rt.execute(url);
@@ -195,22 +201,6 @@ public class MainActivity extends Activity
 
     public void onSectionAttached(int number)
     {
-        /*
-        "Route 2",
-            "Route 3",
-            "Route BBSE",
-            "Route 4",
-            "Route CVA",
-            "Route BBN",
-            "Route C3",
-            "Route C2",
-            "Route C1",
-            "Route BBSW",
-            "Route 5",
-            "Route 1",
-            "Route 7",
-            "Route 8"
-         */
         switch (number) {
             case 1:
                 mTitle = "Route 2 ETA";
