@@ -1,5 +1,7 @@
 package com.jmstudios.corvallistransit.jsontools;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,22 +24,34 @@ import java.util.Set;
 public abstract class RetrieveJson extends AsyncTask<String, Void, String>
 {
 
-    String[] comparisonValues;
-    String ros;
-    String[] additionalContent;
-    String[] innerArrays;
-    Set<HashMap> set;
+    private String[] comparisonValues;
+    private String ros;
+    private String[] additionalContent;
+    private String[] innerArrays;
+    private Set<HashMap> set;
+    //private ProgressDialog pd;
 
-    public RetrieveJson(String[] targets, String routeOStop, String[] specifics, String[] iArrays)
+    public RetrieveJson(Context c,String[] targets, String routeOStop, String[] specifics, String[] iArrays)
     {
         additionalContent = specifics;
         comparisonValues = targets;
         ros = routeOStop;
         innerArrays = iArrays;
+        //pd = new ProgressDialog(c);
 
     }
 
-    protected String doInBackground(String... voids) {
+    @Override
+    protected void onPreExecute()
+    {
+        super.onPreExecute();
+        //pd.setMessage("Retrieving route info...");
+        //pd.setCanceledOnTouchOutside(false);
+        //pd.show();
+    }
+
+    protected String doInBackground(String... voids)
+    {
         if(voids[0] == null)
              return "No url provided.";
         String url = voids[0];
@@ -53,7 +67,8 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                 InputStream content = entity.getContent();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(content));
                 String line;
-                while ((line = reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null)
+                {
                     builder.append(line);
                 }
             }
@@ -82,7 +97,8 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
     protected void onPostExecute(String aVoid)
     {
         super.onPostExecute(aVoid);
-
+        //if(pd.isShowing())
+        //    pd.dismiss();
         onResponseReceived(fetchResultsManually(aVoid));
     }
 
@@ -180,10 +196,13 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                 shouldAdd = false;
                 for (String aVal : comparisonValues)
                 {
-                    try {
+                    try
+                    {
                         String inResult = jArray.getJSONObject(x).getString(aVal);
-                        for (String item : additionalContent) {
-                            if (inResult.equals(item)) {
+                        for (String item : additionalContent)
+                        {
+                            if (inResult.equals(item))
+                            {
                                 shouldAdd = true;
                                 break;
                             }
@@ -198,7 +217,6 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
             }
 
             HashMap<String, String> hm = new HashMap<String, String>();
-
             for (String aVal : comparisonValues)
             {
                 if (shouldAdd)
@@ -206,7 +224,6 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                     try
                     {
                         hm.put(tag + aVal, jArray.getJSONObject(x).getString(aVal));
-                        //System.out.println(tag+aVal+":"+jArray.getJSONObject(x).getString(aVal));
                     }
                     catch(JSONException je)
                     {

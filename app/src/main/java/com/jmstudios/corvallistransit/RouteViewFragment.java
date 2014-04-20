@@ -24,8 +24,6 @@ public class RouteViewFragment extends ListFragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    private TextView tv;
-
     public RouteViewFragment() {
     }
 
@@ -33,7 +31,8 @@ public class RouteViewFragment extends ListFragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static RouteViewFragment newInstance(int sectionNumber) {
+    public static RouteViewFragment newInstance(int sectionNumber)
+    {
         RouteViewFragment fragment = new RouteViewFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -52,15 +51,17 @@ public class RouteViewFragment extends ListFragment {
 
         RouteAdapter adapter = new RouteAdapter(getActivity(),
                 (route == null) ? new ArrayList<Stop>() : route.stopList);
+
         setListAdapter(adapter);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         View rootView = null;
 
-        if (MainActivity.dayOfWeek != Calendar.SUNDAY) {
+        if (MainActivity.dayOfWeek != Calendar.SUNDAY)
+        {
             rootView = inflater.inflate(R.layout.route_list, null);
         }
 

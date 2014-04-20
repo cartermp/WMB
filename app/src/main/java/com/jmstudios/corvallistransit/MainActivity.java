@@ -3,6 +3,7 @@ package com.jmstudios.corvallistransit;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -67,9 +68,11 @@ public class MainActivity extends Activity
 
     /**Boolean locks async pulling once it's started, we don't want multiple request simultaneously */
     private static boolean isWorking;
+    public static Context context;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -80,11 +83,20 @@ public class MainActivity extends Activity
         {
             retrieveAllRoutes();
             //getRoutesAndEtasAsync("http://www.corvallis-bus.appspot.com/routes?stops=true", new String[]{"Name", "Road", "AdditionalName", "Description", "Polyline", "Color", "Direction", "Bearing", "AdherencePoint", "Lat", "Long", "ID", "Distance"}, "routes", null, new String[]{"Path"});
+
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        context = null;
     }
 
     private void initialize()
     {
+        context = this;
         isWorking = false;
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -104,9 +116,8 @@ public class MainActivity extends Activity
      */
     public static void retrieveAllRoutes()
     {
-        getRoutesAndEtasAsync("http://www.corvallis-bus.appspot.com/routes?stops=true", new String[]{"Name", "Road", "AdditionalName", "Description", "Polyline", "Color", "Direction", "Bearing", "AdherencePoint", "Lat", "Long", "ID", "Distance"}, "routes", null, new String[]{"Path"});
+        getRoutesAndEtasAsync("http://www.corvallis-bus.appspot.com/routes?stops=true", new String[]{"Name", "Road", "AdditionalName", "Description", "Polyline", "Color", "Direction", "Bearing", "AdherencePoint", "Lat", "Long", "ID"}, "routes", null, new String[]{"Path"});
     }
-
 
     /**
      * Populates the list of Bus Routes for CTS.
@@ -117,67 +128,41 @@ public class MainActivity extends Activity
         {
             mRoutes = null;
             mRoutes = new ArrayList<Route>();
-            //new ReadRouteInfo(this).execute(mRoutes);
-            RetrieveJson rt = new RetrieveJson(jsonSearchList, requestType, additionalParams, arrayWithinArray) {
+            RetrieveJson rt = new RetrieveJson( context, jsonSearchList, requestType, additionalParams, arrayWithinArray) {
                 @Override
                 public void onResponseReceived(Set result) {
                     isWorking = false;
                     final Iterator i = result.iterator();
+                    Route lastRoute = null;
+                    ArrayList<Stop> stopList = new ArrayList<Stop>();
+                    String pp = "PATH";
                     while (i.hasNext())
                     {
-                       final HashMap<String, String> hm = (HashMap<String,String>)i.next();
-                        mRoutes.add(new Route() {{
-                                        name = hm.get("Name");
-                                        polyLine = hm.get("Polyline");
-                                        System.out.println("Adding big Name:"+ hm.get("Name"));
-                                        while(i.hasNext())
-                                        {
-                                            final HashMap<String, String> hm2 = (HashMap<String,String>)i.next();
-                                            if(hm2.get("Polyline") != null)
-                                            {
-                                                break;
-                                            }
-                                            stopList = new ArrayList<Stop>() {{
-                                                try {
-                                                    String pp = "PATH";
-                                                    final String Oname = hm2.get(pp + "Name");
-                                                    System.out.println("---"+Oname);
-                                                    final String Oroad = hm2.get(pp + "Road");
-                                                    double dd;
-                                                    if (hm2.get(pp + "Bearing") == null)
-                                                        dd = 0.0;
-                                                    else
-                                                        dd = Double.parseDouble(hm2.get(pp + "Bearing"));
-                                                    final double Obearing = dd;
-                                                    final boolean OadherehancePoint = Boolean.parseBoolean(hm2.get(pp + "AdherencePoint"));
-                                                    final double Olatitude = Double.parseDouble((hm2.get(pp + "Lat") != null) ? hm2.get(pp + "Lat") : "0.0");
-                                                    final double Olongitude = Double.parseDouble((hm2.get(pp + "Long") != null) ? hm2.get(pp + "Long") : "0.0");
-                                                    final int Oid = Integer.parseInt(hm2.get(pp + "ID"));
+                       HashMap<String, String> hm = (HashMap<String,String>)i.next();
+                       if(hm.get("Polyline") != null)
+                       {
+                           if(lastRoute != null)
+                               mRoutes.add(lastRoute);
+                           lastRoute = new Route();
+                           lastRoute.name = hm.get("Name");
+                           lastRoute.polyLine = hm.get("Polyline");
+                           lastRoute.stopList = stopList;
+                           stopList = new ArrayList<Stop>();
+                       }
+                       else if(hm.get(pp+"Road") != null)
+                       {
+                           Stop newStop = new Stop();
 
-                                                    if (hm2.get(pp + "Distance") == null)
-                                                        dd = 0.0;
-                                                    else
-                                                        dd = Double.parseDouble(hm2.get(pp + "Distance"));
-                                                    final double Odistance = dd;
-
-                                                    //everything works above, we add a stop item, otherwise this is probably a ROUTE item instead.
-                                                    add(new Stop() {{
-                                                        name = Oname;
-                                                        road = Oroad;
-                                                        bearing = Obearing;
-                                                        adherehancePoint = OadherehancePoint;
-                                                        latitude = Olatitude;
-                                                        longitude = Olongitude;
-                                                        id = Oid;
-                                                        distance = Odistance;
-                                                    }});
-                                                } catch (Exception e) {
-                                                    //System.out.println("Scrapped an item");
-                                                }
-                                            }};
-                                        }
-                                    }}
-                        );
+                           newStop.name = hm.get(pp + "Name");
+                           newStop.road = hm.get(pp + "Road");
+                           newStop.bearing = Double.parseDouble(hm.get(pp + "Bearing"));
+                           newStop.adherehancePoint = Boolean.parseBoolean(hm.get(pp + "AdherencePoint"));
+                           newStop.latitude = Double.parseDouble(hm.get(pp + "Lat"));
+                           newStop.longitude = Double.parseDouble(hm.get(pp + "Long"));
+                           newStop.id = Integer.parseInt(hm.get(pp + "ID"));
+                           //newStop.distance = Double.parseDouble(hm.get(pp + "Distance"));
+                           stopList.add(newStop);
+                       }
                     }
                 }
             };
