@@ -51,7 +51,7 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         holder.stopView.setText(stop.name);
         holder.etaView.setText(stop.eta() + "m");
         holder.timerView.setText(R.string.timer);
-
+        stop.getScheduledTime(holder.etaView);
         holder.timerView.setClickable(true);
         holder.timerView.setOnClickListener(new View.OnClickListener() {
             @Override
