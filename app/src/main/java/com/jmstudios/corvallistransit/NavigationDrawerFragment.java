@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import java.util.Calendar;
 
 /**
@@ -60,28 +61,27 @@ public class NavigationDrawerFragment extends Fragment {
 
     public static String[] mActiveRouteNames = new String[]
             {
-            "Route 2",
-            "Route 3",
-            "Route BBSE",
-            "Route 4",
-            "Route CVA",
-            "Route BBN",
-            "Route C3",
-            "Route C2",
-            "Route C1",
-            "Route BBSW",
-            "Route 5",
-            "Route 1",
-            "Route 7",
-            "Route 8"
-    };
+                    "Route 2",
+                    "Route 3",
+                    "Route BBSE",
+                    "Route 4",
+                    "Route CVA",
+                    "Route BBN",
+                    "Route C3",
+                    "Route C2",
+                    "Route C1",
+                    "Route BBSW",
+                    "Route 5",
+                    "Route 1",
+                    "Route 7",
+                    "Route 8"
+            };
 
     public NavigationDrawerFragment() {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
@@ -263,13 +263,10 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_refresh) {
-            if (MainActivity.dayOfWeek != Calendar.SUNDAY)
-            {
+            if (MainActivity.dayOfWeek != Calendar.SUNDAY) {
                 //new ReadRouteInfo(getActivity()).execute(MainActivity.mRoutes);
                 MainActivity.retrieveAllRoutes();
-            }
-            else
-            {
+            } else {
                 Toast.makeText(getActivity(), "No bus routes on Sunday!", Toast.LENGTH_SHORT).show();
             }
 

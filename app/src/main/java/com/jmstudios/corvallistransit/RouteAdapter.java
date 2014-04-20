@@ -2,6 +2,7 @@ package com.jmstudios.corvallistransit;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -61,7 +62,9 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         holder.stopView.setText(stop.name);
         holder.etaView.setText(stop.eta() + "m");
         holder.timerView.setText(R.string.timer);
+
         stop.getScheduledTime(holder.etaView);
+
         holder.timerView.setClickable(true);
         holder.timerView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +101,7 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
 
         switch (id) {
             case 0:
-                delay = milisecondMultiplierForMinutes / 6;
+                delay = milisecondMultiplierForMinutes;
                 break;
             case 1:
                 delay = 5 * milisecondMultiplierForMinutes;
@@ -126,7 +129,6 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
     }
 
     private void doVibrate() {
-        // Get instance of Vibrator from current Context
         Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
         long[] pattern = { 0, 1000, 200, 1000, 200, 1000, 200, 1000, 200, 1000 };
@@ -166,8 +168,11 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // mId allows you to update the notification later on.
-        mNotificationManager.notify(0, mBuilder.build());
+        // Set the notification to clear once the user uses it to go to the main activity.
+        Notification n = mBuilder.build();
+        n.flags = Notification.FLAG_AUTO_CANCEL;
+
+        mNotificationManager.notify(0, n);
     }
 
     static class ViewHolder {
