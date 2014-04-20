@@ -1,5 +1,8 @@
 package com.jmstudios.corvallistransit.models;
 
+import android.widget.TextView;
+
+import com.jmstudios.corvallistransit.MainActivity;
 import com.jmstudios.corvallistransit.jsontools.RetrieveJson;
 import com.jmstudios.corvallistransit.utils.Utils;
 
@@ -20,13 +23,13 @@ public class Stop {
     public double latitude;
     public double longitude;
     public int id;
-    public double distance;
-
-    public Route route;
+    //public double distance;
+    //public Route route;
     public DateTime expectedTime;
-    private DateTime scheduledTime;
+    //private DateTime scheduledTime;
 
-    public int eta() {
+    public int eta()
+    {
         Period period = new Period(DateTime.now(), this.expectedTime);
         int eta =  period.getMinutes();
         return (eta >= 1) ? eta : 1;
@@ -45,35 +48,29 @@ public class Stop {
         return this.name.hashCode();
     }
 
-    public DateTime getScheduledTime()
+    public DateTime getScheduledTime(TextView tv)
     {
-        if(scheduledTime == null)
+        if(expectedTime == null)
         {
-            RetrieveJson rt = new RetrieveJson(new String[]{"Expected"},Integer.toString(id), null, null)
+            tv.setText("...");
+            final TextView innerView = tv;
+            RetrieveJson rt = new RetrieveJson( MainActivity.context,new String[]{"Expected"},Integer.toString(id), null, null)
             {
                 @Override
                 public void onResponseReceived(Set s)
-                {}
-            };
-            try
-            {
-                String rtVal = rt.execute("http://www.corvallis-bus.appspot.com/arrivals?stops=" + Integer.toString(id)).get();
-                Set ts = rt.fetchResultsManually(rtVal);
-                Iterator i = ts.iterator();
-                while(i.hasNext())
                 {
-                    HashMap<String, String> hm = (HashMap)i.next();
-                    scheduledTime = Utils.convertToDateTime(hm.get("Expected"));
-                    break;
+                    Iterator i = s.iterator();
+                    while(i.hasNext())
+                    {
+                        HashMap<String, String> hm = (HashMap)i.next();
+                        expectedTime = Utils.convertToDateTime(hm.get("Expected"));
+                        innerView.setText(eta()+"m");
+                        break;
+                    }
                 }
-            }
-            catch(Exception e)
-            {
-                System.out.println("Error attempting to fetch the DATE in Stop.java");
-                e.printStackTrace();
-            }
+            };
+            rt.execute("http://www.corvallis-bus.appspot.com/arrivals?stops=" + Integer.toString(id));
         }
-
-        return scheduledTime;
+        return expectedTime;
     }
 }
