@@ -20,10 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.util.Calendar;
-
-;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -61,28 +58,30 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    public static String[] mActiveRouteNames = new String[]{
-            "Route 1",
+    public static String[] mActiveRouteNames = new String[]
+            {
             "Route 2",
             "Route 3",
+            "Route BBSE",
             "Route 4",
-            "Route 5",
-            "Route 6",
-            "Route 7",
-            "Route 8",
-            "Route C1",
-            "Route C2",
+            "Route CVA",
+            "Route BBN",
             "Route C3",
-            "BBN",
-            "BBSE",
-            "BBSW"
+            "Route C2",
+            "Route C1",
+            "Route BBSW",
+            "Route 5",
+            "Route 1",
+            "Route 7",
+            "Route 8"
     };
 
     public NavigationDrawerFragment() {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the

@@ -52,7 +52,6 @@ public class Stop {
     {
         if(expectedTime == null)
         {
-            tv.setText("...");
             final TextView innerView = tv;
             RetrieveJson rt = new RetrieveJson( MainActivity.context,new String[]{"Expected"},Integer.toString(id), null, null)
             {

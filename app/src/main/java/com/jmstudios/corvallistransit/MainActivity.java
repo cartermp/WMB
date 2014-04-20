@@ -3,6 +3,7 @@ package com.jmstudios.corvallistransit;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -82,8 +83,6 @@ public class MainActivity extends Activity
         if (dayOfWeek != Calendar.SUNDAY)
         {
             retrieveAllRoutes();
-            //getRoutesAndEtasAsync("http://www.corvallis-bus.appspot.com/routes?stops=true", new String[]{"Name", "Road", "AdditionalName", "Description", "Polyline", "Color", "Direction", "Bearing", "AdherencePoint", "Lat", "Long", "ID", "Distance"}, "routes", null, new String[]{"Path"});
-
         }
     }
 
@@ -126,6 +125,9 @@ public class MainActivity extends Activity
     {
         if(!isWorking)
         {
+            final ProgressDialog pd = new ProgressDialog(context);
+            pd.setMessage("Getting bus data...");
+            pd.show();
             mRoutes = null;
             mRoutes = new ArrayList<Route>();
             RetrieveJson rt = new RetrieveJson( context, jsonSearchList, requestType, additionalParams, arrayWithinArray) {
@@ -164,6 +166,23 @@ public class MainActivity extends Activity
                            stopList.add(newStop);
                        }
                     }
+
+                    /*
+                    System.out.println("In drawer, the size is:"+MainActivity.mRoutes.size());
+                    Iterator i2 = MainActivity.mRoutes.iterator();
+                    int x = 0;
+                    String[] tmp = new String[mRoutes.size()];
+                    while(i2.hasNext())
+                    {
+                        Route r = (Route)i2.next();
+                        tmp[x] = r.name;
+                        System.out.println("curName:"+tmp[x]);
+                        x++;
+                    }
+                    NavigationDrawerFragment.mActiveRouteNames = tmp;
+                    */
+                    if(pd.isShowing())
+                        pd.dismiss();
                 }
             };
             rt.execute(url);
@@ -180,49 +199,50 @@ public class MainActivity extends Activity
                 .commit();
     }
 
-    public void onSectionAttached(int number) {
+    public void onSectionAttached(int number)
+    {
         switch (number) {
             case 1:
-                mTitle = "Route 1 ETA";
-                break;
-            case 2:
                 mTitle = "Route 2 ETA";
                 break;
-            case 3:
+            case 2:
                 mTitle = "Route 3 ETA";
+                break;
+            case 3:
+                mTitle = "Route BBSE ETA";
                 break;
             case 4:
                 mTitle = "Route 4 ETA";
                 break;
             case 5:
-                mTitle = "Route 5 ETA";
+                mTitle = "Route CVA ETA";
                 break;
             case 6:
-                mTitle = "Route 6 ETA";
+                mTitle = "Route BBN ETA";
                 break;
             case 7:
-                mTitle = "Route 7 ETA";
+                mTitle = "Route C3 ETA";
                 break;
             case 8:
-                mTitle = "Route 8 ETA";
+                mTitle = "Route C2 ETA";
                 break;
             case 9:
                 mTitle = "Route C1 ETA";
                 break;
             case 10:
-                mTitle = "Route C2 ETA";
+                mTitle = "Route BBSW ETA";
                 break;
             case 11:
-                mTitle = "Route C3 ETA";
+                mTitle = "Route 5 ETA";
                 break;
             case 12:
-                mTitle = "Beaver Bus North ETA";
+                mTitle = "Route 1 ETA";
                 break;
             case 13:
-                mTitle = "Beaver Bus SE ETA";
+                mTitle = "Route 7 ETA";
                 break;
             case 14:
-                mTitle = "Beaver Bus SW ETA";
+                mTitle = "Route 8 ETA";
                 break;
         }
     }
