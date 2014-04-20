@@ -129,7 +129,7 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         // Get instance of Vibrator from current Context
         Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
-        long[] pattern = { 0, 1000, 200, 1000, 200, 1000 };
+        long[] pattern = { 0, 1000, 200, 1000, 200, 1000, 200, 1000, 200, 1000 };
 
         // -1 as the second parameter allows it to follow the pattern once
         v.vibrate(pattern, -1);
