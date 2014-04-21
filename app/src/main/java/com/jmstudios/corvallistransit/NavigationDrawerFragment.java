@@ -2,12 +2,23 @@ package com.jmstudios.corvallistransit;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
@@ -29,6 +40,8 @@ import java.util.Calendar;
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
 public class NavigationDrawerFragment extends Fragment {
+
+    private static final int millisecondMultiplierForMinutes = 60000;
 
     /**
      * Remember the position of the selected item.
@@ -262,7 +275,10 @@ public class NavigationDrawerFragment extends Fragment {
             return true;
         }
 
-        if (item.getItemId() == R.id.action_refresh) {
+        int id = item.getItemId();
+        int id2 = R.id.action_settings_alarm;
+
+        if (id == R.id.action_refresh) {
             if (MainActivity.dayOfWeek != Calendar.SUNDAY) {
                 MainActivity.retrieveAllRoutes();
             } else {
@@ -270,13 +286,16 @@ public class NavigationDrawerFragment extends Fragment {
             }
 
             return true;
-        } else if (item.getItemId() == R.id.action_map) {
+        } else if (id == R.id.action_map) {
             if (MainActivity.dayOfWeek != Calendar.SUNDAY) {
                 Toast.makeText(getActivity(), "LAUNCH A MAP DUDE", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), "No bus routes on Sunday!", Toast.LENGTH_SHORT).show();
             }
 
+            return true;
+        } else if (id == R.id.action_alarm) {
+            doTimerSetup();
             return true;
         }
 
@@ -296,6 +315,107 @@ public class NavigationDrawerFragment extends Fragment {
 
     private ActionBar getActionBar() {
         return getActivity().getActionBar();
+    }
+
+    private void doTimerSetup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle(R.string.timer);
+        builder.setItems(R.array.timer_options,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        doNotificationBusiness(id);
+                        dialog.cancel();
+                    }
+                }
+        );
+
+        builder.setCancelable(true);
+
+        AlertDialog alert = builder.create();
+        alert.setCanceledOnTouchOutside(true);
+        alert.show();
+    }
+
+    private void doNotificationBusiness(int id) {
+        int delay;
+
+        switch (id) {
+            case 0:
+                delay = millisecondMultiplierForMinutes;
+                break;
+            case 1:
+                delay = 5 * millisecondMultiplierForMinutes;
+                break;
+            case 2:
+                delay = 10 * millisecondMultiplierForMinutes;
+                break;
+            case 3:
+                delay = 15 * millisecondMultiplierForMinutes;
+                break;
+            default:
+                delay = 0;
+                break;
+        }
+
+        final Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                buildNotification();
+                doVibrate();
+            }
+        }, delay);
+    }
+
+    private void doVibrate() {
+        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
+        long[] pattern = {0, 1000, 200, 1000, 200, 1000, 200, 1000, 200, 1000};
+
+        // -1 as the second parameter allows it to follow the pattern once
+        v.vibrate(pattern, -1);
+    }
+
+    private void buildNotification() {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getActivity())
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("Corvallis Transit")
+                        .setContentText("Get to your bus stop!");
+
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(getActivity(), MainActivity.class);
+
+        Context ctx = getActivity();
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx);
+
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainActivity.class);
+
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Set the notification to clear once the user uses it to go to the main activity.
+        Notification n = mBuilder.build();
+        n.flags = Notification.FLAG_AUTO_CANCEL;
+
+        mNotificationManager.notify(0, n);
     }
 
     /**

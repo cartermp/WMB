@@ -1,5 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/action_settings_alarm"
+        android:title="@string/action_alarm"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item
         android:id="@+id/action_settings_map"
         android:title="@string/action_map"
         android:orderInCategory="100"

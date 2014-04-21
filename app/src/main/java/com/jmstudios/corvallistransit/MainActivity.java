@@ -37,7 +37,51 @@ public class MainActivity extends Activity
                     expectedTime = new DateTime(2014, 4, 19, 12, 30);
                 }});
                 add(new Stop() {{
-                    name = "Test Stop 2";
+                    name = "NW Harrison Blvd & NW 36th St";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 3";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 4";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 5";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 6";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 7";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 8";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 9";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 10";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 11";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 12";
+                    expectedTime = new DateTime(2014, 4, 19, 12, 35);
+                }});
+                add(new Stop() {{
+                    name = "Test Stop 13";
                     expectedTime = new DateTime(2014, 4, 19, 12, 35);
                 }});
             }};
@@ -274,8 +318,10 @@ public class MainActivity extends Activity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        return id == R.id.action_settings_refresh
-                || id == R.id.action_settings_map
-                || super.onOptionsItemSelected(item);
+        return false;
+//        return id == R.id.action_settings_refresh
+//                || id == R.id.action_settings_map
+//                || id == R.id.action_alarm
+//                || super.onOptionsItemSelected(item);
     }
 }
