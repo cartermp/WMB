@@ -84,6 +84,12 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         return rowView;
     }
 
+    @Override
+    public boolean isEnabled(int position) {
+        // Since we don't want the list items themselves clickable, always return false
+        return false;
+    }
+
     private void doTimerSetup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
