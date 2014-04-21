@@ -60,7 +60,7 @@ public class RouteViewFragment extends ListFragment {
     {
         View rootView = null;
 
-        if (MainActivity.dayOfWeek != Calendar.SUNDAY)
+        //if (MainActivity.dayOfWeek != Calendar.SUNDAY)
         {
             rootView = inflater.inflate(R.layout.route_list, null);
         }

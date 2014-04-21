@@ -15,6 +15,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.view.CardView;
+
 public class Stop {
     public String name;
     public String road;
@@ -48,11 +52,11 @@ public class Stop {
         return this.name.hashCode();
     }
 
-    public DateTime getScheduledTime(TextView tv)
+    public DateTime getScheduledTime(CardView tv)
     {
         if(expectedTime == null)
         {
-            final TextView innerView = tv;
+            final CardView innerView = tv;
             RetrieveJson rt = new RetrieveJson( MainActivity.context,new String[]{"Expected"},Integer.toString(id), null, null)
             {
                 @Override
@@ -63,7 +67,13 @@ public class Stop {
                     {
                         HashMap<String, String> hm = (HashMap)i.next();
                         expectedTime = Utils.convertToDateTime(hm.get("Expected"));
-                        innerView.setText(eta()+"m");
+
+                        Card card = innerView.getCard();
+                        if (card.hasHeader()) {
+                            CardHeader header = card.getCardHeader();
+                            header.setTitle(eta() + "m");
+                        }
+
                         break;
                     }
                 }

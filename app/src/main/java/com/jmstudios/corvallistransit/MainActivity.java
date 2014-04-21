@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.jmstudios.corvallistransit.jsontools.RetrieveJson;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.utils.Utils;
 
 import org.joda.time.DateTime;
 
@@ -25,15 +26,10 @@ import java.util.Set;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-
-    public static final String sundayMessage =
-            "No routes run on Sundays.\n\nCheck back tomorrow, and have a wonderful day!\n\n"
-                    + DateTime.now().year().getAsText() + " - PC";
     /**
      * Used to store Bus Routes in the application.
      */
     public static List<Route> mRoutes = new ArrayList<Route>() {{
-        /*
         add(new Route() {{
             stopList = new ArrayList<Stop>() {{
                 add(new Stop() {{
@@ -58,8 +54,8 @@ public class MainActivity extends Activity
                 }});
             }};
         }});
-        */
     }};
+
     public static int dayOfWeek;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -74,6 +70,10 @@ public class MainActivity extends Activity
      * Boolean locks async pulling once it's started, we don't want multiple request simultaneously
      */
     private static boolean isWorking;
+
+    /**
+     * Yes, this is nasty, but we dispose of it when the app calls onDistroy()
+     */
     public static Context context;
 
     @Override
@@ -102,7 +102,6 @@ public class MainActivity extends Activity
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
-        // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -126,6 +125,7 @@ public class MainActivity extends Activity
             final ProgressDialog pd = new ProgressDialog(context);
             pd.setMessage("Getting bus data...");
             pd.show();
+
             mRoutes = null;
             mRoutes = new ArrayList<Route>();
             RetrieveJson rt = new RetrieveJson(context, jsonSearchList, requestType, additionalParams, arrayWithinArray) {
@@ -136,15 +136,20 @@ public class MainActivity extends Activity
                     Route lastRoute = null;
                     ArrayList<Stop> stopList = new ArrayList<Stop>();
                     String pp = "PATH";
+
                     while (i.hasNext()) {
                         HashMap<String, String> hm = (HashMap<String, String>) i.next();
+
                         if (hm.get("Polyline") != null) {
-                            if (lastRoute != null)
+                            if (lastRoute != null) {
                                 mRoutes.add(lastRoute);
+                            }
+
                             lastRoute = new Route();
                             lastRoute.name = hm.get("Name");
                             lastRoute.polyLine = hm.get("Polyline");
                             lastRoute.stopList = stopList;
+
                             stopList = new ArrayList<Stop>();
                         } else if (hm.get(pp + "Road") != null) {
                             Stop newStop = new Stop();
@@ -157,6 +162,7 @@ public class MainActivity extends Activity
                             newStop.longitude = Double.parseDouble(hm.get(pp + "Long"));
                             newStop.id = Integer.parseInt(hm.get(pp + "ID"));
                             //newStop.distance = Double.parseDouble(hm.get(pp + "Distance"));
+
                             stopList.add(newStop);
                         }
                     }
@@ -175,8 +181,9 @@ public class MainActivity extends Activity
                     }
                     NavigationDrawerFragment.mActiveRouteNames = tmp;
                     */
-                    if (pd.isShowing())
+                    if (pd.isShowing()) {
                         pd.dismiss();
+                    }
                 }
             };
             rt.execute(url);
@@ -267,6 +274,8 @@ public class MainActivity extends Activity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        return id == R.id.action_settings_refresh
+                || id == R.id.action_settings_map
+                || super.onOptionsItemSelected(item);
     }
 }

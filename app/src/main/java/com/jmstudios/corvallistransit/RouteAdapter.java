@@ -23,6 +23,10 @@ import com.jmstudios.corvallistransit.models.Stop;
 
 import java.util.List;
 
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.view.CardView;
+
 /**
  * Adapter for displaying route info.
  */
@@ -30,7 +34,7 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
     private final Activity mContext;
     private final List<Stop> mStops;
 
-    private static final int milisecondMultiplierForMinutes = 60000;
+    private static final int millisecondMultiplierForMinutes = 60000;
 
     public RouteAdapter(Activity context, List<Stop> stops) {
         super(context, R.layout.fragment_main, stops);
@@ -42,6 +46,8 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
 
+        Stop stop = mStops.get(position);
+
         if (rowView == null) {
             LayoutInflater inflater = mContext.getLayoutInflater();
             rowView = inflater.inflate(R.layout.fragment_main, null);
@@ -49,29 +55,31 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
             ViewHolder viewHolder = new ViewHolder();
 
             viewHolder.stopView = (TextView) rowView.findViewById(R.id.stop_text);
-            viewHolder.etaView = (TextView) rowView.findViewById(R.id.eta_text);
-            viewHolder.timerView = (TextView) rowView.findViewById(R.id.timer);
+
+            CardHeader ch = new CardHeader(mContext);
+            ch.setTitle(stop.eta() + "m");
+
+            Card card = new Card(mContext);
+            card.addCardHeader(ch);
+            card.setTitle("Click for Map");
+            card.setOnClickListener(new Card.OnCardClickListener() {
+                @Override
+                public void onClick(Card card, View view) {
+                    Toast.makeText(mContext,"Map goes here!", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            viewHolder.cardView = (CardView) rowView.findViewById(R.id.stop_card);
+            viewHolder.cardView.setCard(card);
 
             rowView.setTag(viewHolder);
         }
 
         ViewHolder holder = (ViewHolder) rowView.getTag();
 
-        Stop stop = mStops.get(position);
-
         holder.stopView.setText(stop.name);
-        holder.etaView.setText(stop.eta() + "m");
-        holder.timerView.setText(R.string.timer);
 
-        stop.getScheduledTime(holder.etaView);
-
-        holder.timerView.setClickable(true);
-        holder.timerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                doTimerSetup();
-            }
-        });
+        //stop.getScheduledTime(holder.cardView);
 
         return rowView;
     }
@@ -101,16 +109,16 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
 
         switch (id) {
             case 0:
-                delay = milisecondMultiplierForMinutes;
+                delay = millisecondMultiplierForMinutes;
                 break;
             case 1:
-                delay = 5 * milisecondMultiplierForMinutes;
+                delay = 5 * millisecondMultiplierForMinutes;
                 break;
             case 2:
-                delay = 10 * milisecondMultiplierForMinutes;
+                delay = 10 * millisecondMultiplierForMinutes;
                 break;
             case 3:
-                delay = 15 * milisecondMultiplierForMinutes;
+                delay = 15 * millisecondMultiplierForMinutes;
                 break;
             default:
                 delay = 0;
@@ -141,7 +149,7 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mContext)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("Wheres My Bus")
+                        .setContentTitle("Corvallis Transit")
                         .setContentText("Get to your bus stop!");
 
         // Creates an explicit intent for an Activity in your app
@@ -177,7 +185,6 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
 
     static class ViewHolder {
         public TextView stopView;
-        public TextView etaView;
-        public TextView timerView;
+        public CardView cardView;
     }
 }
