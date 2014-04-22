@@ -1,20 +1,16 @@
 package com.jmstudios.corvallistransit;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ListFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class RouteViewFragment extends ListFragment {
@@ -31,8 +27,7 @@ public class RouteViewFragment extends ListFragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static RouteViewFragment newInstance(int sectionNumber)
-    {
+    public static RouteViewFragment newInstance(int sectionNumber) {
         RouteViewFragment fragment = new RouteViewFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -56,8 +51,7 @@ public class RouteViewFragment extends ListFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = null;
 
         //if (MainActivity.dayOfWeek != Calendar.SUNDAY)

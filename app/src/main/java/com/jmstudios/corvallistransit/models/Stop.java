@@ -1,19 +1,15 @@
 package com.jmstudios.corvallistransit.models;
 
-import android.widget.TextView;
-
 import com.jmstudios.corvallistransit.MainActivity;
 import com.jmstudios.corvallistransit.jsontools.RetrieveJson;
 import com.jmstudios.corvallistransit.utils.Utils;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.TreeSet;
 
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -32,12 +28,12 @@ public class Stop {
     public DateTime expectedTime;
     //private DateTime scheduledTime;
 
-    public int eta()
-    {
+    public int eta() {
         Period period = new Period(DateTime.now(), this.expectedTime);
-        int eta =  period.getMinutes();
+        int eta = period.getMinutes();
         return (eta >= 1) ? eta : 1;
     }
+
     /*
      * Overridden equals() and hashCode() here for comparison purposes.
      */
@@ -52,20 +48,15 @@ public class Stop {
         return this.name.hashCode();
     }
 
-    public DateTime getScheduledTime(CardView tv)
-    {
-        if(expectedTime == null)
-        {
+    public DateTime getScheduledTime(CardView tv) {
+        if (expectedTime == null) {
             final CardView innerView = tv;
-            RetrieveJson rt = new RetrieveJson( MainActivity.context,new String[]{"Expected"},Integer.toString(id), null, null)
-            {
+            RetrieveJson rt = new RetrieveJson(MainActivity.context, new String[]{"Expected"}, Integer.toString(id), null, null) {
                 @Override
-                public void onResponseReceived(Set s)
-                {
+                public void onResponseReceived(Set s) {
                     Iterator i = s.iterator();
-                    while(i.hasNext())
-                    {
-                        HashMap<String, String> hm = (HashMap)i.next();
+                    while (i.hasNext()) {
+                        HashMap<String, String> hm = (HashMap) i.next();
                         expectedTime = Utils.convertToDateTime(hm.get("Expected"));
 
                         Card card = innerView.getCard();

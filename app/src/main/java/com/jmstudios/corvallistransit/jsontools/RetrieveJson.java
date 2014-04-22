@@ -1,8 +1,8 @@
 package com.jmstudios.corvallistransit.jsontools;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -13,6 +13,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class RetrieveJson extends AsyncTask<String, Void, String>
-{
+public abstract class RetrieveJson extends AsyncTask<String, Void, String> {
 
     private String[] comparisonValues;
     private String ros;
@@ -31,8 +31,7 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
     private Set<HashMap> set;
     //private ProgressDialog pd;
 
-    public RetrieveJson(Context c,String[] targets, String routeOStop, String[] specifics, String[] iArrays)
-    {
+    public RetrieveJson(Context c, String[] targets, String routeOStop, String[] specifics, String[] iArrays) {
         additionalContent = specifics;
         comparisonValues = targets;
         ros = routeOStop;
@@ -42,18 +41,16 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
     }
 
     @Override
-    protected void onPreExecute()
-    {
+    protected void onPreExecute() {
         super.onPreExecute();
         //pd.setMessage("Retrieving route info...");
         //pd.setCanceledOnTouchOutside(false);
         //pd.show();
     }
 
-    protected String doInBackground(String... voids)
-    {
-        if(voids[0] == null)
-             return "No url provided.";
+    protected String doInBackground(String... voids) {
+        if (voids[0] == null)
+            return "No url provided.";
         String url = voids[0];
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
@@ -67,13 +64,10 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                 InputStream content = entity.getContent();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(content));
                 String line;
-                while ((line = reader.readLine()) != null)
-                {
+                while ((line = reader.readLine()) != null) {
                     builder.append(line);
                 }
-            }
-            else
-            {
+            } else {
                 //Log.e(MainActivity.class.toString(), "Failed to download file");
                 System.out.println("Failed to download file");
             }
@@ -90,36 +84,30 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
             System.out.println("-->IllegalArgument Exception in RetrieveJson");
             iae.printStackTrace();
         }
-        return (!builder.toString().equals(""))?builder.toString():"Nothing found, is your url correct?";
+        return (!builder.toString().equals("")) ? builder.toString() : "Nothing found, is your url correct?";
     }
 
     @Override
-    protected void onPostExecute(String aVoid)
-    {
+    protected void onPostExecute(String aVoid) {
         super.onPostExecute(aVoid);
         //if(pd.isShowing())
         //    pd.dismiss();
         onResponseReceived(fetchResultsManually(aVoid));
     }
 
-    public Set<HashMap> fetchResultsManually(String aVoid)
-    {
+    public Set<HashMap> fetchResultsManually(String aVoid) {
         //System.out.println("What we got->"+aVoid);
         set = new HashSet<HashMap>();
         //turn our retrieved String into a Json Object, then return a string array of it's contents
-        try
-        {
+        try {
             JSONObject jObject = new JSONObject(aVoid);
             JSONArray jResults = jObject.getJSONArray(ros);
 
-            for(int x = 0; x < jResults.length(); x++)
-            {
+            for (int x = 0; x < jResults.length(); x++) {
                 boolean shouldAdd = true;
-                if(additionalContent != null)
-                {
+                if (additionalContent != null) {
                     shouldAdd = false;
-                    for(String aVal: comparisonValues)
-                    {
+                    for (String aVal : comparisonValues) {
                         try {
                             String inResult = jResults.getJSONObject(x).getString(aVal);
                             for (String item : additionalContent) {
@@ -128,27 +116,20 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
                                     break;
                                 }
                             }
-                        }
-                        catch(JSONException je)
-                        {
+                        } catch (JSONException je) {
                             System.out.println("Issue trying to retrieve values normally");
                         }
                     }
                 }
 
-                HashMap<String,String> hm = new HashMap<String, String>();
+                HashMap<String, String> hm = new HashMap<String, String>();
 
-                for(String aVal: comparisonValues)
-                {
-                    if(shouldAdd)
-                    {
-                        try
-                        {
+                for (String aVal : comparisonValues) {
+                    if (shouldAdd) {
+                        try {
                             hm.put(aVal, jResults.getJSONObject(x).getString(aVal));
                             //System.out.println(aVal+":"+jResults.getJSONObject(x).getString(aVal));
-                        }
-                        catch(JSONException je)
-                        {
+                        } catch (JSONException je) {
                             //System.out.println("Could not add:"+aVal);
                             //je.printStackTrace();
                         }
@@ -157,23 +138,18 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
 
                 set.add(hm);
 
-                if(innerArrays != null)
-                {
+                if (innerArrays != null) {
                     try {
                         for (String str : innerArrays) {
                             JSONArray jsonArray = jResults.getJSONObject(x).getJSONArray(str);
                             addHashMap(jsonArray, str.toUpperCase());
                         }
-                    }
-                    catch(JSONException je)
-                    {
+                    } catch (JSONException je) {
                         System.out.println("error with calling addHashMap");
                     }
                 }
             }
-        }
-        catch(JSONException jse)
-        {
+        } catch (JSONException jse) {
             System.out.println("JSON exception has occured at HIGH level");
             jse.printStackTrace();
         }
@@ -185,48 +161,34 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String>
         return set;
     }
 
-    private void addHashMap(JSONArray jArray, String tag)
-    {
+    private void addHashMap(JSONArray jArray, String tag) {
 
-        for( int x = 0; x < jArray.length(); x++)
-        {
+        for (int x = 0; x < jArray.length(); x++) {
             boolean shouldAdd = true;
-            if (additionalContent != null)
-            {
+            if (additionalContent != null) {
                 shouldAdd = false;
-                for (String aVal : comparisonValues)
-                {
-                    try
-                    {
+                for (String aVal : comparisonValues) {
+                    try {
                         String inResult = jArray.getJSONObject(x).getString(aVal);
-                        for (String item : additionalContent)
-                        {
-                            if (inResult.equals(item))
-                            {
+                        for (String item : additionalContent) {
+                            if (inResult.equals(item)) {
                                 shouldAdd = true;
                                 break;
                             }
                         }
-                    }
-                    catch(JSONException e)
-                    {
-                        System.out.println("Json exception thrown for additionals:"+aVal);
+                    } catch (JSONException e) {
+                        System.out.println("Json exception thrown for additionals:" + aVal);
                         e.printStackTrace();
                     }
                 }
             }
 
             HashMap<String, String> hm = new HashMap<String, String>();
-            for (String aVal : comparisonValues)
-            {
-                if (shouldAdd)
-                {
-                    try
-                    {
+            for (String aVal : comparisonValues) {
+                if (shouldAdd) {
+                    try {
                         hm.put(tag + aVal, jArray.getJSONObject(x).getString(aVal));
-                    }
-                    catch(JSONException je)
-                    {
+                    } catch (JSONException je) {
                         //je.printStackTrace();
                     }
                 }

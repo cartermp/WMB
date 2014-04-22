@@ -129,7 +129,7 @@ public class MainActivity extends Activity
 
         //if it's NOT sunday, pull our data down
         if (dayOfWeek != Calendar.SUNDAY) {
-            retrieveAllRoutes();
+            //retrieveAllRoutes();
         }
     }
 

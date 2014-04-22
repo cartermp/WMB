@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 public class Utils {
     private static final HashMap<String, Integer> monthPairs;
+
     static {
         monthPairs = new HashMap<String, Integer>();
         monthPairs.put("Jan", 1);
