@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.jmstudios.corvallistransit.MainActivity" >
+    tools:context="com.jmstudios.corvallistransit.MainActivity">
 
     <item
         android:id="@+id/action_alarm"
@@ -11,10 +11,5 @@
         android:id="@+id/action_map"
         android:title="@string/action_map"
         android:icon="@drawable/_location_map"
-        android:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_refresh"
-        android:title="@string/action_refresh"
-        android:icon="@drawable/_navigation_refresh"
         android:showAsAction="ifRoom" />
 </menu>

@@ -264,17 +264,8 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         int id = item.getItemId();
-        int id2 = R.id.action_settings_alarm;
 
-        if (id == R.id.action_refresh) {
-            if (MainActivity.dayOfWeek != Calendar.SUNDAY) {
-                //MainActivity.retrieveAllRoutes();
-            } else {
-                Toast.makeText(getActivity(), "No bus routes on Sunday!", Toast.LENGTH_SHORT).show();
-            }
-
-            return true;
-        } else if (id == R.id.action_map) {
+        if (id == R.id.action_map) {
             if (MainActivity.dayOfWeek != Calendar.SUNDAY) {
                 Toast.makeText(getActivity(), "LAUNCH A MAP DUDE", Toast.LENGTH_SHORT).show();
             } else {

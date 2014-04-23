@@ -8,10 +8,5 @@
         android:id="@+id/action_settings_map"
         android:title="@string/action_map"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
-    <item
-        android:id="@+id/action_settings_refresh"
-        android:title="@string/action_refresh"
-        android:orderInCategory="100"
         android:showAsAction="never" />
 </menu>

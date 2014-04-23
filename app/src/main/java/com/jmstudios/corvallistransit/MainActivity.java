@@ -129,7 +129,7 @@ public class MainActivity extends Activity
 
         //if it's NOT sunday, pull our data down
         if (dayOfWeek != Calendar.SUNDAY) {
-            //retrieveAllRoutes();
+            retrieveAllRoutes();
         }
     }
 
@@ -167,8 +167,6 @@ public class MainActivity extends Activity
     public static void getRoutesAndEtasAsync(String url, String[] jsonSearchList, String requestType, String[] additionalParams, final String[] arrayWithinArray) {
         if (!isWorking) {
             final ProgressDialog pd = new ProgressDialog(context);
-            pd.setMessage("Getting bus data...");
-            pd.show();
 
             mRoutes = null;
             mRoutes = new ArrayList<Route>();
@@ -225,9 +223,6 @@ public class MainActivity extends Activity
                     }
                     NavigationDrawerFragment.mActiveRouteNames = tmp;
                     */
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                    }
                 }
             };
             rt.execute(url);

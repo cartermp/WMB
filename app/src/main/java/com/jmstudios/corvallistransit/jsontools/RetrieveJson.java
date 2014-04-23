@@ -29,23 +29,12 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String> {
     private String[] additionalContent;
     private String[] innerArrays;
     private Set<HashMap> set;
-    //private ProgressDialog pd;
 
     public RetrieveJson(Context c, String[] targets, String routeOStop, String[] specifics, String[] iArrays) {
         additionalContent = specifics;
         comparisonValues = targets;
         ros = routeOStop;
         innerArrays = iArrays;
-        //pd = new ProgressDialog(c);
-
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        //pd.setMessage("Retrieving route info...");
-        //pd.setCanceledOnTouchOutside(false);
-        //pd.show();
     }
 
     protected String doInBackground(String... voids) {
@@ -90,8 +79,6 @@ public abstract class RetrieveJson extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String aVoid) {
         super.onPostExecute(aVoid);
-        //if(pd.isShowing())
-        //    pd.dismiss();
         onResponseReceived(fetchResultsManually(aVoid));
     }
 

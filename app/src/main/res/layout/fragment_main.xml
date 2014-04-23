@@ -8,14 +8,6 @@
     android:layout_marginBottom="4dp"
     tools:context="com.jmstudios.corvallistransit.MainActivity$PlaceholderFragment">
 
-    <!-- <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10pt"
-        android:id="@+id/eta_text"
-        android:textSize="20sp"/> -->
-
     <TextView
         android:id="@+id/stop_text"
         style="@style/AppTheme.TitleText"
@@ -29,6 +21,6 @@
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginTop="12dp"
-        android:layout_below="@id/stop_text"/>
+        android:layout_below="@id/stop_text" />
 
 </RelativeLayout>
