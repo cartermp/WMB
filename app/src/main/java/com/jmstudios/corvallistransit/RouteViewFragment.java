@@ -58,11 +58,6 @@ public class RouteViewFragment extends ListFragment {
                 (route == null) ? new ArrayList<Stop>() : route.stopList);
 
         setListAdapter(adapter);
-        setListShownNoAnimation(true);
-
-        if (route != null && !route.stopList.isEmpty()) {
-            setEmptyText("");
-        }
     }
 
     /**

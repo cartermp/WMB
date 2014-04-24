@@ -10,6 +10,7 @@ public class Route {
     public List<Stop> stopList;
     public DateTime lastUpdated;
     public String polyLine;
+    public String color;
 
     public String LastUpdatedDisplay() {
         DateTimeZone dtz = DateTimeZone.forID("America/Los_Angeles");

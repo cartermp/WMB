@@ -62,20 +62,21 @@ public class NavigationDrawerFragment extends Fragment {
 
     public static String[] mActiveRouteNames = new String[]
             {
+                    "Route 1",
                     "Route 2",
                     "Route 3",
-                    "Route BBSE",
                     "Route 4",
-                    "Route CVA",
-                    "Route BBN",
-                    "Route C3",
-                    "Route C2",
-                    "Route C1",
-                    "Route BBSW",
                     "Route 5",
-                    "Route 1",
+                    "Route 6",
                     "Route 7",
-                    "Route 8"
+                    "Route 8",
+                    "Route BBN",
+                    "Route BBSE",
+                    "Route BBSW",
+                    "Route C1",
+                    "Route C2",
+                    "Route C3",
+                    "Route CVA"
             };
 
     public NavigationDrawerFragment() {

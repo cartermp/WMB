@@ -66,8 +66,6 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
 
         holder.stopView.setText(stop.name);
 
-        //stop.getScheduledTime(holder.cardView);
-
         return rowView;
     }
 
