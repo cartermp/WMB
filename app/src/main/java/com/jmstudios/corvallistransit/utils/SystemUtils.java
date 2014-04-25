@@ -1,5 +1,6 @@
 package com.jmstudios.corvallistransit.utils;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,11 +12,12 @@ import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Handler;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
 import com.jmstudios.corvallistransit.MainActivity;
+import com.jmstudios.corvallistransit.NotificationReceiver;
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.models.Tuple;
 
@@ -82,19 +84,18 @@ public class SystemUtils {
                 break;
         }
 
-        final Handler handler = new Handler();
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                buildNotification(context);
-                doVibrate(context);
-            }
-        }, delay);
+        Intent intent = new Intent(context, NotificationReceiver.class);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + delay, alarmIntent);
     }
 
-    private static void doVibrate(Context context) {
+    public static void doVibrate(Context context) {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(1000);
 
         long[] pattern = {0, 1000, 200, 1000, 200, 1000, 200, 1000, 200, 1000};
 
@@ -102,7 +103,7 @@ public class SystemUtils {
         v.vibrate(pattern, -1);
     }
 
-    private static void buildNotification(Context context) {
+    public static void buildNotification(Context context) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_launcher)

@@ -14,8 +14,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.jmstudios.corvallistransit.jsontools.CtsJsonRoutesTask;
 import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
+import com.jmstudios.corvallistransit.jsontools.RoutesTask;
 import com.jmstudios.corvallistransit.models.Route;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class MainActivity extends Activity
      * Static call updates ALL routes
      */
     public static void retrieveAllRoutes(RouteTaskCompleted listener, Context context) {
-        new CtsJsonRoutesTask(listener, context).execute();
+        new RoutesTask(listener, context).execute();
     }
 
     @Override

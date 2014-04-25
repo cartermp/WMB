@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CtsJsonArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
+public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
     private static final String arrivalsUrl = "http://www.corvallis-bus.appspot.com/arrivals?stops=";
     private static final String arrivalsLogTag = "ArrivalsTask";
     private static String mRouteName;
@@ -24,8 +24,8 @@ public class CtsJsonArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
     private ProgressDialog progressDialog;
     private boolean mIsFromSwipeDown;
 
-    public CtsJsonArrivalsTask(Context context, String routeName,
-                               ArrivalsTaskCompleted listener, boolean fromSwipe) {
+    public ArrivalsTask(Context context, String routeName,
+                        ArrivalsTaskCompleted listener, boolean fromSwipe) {
         mRouteName = routeName;
         this.listener = listener;
         if (!mIsFromSwipeDown) {

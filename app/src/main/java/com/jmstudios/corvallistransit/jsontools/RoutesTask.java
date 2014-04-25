@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CtsJsonRoutesTask extends AsyncTask<Void, Void, List<Route>> {
+public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
     private static final String logTag = "RoutesTask";
     private static final String routesUrl = "http://www.corvallis-bus.appspot.com/routes?stops=true";
     private RouteTaskCompleted listener;
     private ProgressDialog progressDialog;
 
-    public CtsJsonRoutesTask(RouteTaskCompleted listener, Context context) {
+    public RoutesTask(RouteTaskCompleted listener, Context context) {
         this.listener = listener;
         progressDialog = new ProgressDialog(context);
     }

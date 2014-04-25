@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
 import com.jmstudios.corvallistransit.jsontools.ArrivalsTaskCompleted;
-import com.jmstudios.corvallistransit.jsontools.CtsJsonArrivalsTask;
 import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.models.BusStopComparer;
 import com.jmstudios.corvallistransit.models.Route;
@@ -124,7 +124,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     }
 
     private void getEtasForRoute(final Route route, boolean fromSwipe) {
-        new CtsJsonArrivalsTask(getActivity(), route.name, this, fromSwipe)
+        new ArrivalsTask(getActivity(), route.name, this, fromSwipe)
                 .execute(route.stopList);
     }
 
