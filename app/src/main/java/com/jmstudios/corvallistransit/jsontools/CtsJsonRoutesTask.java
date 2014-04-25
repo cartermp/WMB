@@ -82,9 +82,7 @@ public class CtsJsonRoutesTask extends AsyncTask<Void, Void, List<Route>> {
                 route.name = jobj.getString("Name");
                 route.polyLine = jobj.getString("Polyline");
                 route.color = jobj.getString("Color");
-
                 route.stopList = parseStops(jobj);
-
                 routes.add(route);
             }
         } catch (JSONException e) {

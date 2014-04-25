@@ -40,6 +40,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     public List<Stop> stops = new ArrayList<Stop>();
     private PullToRefreshLayout mPullToRefreshLayout;
     private RouteAdapter mAdapter;
+    private String routeColor;
 
     public RouteViewFragment() {
     }
@@ -58,7 +59,8 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);
 
         Route route = getRoute();
@@ -66,8 +68,10 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
         if (route != null) {
             doRefresh(false);
 
+            routeColor = route.color;
+
             if (stops != null && !stops.isEmpty()) {
-                setupTheAdapter();
+                setupTheAdapter(routeColor);
             } else {
                 setEmptyText("Nothing to display here!");
             }
@@ -141,8 +145,8 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
         return route;
     }
 
-    private void setupTheAdapter() {
-        mAdapter = new RouteAdapter(getActivity(), stops);
+    private void setupTheAdapter(String routeColor) {
+        mAdapter = new RouteAdapter(getActivity(), stops, routeColor);
         setListAdapter(mAdapter);
     }
 
@@ -217,7 +221,8 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
-    public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival) {
+    public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival)
+    {
         stops.clear();
 
         for (Stop s : stopsWithArrival) {
@@ -229,7 +234,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
         Collections.sort(stops, new BusStopComparer());
 
         if (mAdapter == null) {
-            setupTheAdapter();
+            setupTheAdapter(routeColor);
         }
 
         mAdapter.notifyDataSetChanged();
