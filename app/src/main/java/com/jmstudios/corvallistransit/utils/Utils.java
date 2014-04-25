@@ -27,6 +27,12 @@ public class Utils {
         monthPairs.put("Dec", 12);
     }
 
+    /**
+     * Given a Stringified Date in RFC822Z format,
+     * converts it to a NodaTime DateTime object.
+     *
+     * @param ctsDateString RFC822Z format date string.
+     */
     public static DateTime convertToDateTime(String ctsDateString) {
         String[] data = ctsDateString.split("\\s+");
         String[] timeData = data[3].split(":");

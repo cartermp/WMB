@@ -64,6 +64,8 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
             progressDialog.hide();
         }
 
+        // Send the data off to the receiver - in this case,
+        // it's the RouteViewFragment.
         listener.onArrivalsTaskCompleted(stopsWithArrival);
     }
 

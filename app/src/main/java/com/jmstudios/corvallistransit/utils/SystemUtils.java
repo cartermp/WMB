@@ -21,9 +21,15 @@ import com.jmstudios.corvallistransit.NotificationReceiver;
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.models.Tuple;
 
+/**
+ * Container for various system utilities such as Notifications, Timers, Location, etc.
+ */
 public class SystemUtils {
     private static final int millisecondMultiplierForMinutes = 60000;
 
+    /**
+     * Gets a user's latitude and longitude.
+     */
     public static Tuple<Double, Double> getUserLocation(final Context context) {
         LocationManager locationManager = (LocationManager)
                 context.getSystemService(Context.LOCATION_SERVICE);
@@ -37,6 +43,12 @@ public class SystemUtils {
         return new Tuple<Double, Double>(location.getLatitude(), location.getLongitude());
     }
 
+    /**
+     * Sets up a Dialog to allow the user to set a timer to remind them
+     * to catch their bus.
+     *
+     * @param context Activity to have this pop up on.
+     */
     public static boolean doAlertDialogTimerSetup(final Context context) {
         if (context == null) {
             return false;
@@ -63,6 +75,10 @@ public class SystemUtils {
         return true;
     }
 
+    /**
+     * Based on the user's selection, sets an Alarm to wake up their device
+     * after a certain time (5, 10, 15, or 20 minutes).
+     */
     private static void doNotificationBusiness(int id, final Context context) {
         int delay;
 
@@ -93,6 +109,9 @@ public class SystemUtils {
                 SystemClock.elapsedRealtime() + delay, alarmIntent);
     }
 
+    /**
+     * Vibrates a user's phone for 1 second 5 times.
+     */
     public static void doVibrate(Context context) {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(1000);
@@ -103,7 +122,12 @@ public class SystemUtils {
         v.vibrate(pattern, -1);
     }
 
-    public static void buildNotification(Context context) {
+    /**
+     * Builds a local notification and performs the notify() operation.
+     *
+     * @param context The Application Contex.
+     */
+    public static void notifyPhone(Context context) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_launcher)

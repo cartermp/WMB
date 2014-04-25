@@ -100,6 +100,12 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
         return layout;
     }
 
+    /**
+     * Aside from other setup, sets up the ActionBarPullToRefresh service.
+     *
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -148,7 +154,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
 
     /**
      * Performs the refresh via a quick AsyncTask.  This AsyncTask
-     * invokes the route/eta refresh on the main thread.
+     * invokes the route/eta refreshes on the main thread.
      */
     private void doRefresh(boolean fromSwipe) {
         setListShown(false);
@@ -217,6 +223,11 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
+    /**
+     * Does a bit of work.  De-duplicates and sorts the list of stops with arrivals.
+     * This method is going to change as parsing should eventually not do duplicates.
+     * @param stopsWithArrival
+     */
     public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival) {
         stops.clear();
 

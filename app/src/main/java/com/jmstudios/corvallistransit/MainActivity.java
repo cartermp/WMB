@@ -88,6 +88,9 @@ public class MainActivity extends Activity
         return networkInfo != null && networkInfo.isConnected();
     }
 
+    /**
+     * Performs initial setup operations.
+     */
     private void initialize() {
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -107,6 +110,8 @@ public class MainActivity extends Activity
         final Handler handler = new Handler();
         final int pos = position;
 
+        // Posting the work off on a handler makes it *slightly*
+        // "faster" from the user's perspective with a large list.
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -191,14 +196,16 @@ public class MainActivity extends Activity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
+        // Always return false because for some reason not doing so won't
+        // consume all touch events.
         return false;
     }
 
+    /**
+     * Our callback for when Routes have been downloaded.
+     *
+     * @param routes
+     */
     @Override
     public void onRoutesTaskCompleted(List<Route> routes) {
         mRoutes = routes;
