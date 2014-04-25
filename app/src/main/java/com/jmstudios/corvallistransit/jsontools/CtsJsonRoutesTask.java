@@ -1,11 +1,13 @@
 package com.jmstudios.corvallistransit.jsontools;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
-import com.jmstudios.corvallistransit.utils.ConnectionUtils;
+import com.jmstudios.corvallistransit.utils.WebUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,33 +17,52 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CtsJsonRoutesTask extends AsyncTask<Void, Void, Void> {
+public class CtsJsonRoutesTask extends AsyncTask<Void, Void, List<Route>> {
     private static final String logTag = "RoutesTask";
     private static final String routesUrl = "http://www.corvallis-bus.appspot.com/routes?stops=true";
+    private RouteTaskCompleted listener;
+    private ProgressDialog progressDialog;
+
+    public CtsJsonRoutesTask(RouteTaskCompleted listener, Context context) {
+        this.listener = listener;
+        progressDialog = new ProgressDialog(context);
+    }
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected void onPreExecute() {
+        progressDialog.setMessage("Fetching routes...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+    }
+
+    @Override
+    protected List<Route> doInBackground(Void... voids) {
         String jsonResult = getRouteData();
 
+        List<Route> routes = new ArrayList<Route>();
         if (jsonResult != null && !jsonResult.equals("")) {
-            List<Route> routes = parseRoutes(jsonResult);
-            onRoutesReceived(routes);
-        } else {
-            // We'll just pass an empty list for now.
-            // Error-handling can be done in the MainActivity
-            onRoutesReceived(new ArrayList<Route>());
+            routes = parseRoutes(jsonResult);
         }
 
-        return null;
+        return routes;
+    }
+
+    @Override
+    protected void onPostExecute(List<Route> routes) {
+        if (progressDialog.isShowing()) {
+            progressDialog.hide();
+        }
+
+        listener.onRoutesTaskCompleted(routes);
     }
 
     private String getRouteData() {
         String json = "";
 
         try {
-            json = ConnectionUtils.downloadUrl(routesUrl);
+            json = WebUtils.downloadUrl(routesUrl);
         } catch (IOException e) {
-            Log.d(logTag, "IOException occured when downloading routes!", e);
+            Log.d(logTag, e.getMessage());
         }
 
         return json;
@@ -89,17 +110,11 @@ public abstract class CtsJsonRoutesTask extends AsyncTask<Void, Void, Void> {
             stop.adherehancePoint = jobj.getBoolean("AdherancePoint");
             stop.latitude = jobj.getDouble("Lat");
             stop.longitude = jobj.getDouble("Long");
+            stop.id = jobj.getInt("ID");
 
             stops.add(stop);
         }
 
         return stops;
     }
-
-    /**
-     * Our callback method.  MainActivity implements this.
-     *
-     * @param routes the list of routes to display!
-     */
-    public abstract void onRoutesReceived(List<Route> routes);
 }

@@ -1,8 +1,12 @@
 package com.jmstudios.corvallistransit.utils;
 
+import com.jmstudios.corvallistransit.models.Stop;
+
 import org.joda.time.DateTime;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 public class Utils {
     private static final HashMap<String, Integer> monthPairs;
@@ -35,5 +39,15 @@ public class Utils {
         int minuteOfHour = Integer.parseInt(timeData[1]);
 
         return new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour);
+    }
+
+    public static List<Stop> deDuplicateStops(List<Stop> stops) {
+        LinkedHashSet<Stop> hashSet = new LinkedHashSet<Stop>();
+        hashSet.addAll(stops);
+
+        stops.clear();
+        stops.addAll(hashSet);
+
+        return stops;
     }
 }

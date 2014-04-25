@@ -2,10 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="4dp"
     android:layout_marginLeft="6dp"
     android:layout_marginRight="6dp"
     android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp"
+    android:tag="route_frag"
     tools:context="com.jmstudios.corvallistransit.MainActivity$PlaceholderFragment">
 
     <TextView
@@ -18,9 +19,9 @@
         android:id="@+id/stop_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/stop_text"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_below="@id/stop_text" />
+        android:layout_marginTop="12dp" />
 
 </RelativeLayout>

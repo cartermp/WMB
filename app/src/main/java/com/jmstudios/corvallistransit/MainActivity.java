@@ -2,7 +2,12 @@ package com.jmstudios.corvallistransit;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
@@ -10,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.jmstudios.corvallistransit.jsontools.CtsJsonRoutesTask;
+import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 
 import java.util.ArrayList;
@@ -17,7 +23,8 @@ import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+        RouteTaskCompleted {
     /**
      * Used to store Bus Routes in the application.
      */
@@ -33,6 +40,13 @@ public class MainActivity extends Activity
      */
     private CharSequence mTitle;
 
+    /**
+     * Static call updates ALL routes
+     */
+    public static void retrieveAllRoutes(RouteTaskCompleted listener, Context context) {
+        new CtsJsonRoutesTask(listener, context).execute();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +56,36 @@ public class MainActivity extends Activity
 
         //if it's NOT sunday, pull our data down
         if (dayOfWeek != Calendar.SUNDAY && mRoutes.isEmpty()) {
-            retrieveAllRoutes();
+            boolean canConnect = checkConnection();
+            if (canConnect) {
+                retrieveAllRoutes(this, this);
+            } else {
+                launchCheckConnectionDialog();
+            }
         }
+    }
+
+    private void launchCheckConnectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("No Network Connection!")
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.setCanceledOnTouchOutside(true);
+        alert.show();
+    }
+
+    private boolean checkConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     private void initialize() {
@@ -57,19 +99,6 @@ public class MainActivity extends Activity
 
         Calendar c = Calendar.getInstance();
         dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-    }
-
-    /**
-     * Static call updates ALL routes
-     */
-    public static void retrieveAllRoutes() {
-        new CtsJsonRoutesTask() {
-            @Override
-            public void onRoutesReceived(List<Route> routes) {
-                mRoutes = routes;
-                //update the UI?
-            }
-        }.execute();
     }
 
     @Override
@@ -168,5 +197,10 @@ public class MainActivity extends Activity
         int id = item.getItemId();
 
         return false;
+    }
+
+    @Override
+    public void onRoutesTaskCompleted(List<Route> routes) {
+        mRoutes = routes;
     }
 }

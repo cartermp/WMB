@@ -19,13 +19,5 @@
             android:divider="@null"
             android:dividerHeight="0dp" />
 
-        <TextView
-            android:id="@android:id/empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:text="@string/no_route_info" />
-
     </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
 </LinearLayout>

@@ -1,5 +1,7 @@
 package com.jmstudios.corvallistransit.utils;
 
+import com.jmstudios.corvallistransit.models.Stop;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +10,9 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
-public class ConnectionUtils {
+public class WebUtils {
     /**
      * Returns String contents of data downloaded from a URL.
      *
@@ -24,8 +27,8 @@ public class ConnectionUtils {
             URL url = new URL(theUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setReadTimeout(25000 /* milliseconds */);
+            conn.setConnectTimeout(25000 /* milliseconds */);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
 
@@ -60,5 +63,31 @@ public class ConnectionUtils {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Converts a list of Stops into a CSV of Stop Ids.
+     * <p/>
+     * Format: "1234,1234,1234,1234"
+     *
+     * @param stops
+     * @return
+     */
+    public static String stopsToIdCsv(List<Stop> stops) {
+        if (stops == null || stops.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Stop stop : stops) {
+            if (stop != null) {
+                sb.append(stop.id);
+                sb.append(",");
+            }
+        }
+
+        String url = sb.toString();
+        return url.substring(0, url.length() - 1);
     }
 }
