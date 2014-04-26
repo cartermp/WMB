@@ -10,14 +10,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
 import com.jmstudios.corvallistransit.jsontools.ArrivalsTaskCompleted;
+import com.jmstudios.corvallistransit.jsontools.CtsJsonArrivalsTask;
 import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
+import com.jmstudios.corvallistransit.models.BusStopComparer;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -31,7 +33,10 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-
+    /**
+     * Used for on-demand fragment refresh
+     */
+    public static int mSectionNumber;
     public List<Stop> stops = new ArrayList<Stop>();
     private PullToRefreshLayout mPullToRefreshLayout;
     private RouteAdapter mAdapter;
@@ -44,6 +49,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
      * number.
      */
     public static RouteViewFragment newInstance(int sectionNumber) {
+        mSectionNumber = sectionNumber;
         RouteViewFragment fragment = new RouteViewFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -80,29 +86,20 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = super.onCreateView(inflater, container, savedInstanceState);
+        ListView lv = (ListView) layout.findViewById(android.R.id.list);
+        ViewGroup parent = (ViewGroup) lv.getParent();
 
-        if (layout != null) {
-            ListView lv = (ListView) layout.findViewById(android.R.id.list);
-            ViewGroup parent = (ViewGroup) lv.getParent();
+        // Remove ListView and add CustomView  in its place
+        int lvIndex = parent.indexOfChild(lv);
+        parent.removeViewAt(lvIndex);
 
-            if (parent != null) {
-                int lvIndex = parent.indexOfChild(lv);
-                parent.removeViewAt(lvIndex);
+        LinearLayout mLinearLayout = (LinearLayout) inflater.inflate(R.layout.route_list, container, false);
 
-                LinearLayout mLinearLayout = (LinearLayout) inflater.inflate(R.layout.route_list, container, false);
-
-                if (mLinearLayout != null) {
-                    parent.addView(mLinearLayout, lvIndex, lv.getLayoutParams());
-                }
-            }
-        }
+        parent.addView(mLinearLayout, lvIndex, lv.getLayoutParams());
 
         return layout;
     }
 
-    /**
-     * Aside from other setup, sets up the ActionBarPullToRefresh service.
-     */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -126,28 +123,19 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 .setup(mPullToRefreshLayout);
     }
 
-    /**
-     * Fires off the Arrivals AsyncTask to retrieve ETA info for the given route.
-     */
     private void getEtasForRoute(final Route route, boolean fromSwipe) {
-        new ArrivalsTask(getActivity(), route.name, this, fromSwipe)
+        new CtsJsonArrivalsTask(getActivity(), route.name, this, fromSwipe)
                 .execute(route.stopList);
     }
 
-    /**
-     * Gets the route the user selected from the Navigation Drawer.
-     */
     private Route getRoute() {
         Route route = null;
 
-        Bundle args = getArguments();
-        if (args != null) {
-            int routeIndex = args.getInt(ARG_SECTION_NUMBER) - 1;
-            List<Route> routes = MainActivity.mRoutes;
+        int routeIndex = getArguments().getInt(ARG_SECTION_NUMBER) - 1;
+        List<Route> routes = MainActivity.mRoutes;
 
-            if (routes != null && routes.size() > routeIndex) {
-                route = routes.get(routeIndex);
-            }
+        if (routes != null && routes.size() > routeIndex) {
+            route = routes.get(routeIndex);
         }
 
         return route;
@@ -160,7 +148,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
 
     /**
      * Performs the refresh via a quick AsyncTask.  This AsyncTask
-     * invokes the route/eta refreshes on the main thread.
+     * invokes the route/eta refresh on the main thread.
      */
     private void doRefresh(boolean fromSwipe) {
         setListShown(false);
@@ -180,8 +168,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                         @Override
                         public void run() {
                             if (MainActivity.mRoutes == null || MainActivity.mRoutes.isEmpty()) {
-                                MainActivity.retrieveAllRoutes(
-                                        (RouteTaskCompleted) activity, activity, true);
+                                MainActivity.retrieveAllRoutes((RouteTaskCompleted) activity, activity);
                             }
 
                             Route route = getRoute();
@@ -226,18 +213,10 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Bundle args = getArguments();
-
-        if (args != null) {
-            ((MainActivity) activity).onSectionAttached(
-                    args.getInt(ARG_SECTION_NUMBER));
-        }
+        ((MainActivity) activity).onSectionAttached(
+                getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
-    /**
-     * Does a bit of work.  De-duplicates and sorts the list of stops with arrivals.
-     * TODO This method is going to change as parsing should eventually not do duplicates.
-     */
     public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival) {
         stops.clear();
 
@@ -247,8 +226,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
 
         stops = Utils.deDuplicateStops(stops);
 
-        // TODO - we may not need to sort here if Arrival info is prased properly...
-        // Collections.sort(stops, new BusStopComparer());
+        Collections.sort(stops, new BusStopComparer());
 
         if (mAdapter == null) {
             setupTheAdapter();
