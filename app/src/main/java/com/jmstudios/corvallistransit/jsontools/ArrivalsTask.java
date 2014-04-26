@@ -47,8 +47,7 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
     protected List<Stop> doInBackground(List<Stop>... stupidSyntaxStops) {
         if (stupidSyntaxStops == null || stupidSyntaxStops[0] == null
                 || stupidSyntaxStops[0].isEmpty()) {
-            // do something
-            // oh by the way, this probably will never happen
+            return null;
         }
 
         List<Stop> stops = stupidSyntaxStops[0];
@@ -81,6 +80,9 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
         return stopsWithArrival;
     }
 
+    /**
+     * TODO - this has a bug or bugs in that it is not getting all the info we need.
+     */
     private List<Stop> parseStopArrivals(String json, List<Stop> stopsWithoutArrival) {
         try {
             JSONObject jsonObject = new JSONObject(json);

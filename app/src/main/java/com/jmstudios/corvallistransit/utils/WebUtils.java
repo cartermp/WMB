@@ -1,5 +1,11 @@
 package com.jmstudios.corvallistransit.utils;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.jmstudios.corvallistransit.models.Stop;
 
 import java.io.BufferedReader;
@@ -13,6 +19,36 @@ import java.net.URL;
 import java.util.List;
 
 public class WebUtils {
+    /**
+     * Uses the Connectivity Service to check a user's web connection.
+     */
+    public static boolean checkConnection(Context context) {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+
+    /**
+     * Launches an Alert Dialog to let the user know their connection is bad.
+     */
+    public static void launchCheckConnectionDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setMessage("No Network Connection!")
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.setCanceledOnTouchOutside(true);
+        alert.show();
+    }
+
     /**
      * Returns String contents of data downloaded from a URL.
      *

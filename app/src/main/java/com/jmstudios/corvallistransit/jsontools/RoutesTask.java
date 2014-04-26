@@ -20,19 +20,26 @@ import java.util.List;
 public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
     private static final String logTag = "RoutesTask";
     private static final String routesUrl = "http://www.corvallis-bus.appspot.com/routes?stops=true";
+    private static boolean mFromeSwipe;
     private RouteTaskCompleted listener;
     private ProgressDialog progressDialog;
 
-    public RoutesTask(RouteTaskCompleted listener, Context context) {
+    public RoutesTask(RouteTaskCompleted listener, Context context, boolean fromSwipe) {
+        mFromeSwipe = fromSwipe;
         this.listener = listener;
-        progressDialog = new ProgressDialog(context);
+
+        if (!fromSwipe) {
+            progressDialog = new ProgressDialog(context);
+        }
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog.setMessage("Fetching routes...");
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
+        if (!mFromeSwipe) {
+            progressDialog.setMessage("Fetching routes...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+        }
     }
 
     @Override
@@ -49,7 +56,7 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
 
     @Override
     protected void onPostExecute(List<Route> routes) {
-        if (progressDialog.isShowing()) {
+        if (mFromeSwipe && progressDialog.isShowing()) {
             progressDialog.hide();
         }
 
@@ -88,7 +95,7 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
                 routes.add(route);
             }
         } catch (JSONException e) {
-            Log.d(logTag, "JSONException occured when getting routes as an array!", e);
+            Log.d(logTag, "JSONException occurred when getting routes as an array!", e);
         }
 
         return routes;

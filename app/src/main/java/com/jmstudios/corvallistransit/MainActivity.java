@@ -2,12 +2,8 @@ package com.jmstudios.corvallistransit;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
@@ -17,6 +13,7 @@ import android.view.MenuItem;
 import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.RoutesTask;
 import com.jmstudios.corvallistransit.models.Route;
+import com.jmstudios.corvallistransit.utils.WebUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,8 +40,8 @@ public class MainActivity extends Activity
     /**
      * Static call updates ALL routes
      */
-    public static void retrieveAllRoutes(RouteTaskCompleted listener, Context context) {
-        new RoutesTask(listener, context).execute();
+    public static void retrieveAllRoutes(RouteTaskCompleted listener, Context context, boolean fromSwipe) {
+        new RoutesTask(listener, context, fromSwipe).execute();
     }
 
     @Override
@@ -56,36 +53,13 @@ public class MainActivity extends Activity
 
         //if it's NOT sunday, pull our data down
         if (dayOfWeek != Calendar.SUNDAY && mRoutes.isEmpty()) {
-            boolean canConnect = checkConnection();
+            boolean canConnect = WebUtils.checkConnection(this);
             if (canConnect) {
-                retrieveAllRoutes(this, this);
+                retrieveAllRoutes(this, this, false);
             } else {
-                launchCheckConnectionDialog();
+                WebUtils.launchCheckConnectionDialog(this);
             }
         }
-    }
-
-    private void launchCheckConnectionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setMessage("No Network Connection!")
-                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
-
-        AlertDialog alert = builder.create();
-        alert.setCanceledOnTouchOutside(true);
-        alert.show();
-    }
-
-    private boolean checkConnection() {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
-        return networkInfo != null && networkInfo.isConnected();
     }
 
     /**
@@ -203,8 +177,6 @@ public class MainActivity extends Activity
 
     /**
      * Our callback for when Routes have been downloaded.
-     *
-     * @param routes
      */
     @Override
     public void onRoutesTaskCompleted(List<Route> routes) {
