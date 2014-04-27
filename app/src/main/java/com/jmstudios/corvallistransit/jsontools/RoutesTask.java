@@ -54,15 +54,23 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
         return routes;
     }
 
+    /**
+     * Overridden to remove the progressdialog, if it's up,
+     * and make the callback to the UI.
+     */
     @Override
     protected void onPostExecute(List<Route> routes) {
-        if (mFromeSwipe && progressDialog.isShowing()) {
+        if (!mFromeSwipe && progressDialog.isShowing()) {
             progressDialog.hide();
         }
 
         listener.onRoutesTaskCompleted(routes);
     }
 
+    /**
+     * Gets Route data (Name, PolyLine for maps, stop list, etc)
+     * as a JSON string.
+     */
     private String getRouteData() {
         String json = "";
 
@@ -75,6 +83,9 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
         return json;
     }
 
+    /**
+     * Parses the route information JSON string into a list of routes.
+     */
     private List<Route> parseRoutes(String json) {
         List<Route> routes = new ArrayList<Route>();
         try {
@@ -99,6 +110,9 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
         return routes;
     }
 
+    /**
+     * For each route, parses the JSON array of stops into a list.
+     */
     private List<Stop> parseStops(JSONObject jobj) throws JSONException {
         List<Stop> stops = new ArrayList<Stop>();
 

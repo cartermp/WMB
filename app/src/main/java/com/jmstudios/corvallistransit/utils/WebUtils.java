@@ -49,6 +49,23 @@ public class WebUtils {
         alert.show();
     }
 
+    public static InputStream getStream(String theUrl) throws IOException {
+        InputStream is = null;
+
+        URL url = new URL(theUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setReadTimeout(1000 /* milliseconds */);
+        conn.setConnectTimeout(15000 /* milliseconds */);
+        conn.setRequestMethod("GET");
+        conn.setDoInput(true);
+
+        conn.connect();
+        is = conn.getInputStream();
+
+        return is;
+    }
+
     /**
      * Returns String contents of data downloaded from a URL.
      *
@@ -63,8 +80,8 @@ public class WebUtils {
             URL url = new URL(theUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            conn.setReadTimeout(25000 /* milliseconds */);
-            conn.setConnectTimeout(25000 /* milliseconds */);
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
 

@@ -5,7 +5,7 @@ import com.jmstudios.corvallistransit.models.Stop;
 import org.joda.time.DateTime;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class Utils {
@@ -47,12 +47,13 @@ public class Utils {
         return new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour);
     }
 
-    public static List<Stop> deDuplicateStops(List<Stop> stops) {
-        LinkedHashSet<Stop> hashSet = new LinkedHashSet<Stop>();
-        hashSet.addAll(stops);
-
-        stops.clear();
-        stops.addAll(hashSet);
+    public static List<Stop> filterNegativeTimes(List<Stop> stops) {
+        for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext(); ) {
+            Stop s = iterator.next();
+            if (s.eta() < 1) {
+                iterator.remove();
+            }
+        }
 
         return stops;
     }

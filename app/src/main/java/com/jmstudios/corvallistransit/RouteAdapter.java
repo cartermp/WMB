@@ -43,10 +43,11 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
             rowView = inflater.inflate(R.layout.fragment_main, null);
 
             //Adds the background color for the current route
-            if(routeColor != null && rowView!=null)
-                rowView.setBackgroundColor(Color.parseColor("#"+routeColor));
-            else if(rowView != null)
+            if (routeColor != null && rowView != null) {
+                rowView.setBackgroundColor(Color.parseColor("#" + routeColor));
+            } else if (rowView != null) {
                 rowView.setBackgroundColor(Color.parseColor("#000000"));
+            }
 
             ViewHolder viewHolder = new ViewHolder();
 

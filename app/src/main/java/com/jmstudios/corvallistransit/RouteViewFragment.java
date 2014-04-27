@@ -13,13 +13,11 @@ import android.widget.ListView;
 import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
 import com.jmstudios.corvallistransit.jsontools.ArrivalsTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
-import com.jmstudios.corvallistransit.models.BusStopComparer;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -222,15 +220,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     }
 
     public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival) {
-        stops.clear();
-
-        for (Stop s : stopsWithArrival) {
-            stops.add(s);
-        }
-
-        stops = Utils.deDuplicateStops(stops);
-
-        Collections.sort(stops, new BusStopComparer());
+        stops = Utils.filterNegativeTimes(stopsWithArrival);
 
         if (mAdapter == null) {
             setupTheAdapter(routeColor);

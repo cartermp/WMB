@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ *******************************************************************************
   ~   Copyright (c) 2013-2014 Gabriele Mariotti.
   ~
@@ -42,6 +41,7 @@
     <color name="demo_card_header_birth_color">#707070</color>
     <color name="demo_card_line_birth_color">#E5E5E5</color>
 
+    <!-- Route Colors -->
     <color name="route1">#00ADEF</color>
     <color name="route2">#88279F</color>
     <color name="route3">#F2652F</color>

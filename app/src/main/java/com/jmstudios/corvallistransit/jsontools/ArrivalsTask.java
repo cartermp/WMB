@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -73,8 +74,10 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
         try {
             String json = WebUtils.downloadUrl(url);
             stopsWithArrival = parseStopArrivals(json, stopsWithoutArrival);
-        } catch (Exception e) {
-            Log.d(arrivalsLogTag, e.getMessage());
+        } catch (IOException e) {
+            if (e.getMessage() != null) {
+                Log.d(arrivalsLogTag, e.getMessage());
+            }
         }
 
         return stopsWithArrival;
@@ -105,8 +108,6 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
                             if (s.eta() < 1) {
                                 iterator.remove();
                             }
-                        } else {
-                            iterator.remove();
                         }
                     } else {
                         iterator.remove();
