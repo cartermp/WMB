@@ -1,10 +1,13 @@
 WMB
 ===
 
-Re-imagining of Wheresmyb.us into an Android app.
+Inspired by Wheresmyb.us and developed primarily during the OSU Bus App Hackathon.
 
-The goal of this app is to be able to retrieve all ETAs under 30 minutes for CTS bus stops in Corvallis, Oregon.
+Features include:
 
-Users can select a route and see a list of stops and their ETA, organized by ETA from smallest to largest.
-
-As of now, updating is on-demand via the REFRESH button.
+- Real-time ETA for stops on a per-route basis
+- Ability to set reminders to catch a bus from 5m to 20m intervals
+- Pull-to-refresh updating on a per-route basis
+- (Planned) Map View for each route
+- (Planned) Map View for an individual stop
+- (Planned) Walking directions, via Google Maps, to a particular stop
