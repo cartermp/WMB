@@ -9,7 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import com.jmstudios.corvallistransit.jsontools.*;
+
+import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
+import com.jmstudios.corvallistransit.jsontools.ArrivalsTaskCompleted;
+import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.Utils;
@@ -153,18 +156,28 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
      * Performs the refresh via a quick AsyncTask.  This AsyncTask
      * invokes the route/eta refresh on the main thread.
      */
-    private void doRefresh(boolean fromSwipe) {
+    private void doRefresh(final boolean fromSwipe) {
         setListShown(false);
 
         final boolean swipe = fromSwipe;
 
         new AsyncTask<Void, Void, Void>() {
-
             @Override
             protected Void doInBackground(Void... voids) {
                 final Activity activity = getActivity();
 
-                long start = System.currentTimeMillis();
+                /*
+                 * No heuristic here.  Sleep for a second to give users the impression
+                 * that it's doing something, since quick refreshes make it look like nothing
+                 * was updated.
+                 */
+                if (fromSwipe) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
                 if (activity != null) {
                     activity.runOnUiThread(new Runnable() {
@@ -182,20 +195,6 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                             }
                         }
                     });
-                }
-
-                long end = System.currentTimeMillis();
-
-                if (end - start > 2000) {
-                    /*
-                     * Literally sleep here just so the user thinks it's doing something
-                     * in the case where a connection is so fast that the update is instant.
-                     */
-                    try {
-                        Thread.sleep(2000 - (end - start));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                 }
 
                 return null;
@@ -224,9 +223,6 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival) {
         stops = Utils.filterNegativeTimes(stopsWithArrival);
 
-        //if (mAdapter == null) {
-        //    setupTheAdapter(routeColor);
-        //}
         //always setup the adapter to refresh the data
         setupTheAdapter(routeColor);
 
