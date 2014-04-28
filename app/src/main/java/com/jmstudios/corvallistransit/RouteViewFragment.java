@@ -9,10 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
-import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
-import com.jmstudios.corvallistransit.jsontools.ArrivalsTaskCompleted;
-import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
+import com.jmstudios.corvallistransit.jsontools.*;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.Utils;
