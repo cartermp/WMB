@@ -224,9 +224,11 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival) {
         stops = Utils.filterNegativeTimes(stopsWithArrival);
 
-        if (mAdapter == null) {
-            setupTheAdapter(routeColor);
-        }
+        //if (mAdapter == null) {
+        //    setupTheAdapter(routeColor);
+        //}
+        //always setup the adapter to refresh the data
+        setupTheAdapter(routeColor);
 
         mAdapter.notifyDataSetChanged();
     }
