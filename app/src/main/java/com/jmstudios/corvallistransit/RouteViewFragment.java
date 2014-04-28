@@ -18,6 +18,7 @@ import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -60,20 +61,24 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Route route = getRoute();
+        if (MainActivity.dayOfWeek == Calendar.SUNDAY) {
+            setEmptyText("No Routes on Sunday!");
+        } else {
+            Route route = getRoute();
 
-        if (route != null) {
-            doRefresh(false);
+            if (route != null) {
+                doRefresh(false);
 
-            routeColor = route.color;
+                routeColor = route.color;
 
-            if (stops != null && !stops.isEmpty()) {
-                setupTheAdapter(routeColor);
+                if (stops != null && !stops.isEmpty()) {
+                    setupTheAdapter(routeColor);
+                } else {
+                    setEmptyText("Nothing to display here!");
+                }
             } else {
                 setEmptyText("Nothing to display here!");
             }
-        } else {
-            setEmptyText("Nothing to display here!");
         }
 
         setListShownNoAnimation(true);
