@@ -91,6 +91,14 @@ public class MainActivity extends Activity
         dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
     }
 
+    /**
+     * Alerts NavigationDrawer to update the eta's for our display now that our routes have been fetched.
+     */
+    private void loadInitialArrivalTimes()
+    {
+        mNavigationDrawerFragment.loadInitialArrivals();
+    }
+
     @Override
     public void onRouteMapButtonPressed() {
         // launch a map dude
@@ -197,7 +205,10 @@ public class MainActivity extends Activity
      * Our callback for when Routes have been downloaded.
      */
     @Override
-    public void onRoutesTaskCompleted(List<Route> routes) {
+    public void onRoutesTaskCompleted(List<Route> routes)
+    {
         mRoutes = routes;
+        //calls method to alert NavDrawer to update content for eta's
+        loadInitialArrivalTimes();
     }
 }

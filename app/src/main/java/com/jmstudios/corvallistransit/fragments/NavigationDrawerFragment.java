@@ -311,4 +311,12 @@ public class NavigationDrawerFragment extends Fragment {
 
         void onRouteMapButtonPressed();
     }
+
+    /**
+     * Loads up the initial arrivals, called after all routes have been retrieved
+     */
+    public void loadInitialArrivals()
+    {
+        selectItem(mCurrentSelectedPosition);
+    }
 }
