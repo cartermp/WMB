@@ -1,4 +1,4 @@
-package com.jmstudios.corvallistransit;
+package com.jmstudios.corvallistransit.adapters;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.models.Stop;
 
 import java.util.List;

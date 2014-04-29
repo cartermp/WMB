@@ -1,4 +1,4 @@
-package com.jmstudios.corvallistransit;
+package com.jmstudios.corvallistransit.fragments;
 
 import android.app.Activity;
 import android.app.ListFragment;
@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.jmstudios.corvallistransit.R;
+import com.jmstudios.corvallistransit.activities.MainActivity;
+import com.jmstudios.corvallistransit.adapters.RouteAdapter;
+import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
+import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
-import com.jmstudios.corvallistransit.jsontools.ArrivalsTaskCompleted;
-import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.Utils;
@@ -62,7 +65,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
         super.onActivityCreated(savedInstanceState);
 
         if (MainActivity.dayOfWeek == Calendar.SUNDAY) {
-            setEmptyText("No Routes on Sunday!");
+            setEmptyText(getResources().getString(R.string.sunday_message));
         } else {
             Route route = getRoute();
 
@@ -74,10 +77,10 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 if (stops != null && !stops.isEmpty()) {
                     setupTheAdapter(routeColor);
                 } else {
-                    setEmptyText("Nothing to display here!");
+                    setEmptyText(getResources().getString(R.string.no_route_info));
                 }
             } else {
-                setEmptyText("Nothing to display here!");
+                setEmptyText(getResources().getString(R.string.no_route_info));
             }
         }
 

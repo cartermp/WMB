@@ -1,10 +1,8 @@
-package com.jmstudios.corvallistransit;
+package com.jmstudios.corvallistransit.utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-
-import com.jmstudios.corvallistransit.utils.SystemUtils;
 
 /**
  * Class used to recieve a notification from an Alarm Manager.

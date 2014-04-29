@@ -7,7 +7,7 @@
     android:layout_marginRight="0dp"
     android:layout_marginTop="4dp"
     android:tag="route_frag"
-    tools:context="com.jmstudios.corvallistransit.MainActivity$PlaceholderFragment">
+    tools:context="com.jmstudios.corvallistransit.activities.MainActivity$PlaceholderFragment">
 
     <TextView
         android:id="@+id/stop_text"

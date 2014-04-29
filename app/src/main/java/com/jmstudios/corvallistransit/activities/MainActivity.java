@@ -1,8 +1,9 @@
-package com.jmstudios.corvallistransit;
+package com.jmstudios.corvallistransit.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,7 +11,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.jmstudios.corvallistransit.jsontools.RouteTaskCompleted;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.jmstudios.corvallistransit.R;
+import com.jmstudios.corvallistransit.fragments.NavigationDrawerFragment;
+import com.jmstudios.corvallistransit.fragments.RouteViewFragment;
+import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.RoutesTask;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.utils.WebUtils;
@@ -32,10 +38,18 @@ public class MainActivity extends Activity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
+
+    /**
+     * Fragment managing the Route Map.
+     */
+    private MapFragment mMapFragment;
+
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+
+    private GoogleMap mMap;
 
     /**
      * Static call updates ALL routes
@@ -76,6 +90,23 @@ public class MainActivity extends Activity
 
         Calendar c = Calendar.getInstance();
         dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+    }
+
+    @Override
+    public void onRouteMapButtonPressed() {
+//        if (mMap == null) {
+//            mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+//                                  .getMap();
+//            if (mMap != null) {
+//
+//            }
+//        }
+
+        mMapFragment = MapFragment.newInstance();
+        FragmentTransaction fragmentTransaction =
+                getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.container, mMapFragment);
+        fragmentTransaction.commit();
     }
 
     @Override

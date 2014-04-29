@@ -16,9 +16,8 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
-import com.jmstudios.corvallistransit.MainActivity;
-import com.jmstudios.corvallistransit.NotificationReceiver;
 import com.jmstudios.corvallistransit.R;
+import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.models.Tuple;
 
 /**

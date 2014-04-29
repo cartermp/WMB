@@ -1,4 +1,4 @@
-package com.jmstudios.corvallistransit.jsontools;
+package com.jmstudios.corvallistransit.interfaces;
 
 import com.jmstudios.corvallistransit.models.Route;
 

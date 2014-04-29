@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.WebUtils;
 

@@ -1,4 +1,4 @@
-package com.jmstudios.corvallistransit;
+package com.jmstudios.corvallistransit.fragments;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -21,6 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.jmstudios.corvallistransit.R;
+import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.utils.SystemUtils;
 
 import java.util.Calendar;
@@ -41,25 +43,6 @@ public class NavigationDrawerFragment extends Fragment {
      * expands it. This shared preference tracks this.
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
-
-    /**
-     * A pointer to the current callbacks instance (the Activity).
-     */
-    private NavigationDrawerCallbacks mCallbacks;
-
-    /**
-     * Helper component that ties the action bar to the navigation drawer.
-     */
-    private ActionBarDrawerToggle mDrawerToggle;
-
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerListView;
-    private View mFragmentContainerView;
-
-    private int mCurrentSelectedPosition = 0;
-    private boolean mFromSavedInstanceState;
-    private boolean mUserLearnedDrawer;
-
     public static String[] mActiveRouteNames = new String[]
             {
                     "Route 1",
@@ -78,6 +61,20 @@ public class NavigationDrawerFragment extends Fragment {
                     "Route C3",
                     "Route CVA"
             };
+    /**
+     * A pointer to the current callbacks instance (the Activity).
+     */
+    private NavigationDrawerCallbacks mCallbacks;
+    /**
+     * Helper component that ties the action bar to the navigation drawer.
+     */
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerListView;
+    private View mFragmentContainerView;
+    private int mCurrentSelectedPosition = 0;
+    private boolean mFromSavedInstanceState;
+    private boolean mUserLearnedDrawer;
 
     public NavigationDrawerFragment() {
     }
@@ -268,6 +265,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         if (id == R.id.action_map) {
             if (MainActivity.dayOfWeek != Calendar.SUNDAY) {
+                mCallbacks.onRouteMapButtonPressed();
                 Toast.makeText(getActivity(), "LAUNCH A MAP DUDE", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), "No bus routes on Sunday!", Toast.LENGTH_SHORT).show();
@@ -310,5 +308,7 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position);
+
+        void onRouteMapButtonPressed();
     }
 }
