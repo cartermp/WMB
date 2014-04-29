@@ -3,7 +3,6 @@ package com.jmstudios.corvallistransit.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -94,19 +93,7 @@ public class MainActivity extends Activity
 
     @Override
     public void onRouteMapButtonPressed() {
-//        if (mMap == null) {
-//            mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-//                                  .getMap();
-//            if (mMap != null) {
-//
-//            }
-//        }
-
-        mMapFragment = MapFragment.newInstance();
-        FragmentTransaction fragmentTransaction =
-                getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.container, mMapFragment);
-        fragmentTransaction.commit();
+        // launch a map dude
     }
 
     @Override
