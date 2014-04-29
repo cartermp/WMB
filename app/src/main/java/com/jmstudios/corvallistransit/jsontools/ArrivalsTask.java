@@ -15,7 +15,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
@@ -91,30 +90,30 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
         try {
             JSONObject jsonObject = new JSONObject(json);
 
-            for (Iterator<Stop> iterator = stopsWithoutArrival.iterator(); iterator.hasNext(); ) {
-                Stop s = iterator.next();
+            boolean foundStop;
+
+            for (Stop s : stopsWithoutArrival) {
+                foundStop = false;
 
                 String id = String.valueOf(s.id);
 
                 if (jsonObject.has(id)) {
                     JSONArray jsonArray = jsonObject.getJSONArray(id);
-                    if (jsonArray.length() > 0) {
-                        JSONObject jobj2 = jsonArray.getJSONObject(0);
+                    int len = jsonArray.length();
 
-                        String jsonRouteName = jobj2.getString("Route");
-                        if (mRouteName.equals(jsonRouteName.trim())) {
-                            s.expectedTimeString = jobj2.getString("Expected");
-                            s.expectedTime = s.getScheduledTime();
+                    if (len > 0) {
+                        for (int i = 0; i < len && !foundStop; i++) {
+                            JSONObject jobj2 = jsonArray.getJSONObject(i);
 
-                            if (s.eta() < 1) {
-                                iterator.remove();
+                            String jsonRouteName = jobj2.getString("Route");
+                            if (mRouteName.equals(jsonRouteName.trim())) {
+                                s.expectedTimeString = jobj2.getString("Expected");
+                                s.expectedTime = s.getScheduledTime();
+
+                                foundStop = true;
                             }
                         }
-                    } else {
-                        iterator.remove();
                     }
-                } else {
-                    iterator.remove();
                 }
             }
         } catch (JSONException e) {

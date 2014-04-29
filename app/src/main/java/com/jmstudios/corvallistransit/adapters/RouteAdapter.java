@@ -55,12 +55,10 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
             viewHolder.stopView = (TextView) rowView.findViewById(R.id.stop_text);
 
             CardHeader ch = new CardHeader(mContext);
-            ch.setTitle(stop.eta() + " mins away");
-
             Card card = new Card(mContext);
             card.addCardHeader(ch);
 
-            card.setTitle("Click for Map");
+            card.setTitle("Press for Map");
 
             card.setOnClickListener(new Card.OnCardClickListener() {
                 @Override
@@ -76,6 +74,17 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         }
 
         ViewHolder holder = (ViewHolder) rowView.getTag();
+
+        Card card = holder.cardView.getCard();
+        CardHeader header = card.getCardHeader();
+
+        if (stop.eta() == 1) {
+            header.setTitle(stop.eta() + " min away");
+        } else {
+            header.setTitle(stop.eta() + " mins away");
+        }
+
+        holder.cardView.refreshCard(card);
 
         holder.stopView.setText(stop.name);
         holder.stopView.setTextColor(Color.WHITE);

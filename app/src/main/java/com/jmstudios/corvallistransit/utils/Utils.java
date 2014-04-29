@@ -47,10 +47,10 @@ public class Utils {
         return new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour);
     }
 
-    public static List<Stop> filterNegativeTimes(List<Stop> stops) {
+    public static List<Stop> filterTimes(List<Stop> stops) {
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext(); ) {
             Stop s = iterator.next();
-            if (s.eta() < 1) {
+            if (s.eta() < 1 || s.eta() > 30) {
                 iterator.remove();
             }
         }
