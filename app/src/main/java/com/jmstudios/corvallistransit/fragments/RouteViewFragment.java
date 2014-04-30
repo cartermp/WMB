@@ -77,14 +77,12 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 if (stops != null && !stops.isEmpty()) {
                     setupTheAdapter(routeColor);
                 } else {
-                    setEmptyText(getResources().getString(R.string.no_route_info));
+                    //setEmptyText(getResources().getString(R.string.no_route_info));
                 }
             } else {
                 setEmptyText(getResources().getString(R.string.no_route_info));
             }
         }
-
-        //setListShownNoAnimation(true);
     }
 
     /**
@@ -134,7 +132,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
 
     private void getEtasForRoute(final Route route, boolean fromSwipe) {
         new ArrivalsTask(getActivity(), route.name, this, fromSwipe)
-                .execute(route.stopList);
+                .execute(Utils.getStopRange(route.stopList, 0, 20));
     }
 
     private Route getRoute() {

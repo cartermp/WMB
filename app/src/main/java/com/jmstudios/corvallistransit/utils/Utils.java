@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class Utils {
@@ -47,16 +48,36 @@ public class Utils {
         return new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour);
     }
 
+    /**
+     * Removes duplicates and stops with an eta < 1 minute.
+     *
+     * @param stops
+     * @return
+     */
     public static List<Stop> filterTimes(List<Stop> stops) {
         if (stops != null) {
             for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext(); ) {
                 Stop s = iterator.next();
-                if (s.eta() < 1) {
+                if (s.eta() < 1 || s.eta() > 30) {
                     iterator.remove();
                 }
             }
+
+            LinkedHashSet<Stop> lhs = new LinkedHashSet<Stop>();
+            lhs.addAll(stops);
+
+            stops.clear();
+
+            stops.addAll(lhs);
         }
 
         return stops;
+    }
+
+    /**
+     * Take a guess at what this does
+     */
+    public static List<Stop> getStopRange(List<Stop> stops, int start, int end) {
+        return stops.subList(start, end > stops.size() ? stops.size() : end);
     }
 }
