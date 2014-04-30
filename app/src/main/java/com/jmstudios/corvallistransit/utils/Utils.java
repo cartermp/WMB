@@ -48,12 +48,13 @@ public class Utils {
     }
 
     public static List<Stop> filterTimes(List<Stop> stops) {
-        for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext(); ) {
-            Stop s = iterator.next();
-            if (s.eta() < 1 || s.eta() > 30) {
-                iterator.remove();
+        if(stops!=null)
+            for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext(); ) {
+                Stop s = iterator.next();
+                if (s.eta() < 1 || s.eta() > 30) {
+                    iterator.remove();
+                }
             }
-        }
 
         return stops;
     }
