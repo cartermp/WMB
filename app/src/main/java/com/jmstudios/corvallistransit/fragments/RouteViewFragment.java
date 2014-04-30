@@ -84,7 +84,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
             }
         }
 
-        setListShownNoAnimation(true);
+        //setListShownNoAnimation(true);
     }
 
     /**
@@ -224,11 +224,13 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
     }
 
     public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival) {
-        stops = Utils.filterTimes(stopsWithArrival);
+        if (stopsWithArrival != null && !stopsWithArrival.isEmpty()) {
+            stops = Utils.filterTimes(stopsWithArrival);
 
-        //always setup the adapter to refresh the data
-        setupTheAdapter(routeColor);
+            //always setup the adapter to refresh the data
+            setupTheAdapter(routeColor);
 
-        mAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }
