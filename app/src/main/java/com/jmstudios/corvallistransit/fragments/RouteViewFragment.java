@@ -77,7 +77,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 if (stops != null && !stops.isEmpty()) {
                     setupTheAdapter(routeColor);
                 } else {
-                    //setEmptyText(getResources().getString(R.string.no_route_info));
+                    setEmptyText(getResources().getString(R.string.no_route_info));
                 }
             } else {
                 setEmptyText(getResources().getString(R.string.no_route_info));
