@@ -18,8 +18,7 @@ public class Stop {
 
     public int eta() {
         Period period = new Period(DateTime.now(), this.expectedTime);
-        int eta = period.getMinutes();
-        return (eta >= 1) ? eta : (eta < 1) ? -1 : 1;
+        return period.getMinutes();
     }
 
     /*
