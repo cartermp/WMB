@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
+import com.jmstudios.corvallistransit.models.BusStopComparer;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.WebUtils;
 
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
@@ -63,6 +65,10 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
         if (!mIsFromSwipeDown && progressDialog.isShowing()) {
             progressDialog.hide();
         }
+
+        // Sort by ETA first; we want to limit computation on the UI thread,
+        // hence we do it here rather than there.
+        Collections.sort(stopsWithArrival, new BusStopComparer());
 
         // Send the data off to the receiver - in this case,
         // it's the RouteViewFragment.
