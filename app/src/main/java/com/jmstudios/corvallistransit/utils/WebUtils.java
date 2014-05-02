@@ -37,10 +37,10 @@ public class WebUtils {
     public static void launchCheckConnectionDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setMessage("No Network Connection!")
-                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+        builder.setMessage("Your network connection is bad!")
+                .setPositiveButton("I'll move somewhere else", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        // do nothing; this will just bring us back to the main view
                     }
                 });
 
@@ -49,29 +49,8 @@ public class WebUtils {
         alert.show();
     }
 
-    public static InputStream getStream(String theUrl) throws IOException {
-        InputStream is = null;
-
-        URL url = new URL(theUrl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setReadTimeout(1000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-
-        conn.connect();
-        is = conn.getInputStream();
-
-        return is;
-    }
-
     /**
      * Returns String contents of data downloaded from a URL.
-     *
-     * @param theUrl
-     * @return
-     * @throws IOException
      */
     public static String downloadUrl(String theUrl) throws IOException {
         InputStream is = null;
@@ -80,16 +59,15 @@ public class WebUtils {
             URL url = new URL(theUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setReadTimeout(5000 /* 5 seconds */);
+            conn.setConnectTimeout(10000 /* 10 seconds */);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
 
             conn.connect();
             is = conn.getInputStream();
 
-            String contentAsString = readIt(is);
-            return contentAsString;
+            return readIt(is);
 
         } finally {
             if (is != null) {

@@ -83,6 +83,8 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 setEmptyText(getResources().getString(R.string.no_route_info));
             }
         }
+
+        setListShownNoAnimation(true);
     }
 
     /**
