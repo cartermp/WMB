@@ -68,9 +68,9 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
 
         if (!timedout) {
             listener.onRoutesTaskCompleted(routes);
+        } else {
+            listener.onRoutesTaskTimeout();
         }
-        listener.onRoutesTaskTimeout();
-
     }
 
     /**

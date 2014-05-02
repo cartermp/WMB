@@ -43,13 +43,29 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
             LayoutInflater inflater = mContext.getLayoutInflater();
             rowView = inflater.inflate(R.layout.fragment_main, null);
 
-            setColor(rowView);
+            //Adds the background color for the current route
+            if (routeColor != null && rowView != null) {
+                rowView.setBackgroundColor(Color.parseColor("#" + routeColor));
+            } else if (rowView != null) {
+                rowView.setBackgroundColor(Color.parseColor("#000000"));
+            }
 
             ViewHolder viewHolder = new ViewHolder();
 
             viewHolder.stopView = (TextView) rowView.findViewById(R.id.stop_text);
 
-            Card card = setUpCard();
+            CardHeader ch = new CardHeader(mContext);
+            Card card = new Card(mContext);
+            card.addCardHeader(ch);
+
+            card.setTitle("Press for Map");
+
+            card.setOnClickListener(new Card.OnCardClickListener() {
+                @Override
+                public void onClick(Card card, View view) {
+                    Toast.makeText(mContext, "Map goes here!", Toast.LENGTH_LONG).show();
+                }
+            });
 
             viewHolder.cardView = (CardView) rowView.findViewById(R.id.stop_card);
             viewHolder.cardView.setCard(card);
@@ -62,14 +78,16 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         Card card = holder.cardView.getCard();
         CardHeader header = card.getCardHeader();
 
-        if (!setEta(stop, header)) {
-            holder.cardView.refreshCard(card);
-            holder.stopView.setText(stop.name);
-            holder.stopView.setTextColor(Color.WHITE);
+        if (stop.eta() == 1) {
+            header.setTitle(stop.eta() + " min away");
         } else {
-            holder.cardView.setVisibility(View.GONE);
-            holder.stopView.setVisibility(View.GONE);
+            header.setTitle(stop.eta() + " mins away");
         }
+
+        holder.cardView.refreshCard(card);
+
+        holder.stopView.setText(stop.name);
+        holder.stopView.setTextColor(Color.WHITE);
 
         return rowView;
     }
@@ -78,48 +96,6 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
     public boolean isEnabled(int position) {
         // Since we don't want the list items themselves clickable, always return false
         return false;
-    }
-
-    private void setColor(View rowView) {
-        if (routeColor != null && rowView != null) {
-            rowView.setBackgroundColor(Color.parseColor("#" + routeColor));
-        } else if (rowView != null) {
-            rowView.setBackgroundColor(Color.parseColor("#000000"));
-        }
-    }
-
-    private Card setUpCard() {
-        CardHeader ch = new CardHeader(mContext);
-        Card card = new Card(mContext);
-        card.addCardHeader(ch);
-
-        card.setTitle("Press for Map");
-
-        card.setOnClickListener(new Card.OnCardClickListener() {
-            @Override
-            public void onClick(Card card, View view) {
-                Toast.makeText(mContext, "Map goes here!", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        return card;
-    }
-
-    private boolean setEta(Stop stop, CardHeader header) {
-        boolean pastDue = false;
-        int eta = stop.eta();
-
-        if (eta > 1) {
-            header.setTitle(stop.eta() + " mins away");
-        } else if (eta == 1) {
-            header.setTitle(stop.eta() + " min away");
-        } else if (eta < 1 && eta > 0) {
-            header.setTitle("Bus has arrived!");
-        } else {
-            pastDue = true;
-        }
-
-        return pastDue;
     }
 
 

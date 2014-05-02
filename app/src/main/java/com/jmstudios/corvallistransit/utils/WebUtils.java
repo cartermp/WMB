@@ -59,8 +59,8 @@ public class WebUtils {
             URL url = new URL(theUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            conn.setReadTimeout(5000 /* 5 seconds */);
-            conn.setConnectTimeout(10000 /* 10 seconds */);
+            conn.setReadTimeout(10000 /* 10 seconds */);
+            conn.setConnectTimeout(15000 /* 15 seconds */);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
 

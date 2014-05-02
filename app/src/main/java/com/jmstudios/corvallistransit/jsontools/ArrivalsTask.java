@@ -25,21 +25,21 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
     private static String mRouteName;
     private ArrivalsTaskCompleted listener;
     private ProgressDialog progressDialog;
-    private boolean mIsFromSwipeDown;
+    private boolean mIsFromSwipeOrLoad;
 
     public ArrivalsTask(Context context, String routeName,
-                        ArrivalsTaskCompleted listener, boolean fromSwipe) {
+                        ArrivalsTaskCompleted listener, boolean fromSwipeOrLoad) {
         mRouteName = routeName;
         this.listener = listener;
-        if (!mIsFromSwipeDown) {
+        if (!mIsFromSwipeOrLoad) {
             progressDialog = new ProgressDialog(context);
         }
-        mIsFromSwipeDown = fromSwipe;
+        mIsFromSwipeOrLoad = fromSwipeOrLoad;
     }
 
     @Override
     protected void onPreExecute() {
-        if (!mIsFromSwipeDown) {
+        if (!mIsFromSwipeOrLoad) {
             progressDialog.setMessage("Getting Eta info...");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
@@ -62,7 +62,7 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
 
     @Override
     protected void onPostExecute(List<Stop> stopsWithArrival) {
-        if (!mIsFromSwipeDown && progressDialog.isShowing()) {
+        if (!mIsFromSwipeOrLoad && progressDialog.isShowing()) {
             progressDialog.hide();
         }
 

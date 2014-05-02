@@ -48,12 +48,6 @@ public class Utils {
         return new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour);
     }
 
-    /**
-     * Removes duplicates and stops with an eta < 1 minute.
-     *
-     * @param stops
-     * @return
-     */
     public static List<Stop> filterTimes(List<Stop> stops) {
         if (stops != null) {
             for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext(); ) {
@@ -62,22 +56,19 @@ public class Utils {
                     iterator.remove();
                 }
             }
-
-            LinkedHashSet<Stop> lhs = new LinkedHashSet<Stop>();
-            lhs.addAll(stops);
-
-            stops.clear();
-
-            stops.addAll(lhs);
         }
+
+        LinkedHashSet<Stop> lhs = new LinkedHashSet<Stop>(stops);
+        stops.clear();
+        stops.addAll(lhs);
 
         return stops;
     }
 
     /**
-     * Take a guess at what this does
+     * Guess what this does.
      */
     public static List<Stop> getStopRange(List<Stop> stops, int start, int end) {
-        return stops.subList(start, end > stops.size() ? stops.size() : end);
+        return stops.subList(start, end);
     }
 }
