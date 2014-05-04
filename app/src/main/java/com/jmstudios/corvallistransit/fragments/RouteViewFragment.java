@@ -41,6 +41,7 @@ public class RouteViewFragment extends ListFragment
      * Used for on-demand fragment refresh
      */
     public static int mSectionNumber;
+
     /**
      * Since we can only load 20 at a time, set the initial relative end of the list to that.
      */

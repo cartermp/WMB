@@ -1,9 +1,11 @@
 package com.jmstudios.corvallistransit.utils;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.jmstudios.corvallistransit.models.Stop;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -69,6 +71,55 @@ public class Utils {
      * Guess what this does.
      */
     public static List<Stop> getStopRange(List<Stop> stops, int start, int end) {
-        return stops.subList(start, end);
+        return stops.subList(start, stops.size() < end ? stops.size() : end);
+    }
+
+    /**
+     * Decodes a JSON-formatted string of encoded lat/long points.
+     * <p/>
+     * Solution taken from:
+     * http://stackoverflow.com/questions/15924834/decoding-polyline-with-new-google-maps-api
+     * <p/>
+     * See for more info:
+     * https://developers.google.com/maps/documentation/utilities/polylinealgorithm?csw=1
+     *
+     * @param polyLine A JSON-string encoded set of lat/long points.
+     * @return A list of lat/long points to be used for a map.
+     */
+    public static List<LatLng> decodePolyLine(String polyLine) {
+        List<LatLng> points = new ArrayList<LatLng>();
+
+        int index = 0, len = polyLine.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+
+            do {
+                b = polyLine.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+
+            do {
+                b = polyLine.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng((((double) lat / 1E5)), (((double) lng / 1E5)));
+            points.add(p);
+        }
+
+        return points;
     }
 }

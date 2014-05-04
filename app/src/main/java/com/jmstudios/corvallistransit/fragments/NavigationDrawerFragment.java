@@ -22,10 +22,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.jmstudios.corvallistransit.R;
-import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.utils.SystemUtils;
-
-import java.util.Calendar;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -264,13 +261,7 @@ public class NavigationDrawerFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_map) {
-            if (MainActivity.dayOfWeek != Calendar.SUNDAY) {
-                mCallbacks.onRouteMapButtonPressed();
-                Toast.makeText(getActivity(), "LAUNCH A MAP DUDE", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getActivity(), "No bus routes on Sunday!", Toast.LENGTH_SHORT).show();
-            }
-
+            mCallbacks.onRouteMapButtonPressed(mCurrentSelectedPosition);
             return true;
         } else if (id == R.id.action_alarm) {
             boolean result = SystemUtils.doAlertDialogTimerSetup(getActivity());
@@ -299,6 +290,12 @@ public class NavigationDrawerFragment extends Fragment {
         return getActivity().getActionBar();
     }
 
+    /**
+     * Loads up the initial arrivals, called after all routes have been retrieved
+     */
+    public void loadInitialArrivals() {
+        selectItem(mCurrentSelectedPosition);
+    }
 
     /**
      * Callbacks interface that all activities using this fragment must implement.
@@ -309,14 +306,6 @@ public class NavigationDrawerFragment extends Fragment {
          */
         void onNavigationDrawerItemSelected(int position);
 
-        void onRouteMapButtonPressed();
-    }
-
-    /**
-     * Loads up the initial arrivals, called after all routes have been retrieved
-     */
-    public void loadInitialArrivals()
-    {
-        selectItem(mCurrentSelectedPosition);
+        void onRouteMapButtonPressed(int position);
     }
 }

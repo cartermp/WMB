@@ -8,6 +8,7 @@ import android.util.Log;
 import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.utils.Utils;
 import com.jmstudios.corvallistransit.utils.WebUtils;
 
 import org.json.JSONArray;
@@ -105,6 +106,7 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
 
                 route.name = jobj.getString("Name");
                 route.polyLine = jobj.getString("Polyline");
+                route.polyLinePositions = Utils.decodePolyLine(route.polyLine);
                 route.color = jobj.getString("Color");
                 route.stopList = parseStops(jobj);
                 routes.add(route);

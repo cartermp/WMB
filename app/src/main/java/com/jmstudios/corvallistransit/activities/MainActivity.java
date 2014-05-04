@@ -10,10 +10,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.fragments.NavigationDrawerFragment;
+import com.jmstudios.corvallistransit.fragments.RouteMapFragment;
 import com.jmstudios.corvallistransit.fragments.RouteViewFragment;
 import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.RoutesTask;
@@ -39,16 +38,9 @@ public class MainActivity extends Activity
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
     /**
-     * Fragment managing the Route Map.
-     */
-    private MapFragment mMapFragment;
-
-    /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-
-    private GoogleMap mMap;
 
     /**
      * Static call updates ALL routes
@@ -65,7 +57,7 @@ public class MainActivity extends Activity
         initialize();
 
         //if it's NOT sunday, pull our data down
-        if (dayOfWeek != Calendar.SUNDAY && mRoutes.isEmpty()) {
+        if (/* dayOfWeek != Calendar.SUNDAY && */ mRoutes.isEmpty()) {
             boolean canConnect = WebUtils.checkConnection(this);
             if (canConnect) {
                 retrieveAllRoutes(this, this, false);
@@ -99,8 +91,19 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onRouteMapButtonPressed() {
-        // launch a map dude
+    public void onRouteMapButtonPressed(int position) {
+        final Handler handler = new Handler();
+        final int pos = position;
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, RouteMapFragment.newInstance(pos))
+                        .commit();
+            }
+        });
     }
 
     @Override
