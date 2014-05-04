@@ -2,7 +2,6 @@ package com.jmstudios.corvallistransit.fragments;
 
 import android.app.Fragment;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.models.Route;
-import com.jmstudios.corvallistransit.utils.Utils;
 
 import java.util.List;
 
@@ -81,14 +79,5 @@ public class RouteMapFragment extends Fragment {
         }
 
         return route;
-    }
-
-    // TODO: figure out a good way to incorporate this
-    private class DecodePolyLineAsync extends AsyncTask<String, Void, List<LatLng>> {
-
-        @Override
-        protected List<LatLng> doInBackground(String... strings) {
-            return Utils.decodePolyLine(strings[0]);
-        }
     }
 }
