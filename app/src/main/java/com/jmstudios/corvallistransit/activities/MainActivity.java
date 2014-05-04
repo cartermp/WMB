@@ -56,8 +56,7 @@ public class MainActivity extends Activity
 
         initialize();
 
-        //if it's NOT sunday, pull our data down
-        if (/* dayOfWeek != Calendar.SUNDAY && */ mRoutes.isEmpty()) {
+        if (mRoutes.isEmpty()) {
             boolean canConnect = WebUtils.checkConnection(this);
             if (canConnect) {
                 retrieveAllRoutes(this, this, false);
@@ -205,7 +204,7 @@ public class MainActivity extends Activity
 
     /**
      * Our callback for when Routes have been downloaded..
-     *
+     * <p/>
      * This is called on the UI thread.
      */
     @Override

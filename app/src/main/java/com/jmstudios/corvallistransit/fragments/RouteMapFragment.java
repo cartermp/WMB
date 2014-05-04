@@ -13,10 +13,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.models.Route;
+import com.jmstudios.corvallistransit.models.Stop;
 
 import java.util.List;
 
@@ -35,7 +37,8 @@ public class RouteMapFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         final View theView = inflater.inflate(R.layout.fragment_route_map, container, false);
@@ -76,15 +79,31 @@ public class RouteMapFragment extends Fragment {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(CORVALLIS)
                 .zoom(13)
-                .tilt(30)
+                        //.tilt(30)
                 .build();
+        //map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        drawStopMarkers();
 
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.addAll(route.polyLinePositions);
         polylineOptions.color(Color.parseColor("#" + route.color));
 
         map.addPolyline(polylineOptions);
+    }
+
+    /**
+     * Puts a marker for each stop on the current route on the map.
+     */
+    private void drawStopMarkers() {
+        if (route != null && map != null) {
+            for (Stop s : route.stopList) {
+                map.addMarker(new MarkerOptions()
+                        .position(new LatLng(s.latitude, s.longitude))
+                        .title(s.name + ": " + "ETA"));
+            }
+        }
     }
 
     private Route getRoute() {
