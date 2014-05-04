@@ -8,6 +8,6 @@ Features include:
 - Real-time ETA for stops on a per-route basis
 - Ability to set reminders to catch a bus from 5m to 20m intervals
 - Pull-to-refresh updating on a per-route basis
-- (Planned) Map View for each route
+- Map View for each route
 - (Planned) Map View for an individual stop
 - (Planned) Walking directions, via Google Maps, to a particular stop
