@@ -18,6 +18,7 @@ import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.utils.ArrivalsListener;
 import com.jmstudios.corvallistransit.utils.Utils;
 
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ import uk.co.senab.actionbarpulltorefresh.library.Options;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
-public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompleted {
+public class RouteViewFragment extends ListFragment
+        implements ArrivalsTaskCompleted {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -39,6 +41,10 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
      * Used for on-demand fragment refresh
      */
     public static int mSectionNumber;
+    /**
+     * Since we can only load 20 at a time, set the initial relative end of the list to that.
+     */
+    private static int relativeEnd = 20;
     public List<Stop> stops = new ArrayList<Stop>();
     private PullToRefreshLayout mPullToRefreshLayout;
     private RouteAdapter mAdapter;
@@ -77,12 +83,14 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 if (stops != null && !stops.isEmpty()) {
                     setupTheAdapter(routeColor);
                 } else {
-                    //setEmptyText(getResources().getString(R.string.no_route_info));
+                    setEmptyText(getResources().getString(R.string.no_route_info));
                 }
             } else {
                 setEmptyText(getResources().getString(R.string.no_route_info));
             }
         }
+
+        setListShownNoAnimation(true);
     }
 
     /**
@@ -103,6 +111,19 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
         LinearLayout mLinearLayout = (LinearLayout) inflater.inflate(R.layout.route_list, container, false);
 
         parent.addView(mLinearLayout, lvIndex, lv.getLayoutParams());
+
+        lv.setOnScrollListener(new ArrivalsListener() {
+            @Override
+            public void onLoadMore(int index, int total) {
+                ListView listView = getListView();
+
+                View loadingView = getView().findViewById(R.id.loadingBar);
+                listView.addFooterView(loadingView);
+
+                relativeEnd += 20;
+                doRefresh(false);
+            }
+        });
 
         return layout;
     }
@@ -130,9 +151,9 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 .setup(mPullToRefreshLayout);
     }
 
-    private void getEtasForRoute(final Route route, boolean fromSwipe) {
+    private void getEtasForRoute(final Route route, boolean fromSwipe, int start, int end) {
         new ArrivalsTask(getActivity(), route.name, this, fromSwipe)
-                .execute(Utils.getStopRange(route.stopList, 0, 20));
+                .execute(Utils.getStopRange(route.stopList, start, end));
     }
 
     private Route getRoute() {
@@ -159,8 +180,6 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
      */
     private void doRefresh(final boolean fromSwipe) {
         setListShown(false);
-
-        final boolean swipe = fromSwipe;
 
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -192,7 +211,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                             Route route = getRoute();
 
                             if (route != null) {
-                                getEtasForRoute(route, swipe);
+                                getEtasForRoute(route, fromSwipe, 0, relativeEnd);
                             }
                         }
                     });
@@ -221,6 +240,7 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
+    @Override
     public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival) {
         if (stopsWithArrival != null && !stopsWithArrival.isEmpty()) {
             stops = Utils.filterTimes(stopsWithArrival);
@@ -229,6 +249,11 @@ public class RouteViewFragment extends ListFragment implements ArrivalsTaskCompl
             setupTheAdapter(routeColor);
 
             mAdapter.notifyDataSetChanged();
+
+            // Since we set up the adapter, we can call this
+            View loadingView = getView().findViewById(R.id.loadingBar);
+            ListView lv = getListView();
+            lv.removeFooterView(loadingView);
         }
     }
 }

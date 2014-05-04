@@ -22,6 +22,7 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
     private static final String logTag = "RoutesTask";
     private static final String routesUrl = "http://www.corvallis-bus.appspot.com/routes?stops=true";
     private static boolean mFromeSwipe;
+    private static boolean timedout = false;
     private RouteTaskCompleted listener;
     private ProgressDialog progressDialog;
 
@@ -65,7 +66,11 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
             progressDialog.hide();
         }
 
-        listener.onRoutesTaskCompleted(routes);
+        if (!timedout) {
+            listener.onRoutesTaskCompleted(routes);
+        } else {
+            listener.onRoutesTaskTimeout();
+        }
     }
 
     /**
@@ -78,7 +83,7 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
         try {
             json = WebUtils.downloadUrl(routesUrl);
         } catch (IOException e) {
-            Log.d(logTag, e.getMessage());
+            timedout = true;
         }
 
         return json;

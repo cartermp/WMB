@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
+import com.jmstudios.corvallistransit.models.BusStopComparer;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.WebUtils;
 
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
@@ -23,21 +25,21 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
     private static String mRouteName;
     private ArrivalsTaskCompleted listener;
     private ProgressDialog progressDialog;
-    private boolean mIsFromSwipeDown;
+    private boolean mIsFromSwipeOrLoad;
 
     public ArrivalsTask(Context context, String routeName,
-                        ArrivalsTaskCompleted listener, boolean fromSwipe) {
+                        ArrivalsTaskCompleted listener, boolean fromSwipeOrLoad) {
         mRouteName = routeName;
         this.listener = listener;
-        if (!mIsFromSwipeDown) {
+        if (!mIsFromSwipeOrLoad) {
             progressDialog = new ProgressDialog(context);
         }
-        mIsFromSwipeDown = fromSwipe;
+        mIsFromSwipeOrLoad = fromSwipeOrLoad;
     }
 
     @Override
     protected void onPreExecute() {
-        if (!mIsFromSwipeDown) {
+        if (!mIsFromSwipeOrLoad) {
             progressDialog.setMessage("Getting Eta info...");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
@@ -60,9 +62,13 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
 
     @Override
     protected void onPostExecute(List<Stop> stopsWithArrival) {
-        if (!mIsFromSwipeDown && progressDialog.isShowing()) {
+        if (!mIsFromSwipeOrLoad && progressDialog.isShowing()) {
             progressDialog.hide();
         }
+
+        // Sort by ETA first; we want to limit computation on the UI thread,
+        // hence we do it here rather than there.
+        Collections.sort(stopsWithArrival, new BusStopComparer());
 
         // Send the data off to the receiver - in this case,
         // it's the RouteViewFragment.

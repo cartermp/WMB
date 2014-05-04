@@ -94,8 +94,7 @@ public class MainActivity extends Activity
     /**
      * Alerts NavigationDrawer to update the eta's for our display now that our routes have been fetched.
      */
-    private void loadInitialArrivalTimes()
-    {
+    private void loadInitialArrivalTimes() {
         mNavigationDrawerFragment.loadInitialArrivals();
     }
 
@@ -202,13 +201,25 @@ public class MainActivity extends Activity
     }
 
     /**
-     * Our callback for when Routes have been downloaded.
+     * Our callback for when Routes have been downloaded..
+     *
+     * This is called on the UI thread.
      */
     @Override
-    public void onRoutesTaskCompleted(List<Route> routes)
-    {
+    public void onRoutesTaskCompleted(List<Route> routes) {
         mRoutes = routes;
+
         //calls method to alert NavDrawer to update content for eta's
         loadInitialArrivalTimes();
+    }
+
+    /**
+     * Our callback for when we got a timeout from Routes.
+     * <p/>
+     * This is called on the UI thread.
+     */
+    @Override
+    public void onRoutesTaskTimeout() {
+        WebUtils.launchCheckConnectionDialog(this);
     }
 }

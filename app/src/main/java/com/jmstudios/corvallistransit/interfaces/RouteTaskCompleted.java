@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface RouteTaskCompleted {
     public void onRoutesTaskCompleted(List<Route> routes);
+
+    public void onRoutesTaskTimeout();
 }
