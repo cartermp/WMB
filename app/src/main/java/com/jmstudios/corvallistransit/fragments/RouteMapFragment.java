@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.jmstudios.corvallistransit.R;
@@ -36,12 +38,11 @@ public class RouteMapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-
         final View theView = inflater.inflate(R.layout.fragment_route_map, container, false);
 
         route = getRoute();
 
-        initMap();
+        setupMapIfNeeded();
 
         return theView;
     }
@@ -58,19 +59,32 @@ public class RouteMapFragment extends Fragment {
         }
     }
 
-    private void initMap() {
+    private void setupMapIfNeeded() {
         if (map == null) {
-            MapFragment mapFragment = MapFragment.newInstance();
-            map = mapFragment.getMap();
+            FragmentManager fm = getFragmentManager();
+            MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
+
+            map = mf.getMap();
 
             if (map != null) {
-                PolylineOptions polylineOptions = new PolylineOptions();
-                polylineOptions.addAll(route.polyLinePositions);
-                polylineOptions.color(Color.parseColor("#" + route.color));
-
-                map.addPolyline(polylineOptions);
+                setupMap();
             }
         }
+    }
+
+    private void setupMap() {
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(CORVALLIS)
+                .zoom(13)
+                .tilt(30)
+                .build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.addAll(route.polyLinePositions);
+        polylineOptions.color(Color.parseColor("#" + route.color));
+
+        map.addPolyline(polylineOptions);
     }
 
     private Route getRoute() {
