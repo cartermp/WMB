@@ -9,5 +9,5 @@ Features include:
 - Ability to set reminders to catch a bus from 5m to 20m intervals
 - Pull-to-refresh updating on a per-route basis
 - Map View for each route
-- (Planned) Map View for an individual stop
+- Map View for an individual stop
 - (Planned) Walking directions, via Google Maps, to a particular stop
