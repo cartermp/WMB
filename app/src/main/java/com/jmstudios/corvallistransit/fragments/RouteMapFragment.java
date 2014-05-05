@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.clustering.ClusterManager;
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.models.Route;
@@ -29,6 +29,7 @@ public class RouteMapFragment extends Fragment {
     private final LatLng CORVALLIS = new LatLng(44.557285, -123.2852531);
     private GoogleMap map;
     private Route route;
+    private ClusterManager<Stop> mClusterManager;
 
     public static RouteMapFragment newInstance(int routeIdx) {
         RouteMapFragment frag = new RouteMapFragment();
@@ -90,7 +91,7 @@ public class RouteMapFragment extends Fragment {
         //map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        drawStopMarkers();
+        setUpClusterer();
 
         setUpMapUI();
 
@@ -101,25 +102,42 @@ public class RouteMapFragment extends Fragment {
         map.addPolyline(polylineOptions);
     }
 
-    private void setUpMapUI() {
-        if (map != null) {
-            UiSettings settings = map.getUiSettings();
-            settings.setMyLocationButtonEnabled(true);
-            settings.setAllGesturesEnabled(true);
-        }
+    private void setUpClusterer() {
+        mClusterManager = new ClusterManager<Stop>(getActivity(), map);
+
+        map.setInfoWindowAdapter(mClusterManager.getMarkerManager());
+
+        mClusterManager.getMarkerCollection().setOnInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                int i = Utils.findStopByLocation(route.stopList, marker.getPosition());
+                if (i >= 0) {
+                    Stop s = route.stopList.get(i);
+                    if (s != null) {
+                        marker.setTitle(s.etaText());
+                        marker.setSnippet(s.name);
+                    }
+
+                    return null;
+                }
+                return null;
+            }
+        });
+
+        map.setOnCameraChangeListener(mClusterManager);
+        map.setOnMarkerClickListener(mClusterManager);
+
+        mClusterManager.addItems(route.stopList);
     }
 
-    /**
-     * Puts a marker for each stop on the current route on the map.
-     */
-    private void drawStopMarkers() {
-        if (route != null && map != null) {
-            for (Stop s : route.stopList) {
-                map.addMarker(new MarkerOptions()
-                        .position(new LatLng(s.latitude, s.longitude))
-                        .title(etaText(s))
-                        .snippet(s.name));
-            }
+    private void setUpMapUI() {
+        if (map != null) {
+            map.setMyLocationEnabled(true);
         }
     }
 

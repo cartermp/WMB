@@ -5,7 +5,6 @@ import com.jmstudios.corvallistransit.models.Stop;
 
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -74,56 +73,40 @@ public class Utils {
         return stops.subList(start, stops.size() < end ? stops.size() : end);
     }
 
-    /**
-     * Decodes a JSON-formatted string of encoded lat/long points.
-     * <p/>
-     * Solution taken from:
-     * http://stackoverflow.com/questions/15924834/decoding-polyline-with-new-google-maps-api
-     * <p/>
-     * See for more info:
-     * https://developers.google.com/maps/documentation/utilities/polylinealgorithm?csw=1
-     *
-     * @param polyLine A JSON-string encoded set of lat/long points.
-     * @return A list of lat/long points to be used for a map.
-     */
-    public static List<LatLng> decodePolyLine(String polyLine) {
-        List<LatLng> points = new ArrayList<LatLng>();
-
-        int index = 0, len = polyLine.length();
-        int lat = 0, lng = 0;
-
-        while (index < len) {
-            int b, shift = 0, result = 0;
-
-            do {
-                b = polyLine.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-
-            do {
-                b = polyLine.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            LatLng p = new LatLng((((double) lat / 1E5)), (((double) lng / 1E5)));
-            points.add(p);
-        }
-
-        return points;
-    }
-
     public static boolean isNullOrEmpty(String s) {
         return s == null || s.equals("");
+    }
+
+    public static int findStopByLocation(List<Stop> stops, LatLng location) {
+        int i, j;
+        int size = stops.size();
+
+        for (i = 0, j = size - 1; i < size && j > 0; i++, j--) {
+            Stop s = stops.get(i);
+            if (s != null && locationsEqual(s.latitude, location.latitude,
+                    s.longitude, location.longitude)) {
+                return i;
+            }
+
+            s = stops.get(j);
+            if (s != null && locationsEqual(s.latitude, location.latitude,
+                    s.longitude, location.longitude)) {
+                return j;
+            }
+        }
+
+        return -1;
+    }
+
+    public static boolean locationsEqual(double lat1, double lat2, double long1, double long2) {
+        if (Math.abs(lat1 - lat2) >= 0.000001) {
+            return false;
+        }
+
+        if (Math.abs(long1 - long2) >= 0.000001) {
+            return false;
+        }
+
+        return true;
     }
 }

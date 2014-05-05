@@ -1,11 +1,13 @@
 package com.jmstudios.corvallistransit.models;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.clustering.ClusterItem;
 import com.jmstudios.corvallistransit.utils.Utils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
-public class Stop {
+public class Stop implements ClusterItem {
     public String name;
     public String road;
     public double bearing;
@@ -19,6 +21,12 @@ public class Stop {
     public int eta() {
         Period period = new Period(DateTime.now(), this.expectedTime);
         return period.getMinutes();
+    }
+
+    public String etaText() {
+        return (eta() == 1) ? eta() + " min away" :
+                (eta() <= 0) ? "No ETA" :
+                        eta() + " mins away";
     }
 
     /*
@@ -37,5 +45,10 @@ public class Stop {
 
     public DateTime getScheduledTime() {
         return Utils.convertToDateTime(this.expectedTimeString);
+    }
+
+    @Override
+    public LatLng getPosition() {
+        return new LatLng(latitude, longitude);
     }
 }
