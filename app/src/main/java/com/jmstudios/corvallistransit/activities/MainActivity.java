@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.jmstudios.corvallistransit.R;
+import com.jmstudios.corvallistransit.adapters.RouteAdapter;
 import com.jmstudios.corvallistransit.fragments.NavigationDrawerFragment;
 import com.jmstudios.corvallistransit.fragments.RouteMapFragment;
 import com.jmstudios.corvallistransit.fragments.RouteViewFragment;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        RouteTaskCompleted {
+        RouteTaskCompleted, RouteAdapter.MapListenerCallbacks {
     /**
      * Used to store Bus Routes in the application.
      */
@@ -90,26 +91,25 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onRouteMapButtonPressed(int position) {
+    public void onRouteMapButtonPressed(final int position, final boolean fromStop,
+                                        final double lat, final double lng) {
         final Handler handler = new Handler();
-        final int pos = position;
 
         handler.post(new Runnable() {
             @Override
             public void run() {
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, RouteMapFragment.newInstance(pos))
+                        .replace(R.id.container, RouteMapFragment.newInstance(
+                                position, fromStop, lat, lng))
                         .commit();
             }
         });
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
+    public void onNavigationDrawerItemSelected(final int position) {
         final Handler handler = new Handler();
-        final int pos = position;
 
         // Posting the work off on a handler makes it *slightly*
         // "faster" from the user's perspective with a large list.
@@ -118,11 +118,10 @@ public class MainActivity extends Activity
             public void run() {
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, RouteViewFragment.newInstance(pos + 1))
+                        .replace(R.id.container, RouteViewFragment.newInstance(position + 1))
                         .commit();
             }
         });
-
     }
 
     public void onSectionAttached(int number) {
@@ -223,5 +222,11 @@ public class MainActivity extends Activity
     @Override
     public void onRoutesTaskTimeout() {
         WebUtils.launchCheckConnectionDialog(this);
+    }
+
+    @Override
+    public void onEtaCardClick(double lat, double lng) {
+        onRouteMapButtonPressed(NavigationDrawerFragment.mCurrentSelectedPosition,
+                true, lat, lng);
     }
 }

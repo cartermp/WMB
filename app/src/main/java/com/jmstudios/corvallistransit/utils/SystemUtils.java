@@ -9,38 +9,18 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
-import com.jmstudios.corvallistransit.models.Tuple;
 
 /**
  * Container for various system utilities such as Notifications, Timers, Location, etc.
  */
 public class SystemUtils {
     private static final int millisecondMultiplierForMinutes = 60000;
-
-    /**
-     * Gets a user's latitude and longitude.
-     */
-    public static Tuple<Double, Double> getUserLocation(final Context context) {
-        LocationManager locationManager = (LocationManager)
-                context.getSystemService(Context.LOCATION_SERVICE);
-
-        Criteria criteria = new Criteria();
-
-        String provider = locationManager.getBestProvider(criteria, false);
-
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        return new Tuple<Double, Double>(location.getLatitude(), location.getLongitude());
-    }
 
     /**
      * Sets up a Dialog to allow the user to set a timer to remind them

@@ -26,21 +26,28 @@ import java.util.List;
 
 public class RouteMapFragment extends Fragment {
     private static final String ROUTE_IDX = "route_index";
+    private static final String FROM_STOP = "from_stop";
+    private static final String STOP_LAT = "stop_latitude";
+    private static final String STOP_LNG = "stop_longitude";
     private final LatLng CORVALLIS = new LatLng(44.557285, -123.2852531);
+    private double stopLat;
+    private double stopLng;
+    private boolean fromStop = false;
     private GoogleMap map;
     private Route route;
-    private ClusterManager<Stop> mClusterManager;
 
-    public static RouteMapFragment newInstance(int routeIdx) {
+    public static RouteMapFragment newInstance(int routeIdx, boolean fromStop,
+                                               double lat, double lng) {
         RouteMapFragment frag = new RouteMapFragment();
+
         Bundle bundle = new Bundle();
         bundle.putInt(ROUTE_IDX, routeIdx);
+        bundle.putBoolean(FROM_STOP, fromStop);
+        bundle.putDouble(STOP_LAT, lat);
+        bundle.putDouble(STOP_LNG, lng);
+
         frag.setArguments(bundle);
         return frag;
-    }
-
-    private static String etaText(Stop s) {
-        return (Utils.isNullOrEmpty(s.expectedTimeString)) ? "No ETA" : "" + s.eta();
     }
 
     @Override
@@ -48,11 +55,27 @@ public class RouteMapFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
+        Bundle args = getArguments();
+
+        if (args != null) {
+            if (args.containsKey(FROM_STOP)) {
+                fromStop = args.getBoolean(FROM_STOP);
+            }
+
+            if (args.containsKey(STOP_LAT)) {
+                stopLat = args.getDouble(STOP_LAT);
+            }
+
+            if (args.containsKey(STOP_LNG)) {
+                stopLng = args.getDouble(STOP_LNG);
+            }
+        }
+
         final View theView = inflater.inflate(R.layout.fragment_route_map, container, false);
 
         route = getRoute();
 
-        setupMapIfNeeded();
+        setupMapIfNeeded(fromStop);
 
         return theView;
     }
@@ -69,7 +92,7 @@ public class RouteMapFragment extends Fragment {
         }
     }
 
-    private void setupMapIfNeeded() {
+    private void setupMapIfNeeded(boolean fromStop) {
         if (map == null) {
             FragmentManager fm = getFragmentManager();
             MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
@@ -77,19 +100,13 @@ public class RouteMapFragment extends Fragment {
             map = mf.getMap();
 
             if (map != null) {
-                setupMap();
+                setupMap(fromStop);
             }
         }
     }
 
-    private void setupMap() {
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(CORVALLIS)
-                .zoom(13)
-                        //.tilt(30)
-                .build();
-        //map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    private void setupMap(boolean fromStop) {
+        animateMap(fromStop);
 
         setUpClusterer();
 
@@ -103,7 +120,7 @@ public class RouteMapFragment extends Fragment {
     }
 
     private void setUpClusterer() {
-        mClusterManager = new ClusterManager<Stop>(getActivity(), map);
+        ClusterManager<Stop> mClusterManager = new ClusterManager<Stop>(getActivity(), map);
 
         map.setInfoWindowAdapter(mClusterManager.getMarkerManager());
 
@@ -152,5 +169,18 @@ public class RouteMapFragment extends Fragment {
         }
 
         return route;
+    }
+
+    private void animateMap(boolean fromStop) {
+        LatLng pos = fromStop ? new LatLng(stopLat, stopLng) : CORVALLIS;
+        float zoom = fromStop ? 15 : 13;
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(pos)
+                .zoom(zoom)
+                        //.tilt(30)
+                .build();
+        //map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 }

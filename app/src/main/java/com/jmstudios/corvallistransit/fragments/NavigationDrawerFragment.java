@@ -58,6 +58,7 @@ public class NavigationDrawerFragment extends Fragment {
                     "Route C3",
                     "Route CVA"
             };
+    public static int mCurrentSelectedPosition = 0;
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
@@ -69,7 +70,6 @@ public class NavigationDrawerFragment extends Fragment {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
-    private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
@@ -261,7 +261,8 @@ public class NavigationDrawerFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_map) {
-            mCallbacks.onRouteMapButtonPressed(mCurrentSelectedPosition);
+            mCallbacks.onRouteMapButtonPressed(mCurrentSelectedPosition,
+                    false, 0.0, 0.0);
             return true;
         } else if (id == R.id.action_alarm) {
             boolean result = SystemUtils.doAlertDialogTimerSetup(getActivity());
@@ -306,6 +307,6 @@ public class NavigationDrawerFragment extends Fragment {
          */
         void onNavigationDrawerItemSelected(int position);
 
-        void onRouteMapButtonPressed(int position);
+        void onRouteMapButtonPressed(int position, boolean fromStop, double lat, double lng);
     }
 }

@@ -78,20 +78,14 @@ public class Utils {
     }
 
     public static int findStopByLocation(List<Stop> stops, LatLng location) {
-        int i, j;
+        int i;
         int size = stops.size();
 
-        for (i = 0, j = size - 1; i < size && j > 0; i++, j--) {
+        for (i = 0; i < size; i++) {
             Stop s = stops.get(i);
             if (s != null && locationsEqual(s.latitude, location.latitude,
                     s.longitude, location.longitude)) {
                 return i;
-            }
-
-            s = stops.get(j);
-            if (s != null && locationsEqual(s.latitude, location.latitude,
-                    s.longitude, location.longitude)) {
-                return j;
             }
         }
 
