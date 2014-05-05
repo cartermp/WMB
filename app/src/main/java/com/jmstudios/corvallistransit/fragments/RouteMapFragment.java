@@ -30,11 +30,13 @@ public class RouteMapFragment extends Fragment {
     private static final String STOP_LAT = "stop_latitude";
     private static final String STOP_LNG = "stop_longitude";
     private final LatLng CORVALLIS = new LatLng(44.557285, -123.2852531);
+
     private double stopLat;
     private double stopLng;
     private boolean fromStop = false;
     private GoogleMap map;
     private Route route;
+    private ClusterManager<Stop> mClusterManager;
 
     public static RouteMapFragment newInstance(int routeIdx, boolean fromStop,
                                                double lat, double lng) {
@@ -120,7 +122,7 @@ public class RouteMapFragment extends Fragment {
     }
 
     private void setUpClusterer() {
-        ClusterManager<Stop> mClusterManager = new ClusterManager<Stop>(getActivity(), map);
+        mClusterManager = new ClusterManager<Stop>(getActivity(), map);
 
         map.setInfoWindowAdapter(mClusterManager.getMarkerManager());
 
