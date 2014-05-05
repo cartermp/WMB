@@ -122,4 +122,8 @@ public class Utils {
 
         return points;
     }
+
+    public static boolean isNullOrEmpty(String s) {
+        return s == null || s.equals("");
+    }
 }

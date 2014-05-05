@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -19,6 +20,7 @@ import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.utils.Utils;
 
 import java.util.List;
 
@@ -34,6 +36,10 @@ public class RouteMapFragment extends Fragment {
         bundle.putInt(ROUTE_IDX, routeIdx);
         frag.setArguments(bundle);
         return frag;
+    }
+
+    private static String etaText(Stop s) {
+        return (Utils.isNullOrEmpty(s.expectedTimeString)) ? "No ETA" : "" + s.eta();
     }
 
     @Override
@@ -86,11 +92,21 @@ public class RouteMapFragment extends Fragment {
 
         drawStopMarkers();
 
+        setUpMapUI();
+
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.addAll(route.polyLinePositions);
         polylineOptions.color(Color.parseColor("#" + route.color));
 
         map.addPolyline(polylineOptions);
+    }
+
+    private void setUpMapUI() {
+        if (map != null) {
+            UiSettings settings = map.getUiSettings();
+            settings.setMyLocationButtonEnabled(true);
+            settings.setAllGesturesEnabled(true);
+        }
     }
 
     /**
@@ -101,7 +117,8 @@ public class RouteMapFragment extends Fragment {
             for (Stop s : route.stopList) {
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(s.latitude, s.longitude))
-                        .title(s.name + ": " + "ETA"));
+                        .title(etaText(s))
+                        .snippet(s.name));
             }
         }
     }
