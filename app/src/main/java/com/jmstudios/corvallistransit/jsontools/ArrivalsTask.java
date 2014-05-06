@@ -3,26 +3,26 @@ package com.jmstudios.corvallistransit.jsontools;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
+import com.jmstudios.corvallistransit.interfaces.ArrivalsSliceParsed;
 import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
 import com.jmstudios.corvallistransit.models.BusStopComparer;
 import com.jmstudios.corvallistransit.models.Stop;
-import com.jmstudios.corvallistransit.utils.WebUtils;
+import com.jmstudios.corvallistransit.utils.ArrivalsRunnable;
+import com.jmstudios.corvallistransit.utils.Utils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
-    private static final String arrivalsUrl = "http://www.corvallis-bus.appspot.com/arrivals?stops=";
-    private static final String arrivalsLogTag = "ArrivalsTask";
+public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
+        implements ArrivalsSliceParsed {
     private static String mRouteName;
+    private ConcurrentLinkedQueue<Stop> mCclq = new ConcurrentLinkedQueue<Stop>();
     private ArrivalsTaskCompleted listener;
     private ProgressDialog progressDialog;
     private boolean mIsFromSwipeOrLoad;
@@ -53,11 +53,28 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
             return null;
         }
 
-        List<Stop> stops = stupidSyntaxStops[0];
+        List<List<Stop>> slices = new ArrayList<List<Stop>>();
 
-        String url = arrivalsUrl + WebUtils.stopsToIdCsv(stops);
+        for (int i = 0; i < stupidSyntaxStops[0].size(); i += 10) {
+            slices.add(Utils.getStopRange(stupidSyntaxStops[0], i, i + 10));
+        }
 
-        return getArrivalsData(url, stops);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+
+        for (List<Stop> slice : slices) {
+            Runnable worker = new ArrivalsRunnable(this, slice, mRouteName);
+            executorService.execute(worker);
+        }
+
+        executorService.shutdown();
+
+        try {
+            executorService.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            //whatever
+        }
+
+        return new ArrayList<Stop>(mCclq);
     }
 
     @Override
@@ -70,62 +87,13 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>> {
         // hence we do it here rather than there.
         Collections.sort(stopsWithArrival, new BusStopComparer());
 
-        // Send the data off to the receiver - in this case,
-        // it's the RouteViewFragment.
         listener.onArrivalsTaskCompleted(stopsWithArrival);
     }
 
-    private List<Stop> getArrivalsData(String url, List<Stop> stopsWithoutArrival) {
-        List<Stop> stopsWithArrival = new ArrayList<Stop>();
-        try {
-            String json = WebUtils.downloadUrl(url);
-            stopsWithArrival = parseStopArrivals(json, stopsWithoutArrival);
-        } catch (IOException e) {
-            if (e.getMessage() != null) {
-                Log.d(arrivalsLogTag, e.getMessage());
-            }
+    @Override
+    public void onSliceParsed(List<Stop> slice) {
+        if (mCclq != null) {
+            mCclq.addAll(slice);
         }
-
-        return stopsWithArrival;
-    }
-
-    /**
-     * TODO - this has a bug or bugs in that it is not getting all the info we need.
-     */
-    private List<Stop> parseStopArrivals(String json, List<Stop> stopsWithoutArrival) {
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-
-            boolean foundStop;
-
-            for (Stop s : stopsWithoutArrival) {
-                foundStop = false;
-
-                String id = String.valueOf(s.id);
-
-                if (jsonObject.has(id)) {
-                    JSONArray jsonArray = jsonObject.getJSONArray(id);
-                    int len = jsonArray.length();
-
-                    if (len > 0) {
-                        for (int i = 0; i < len && !foundStop; i++) {
-                            JSONObject jobj2 = jsonArray.getJSONObject(i);
-
-                            String jsonRouteName = jobj2.getString("Route");
-                            if (mRouteName.equals(jsonRouteName.trim())) {
-                                s.expectedTimeString = jobj2.getString("Expected");
-                                s.expectedTime = s.getScheduledTime();
-
-                                foundStop = true;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (JSONException e) {
-            Log.d(arrivalsLogTag, e.getMessage());
-        }
-
-        return stopsWithoutArrival;
     }
 }
