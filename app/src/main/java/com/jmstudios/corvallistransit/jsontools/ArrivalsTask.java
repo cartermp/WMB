@@ -55,8 +55,10 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
 
         List<List<Stop>> slices = new ArrayList<List<Stop>>();
 
-        for (int i = 0; i < stupidSyntaxStops[0].size(); i += 10) {
-            slices.add(Utils.getStopRange(stupidSyntaxStops[0], i, i + 10));
+        int sliceSize = 10;
+
+        for (int i = 0; i < stupidSyntaxStops[0].size(); i += sliceSize) {
+            slices.add(Utils.getStopRange(stupidSyntaxStops[0], i, i + sliceSize));
         }
 
         ExecutorService executorService = Executors.newCachedThreadPool();
@@ -97,11 +99,6 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
     @Override
     public void onSliceParsed(List<Stop> slice) {
         if (mCclq != null) {
-            /*
-             * Filter and sort the slice here.  Later when we sort all slices, it'll be faster.
-             */
-            //slice = Utils.filterTimes(slice);
-            Collections.sort(slice, new BusStopComparer());
             mCclq.addAll(slice);
         }
     }

@@ -1,6 +1,7 @@
 package com.jmstudios.corvallistransit.utils;
 
 import com.jmstudios.corvallistransit.interfaces.ArrivalsSliceParsed;
+import com.jmstudios.corvallistransit.models.BusStopComparer;
 import com.jmstudios.corvallistransit.models.Stop;
 
 import org.json.JSONArray;
@@ -9,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ArrivalsRunnable implements Runnable {
@@ -28,7 +30,15 @@ public class ArrivalsRunnable implements Runnable {
     @Override
     public void run() {
         String url = arrivalsUrl + WebUtils.stopsToIdCsv(mStopSlice);
-        mListener.onSliceParsed(getArrivalsData(url, mStopSlice));
+
+        List<Stop> stopsWithTimes = new ArrayList<Stop>();
+        stopsWithTimes.addAll(getArrivalsData(url, mStopSlice));
+
+        stopsWithTimes = Utils.filterTimes(stopsWithTimes);
+
+        Collections.sort(stopsWithTimes, new BusStopComparer());
+
+        mListener.onSliceParsed(stopsWithTimes);
     }
 
     private List<Stop> getArrivalsData(String url, List<Stop> stopsWithoutArrival) {
