@@ -74,7 +74,15 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
             //whatever
         }
 
-        return new ArrayList<Stop>(mCclq);
+        List<Stop> stopsWithUpdatedTimes = new ArrayList<Stop>(mCclq);
+
+        /*
+         * Super fast sorting here.  Each slice is also sorted, so this
+         * should take barely any time at all.
+         */
+        Collections.sort(stopsWithUpdatedTimes, new BusStopComparer());
+
+        return stopsWithUpdatedTimes;
     }
 
     @Override
@@ -83,16 +91,17 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
             progressDialog.hide();
         }
 
-        // Sort by ETA first; we want to limit computation on the UI thread,
-        // hence we do it here rather than there.
-        Collections.sort(stopsWithArrival, new BusStopComparer());
-
         listener.onArrivalsTaskCompleted(stopsWithArrival);
     }
 
     @Override
     public void onSliceParsed(List<Stop> slice) {
         if (mCclq != null) {
+            /*
+             * Filter and sort the slice here.  Later when we sort all slices, it'll be faster.
+             */
+            //slice = Utils.filterTimes(slice);
+            Collections.sort(slice, new BusStopComparer());
             mCclq.addAll(slice);
         }
     }
