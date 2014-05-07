@@ -1,5 +1,6 @@
 package com.jmstudios.corvallistransit.utils;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.jmstudios.corvallistransit.models.Stop;
 
 import org.joda.time.DateTime;
@@ -69,6 +70,37 @@ public class Utils {
      * Guess what this does.
      */
     public static List<Stop> getStopRange(List<Stop> stops, int start, int end) {
-        return stops.subList(start, end);
+        return stops.subList(start, stops.size() < end ? stops.size() : end);
+    }
+
+    public static boolean isNullOrEmpty(String s) {
+        return s == null || s.equals("");
+    }
+
+    public static int findStopByLocation(List<Stop> stops, LatLng location) {
+        int i;
+        int size = stops.size();
+
+        for (i = 0; i < size; i++) {
+            Stop s = stops.get(i);
+            if (s != null && locationsEqual(s.latitude, location.latitude,
+                    s.longitude, location.longitude)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public static boolean locationsEqual(double lat1, double lat2, double long1, double long2) {
+        if (Math.abs(lat1 - lat2) >= 0.000001) {
+            return false;
+        }
+
+        if (Math.abs(long1 - long2) >= 0.000001) {
+            return false;
+        }
+
+        return true;
     }
 }

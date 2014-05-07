@@ -18,7 +18,6 @@ import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
-import com.jmstudios.corvallistransit.utils.ArrivalsListener;
 import com.jmstudios.corvallistransit.utils.Utils;
 
 import java.util.ArrayList;
@@ -41,6 +40,7 @@ public class RouteViewFragment extends ListFragment
      * Used for on-demand fragment refresh
      */
     public static int mSectionNumber;
+
     /**
      * Since we can only load 20 at a time, set the initial relative end of the list to that.
      */
@@ -112,19 +112,6 @@ public class RouteViewFragment extends ListFragment
 
         parent.addView(mLinearLayout, lvIndex, lv.getLayoutParams());
 
-        lv.setOnScrollListener(new ArrivalsListener() {
-            @Override
-            public void onLoadMore(int index, int total) {
-                ListView listView = getListView();
-
-                View loadingView = getView().findViewById(R.id.loadingBar);
-                listView.addFooterView(loadingView);
-
-                relativeEnd += 20;
-                doRefresh(false);
-            }
-        });
-
         return layout;
     }
 
@@ -170,7 +157,8 @@ public class RouteViewFragment extends ListFragment
     }
 
     private void setupTheAdapter(String routeColor) {
-        mAdapter = new RouteAdapter(getActivity(), stops, routeColor);
+        mAdapter = new RouteAdapter(getActivity(),
+                (RouteAdapter.MapListenerCallbacks) getActivity(), stops, routeColor);
         setListAdapter(mAdapter);
     }
 
@@ -249,11 +237,6 @@ public class RouteViewFragment extends ListFragment
             setupTheAdapter(routeColor);
 
             mAdapter.notifyDataSetChanged();
-
-            // Since we set up the adapter, we can call this
-            View loadingView = getView().findViewById(R.id.loadingBar);
-            ListView lv = getListView();
-            lv.removeFooterView(loadingView);
         }
     }
 }

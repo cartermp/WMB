@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.maps.android.PolyUtil;
 import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
@@ -105,6 +106,7 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
 
                 route.name = jobj.getString("Name");
                 route.polyLine = jobj.getString("Polyline");
+                route.polyLinePositions = PolyUtil.decode(route.polyLine);
                 route.color = jobj.getString("Color");
                 route.stopList = parseStops(jobj);
                 routes.add(route);

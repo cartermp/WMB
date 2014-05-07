@@ -10,10 +10,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.jmstudios.corvallistransit.R;
+import com.jmstudios.corvallistransit.adapters.RouteAdapter;
 import com.jmstudios.corvallistransit.fragments.NavigationDrawerFragment;
+import com.jmstudios.corvallistransit.fragments.RouteMapFragment;
 import com.jmstudios.corvallistransit.fragments.RouteViewFragment;
 import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.RoutesTask;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        RouteTaskCompleted {
+        RouteTaskCompleted, RouteAdapter.MapListenerCallbacks {
     /**
      * Used to store Bus Routes in the application.
      */
@@ -39,16 +39,9 @@ public class MainActivity extends Activity
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
     /**
-     * Fragment managing the Route Map.
-     */
-    private MapFragment mMapFragment;
-
-    /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-
-    private GoogleMap mMap;
 
     /**
      * Static call updates ALL routes
@@ -64,8 +57,7 @@ public class MainActivity extends Activity
 
         initialize();
 
-        //if it's NOT sunday, pull our data down
-        if (dayOfWeek != Calendar.SUNDAY && mRoutes.isEmpty()) {
+        if (mRoutes.isEmpty()) {
             boolean canConnect = WebUtils.checkConnection(this);
             if (canConnect) {
                 retrieveAllRoutes(this, this, false);
@@ -99,15 +91,25 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onRouteMapButtonPressed() {
-        // launch a map dude
+    public void onRouteMapButtonPressed(final int position, final boolean fromStop,
+                                        final double lat, final double lng) {
+        final Handler handler = new Handler();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, RouteMapFragment.newInstance(
+                                position, fromStop, lat, lng))
+                        .commit();
+            }
+        });
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
+    public void onNavigationDrawerItemSelected(final int position) {
         final Handler handler = new Handler();
-        final int pos = position;
 
         // Posting the work off on a handler makes it *slightly*
         // "faster" from the user's perspective with a large list.
@@ -116,11 +118,10 @@ public class MainActivity extends Activity
             public void run() {
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, RouteViewFragment.newInstance(pos + 1))
+                        .replace(R.id.container, RouteViewFragment.newInstance(position + 1))
                         .commit();
             }
         });
-
     }
 
     public void onSectionAttached(int number) {
@@ -202,7 +203,7 @@ public class MainActivity extends Activity
 
     /**
      * Our callback for when Routes have been downloaded..
-     *
+     * <p/>
      * This is called on the UI thread.
      */
     @Override
@@ -221,5 +222,11 @@ public class MainActivity extends Activity
     @Override
     public void onRoutesTaskTimeout() {
         WebUtils.launchCheckConnectionDialog(this);
+    }
+
+    @Override
+    public void onEtaCardClick(double lat, double lng) {
+        onRouteMapButtonPressed(NavigationDrawerFragment.mCurrentSelectedPosition,
+                true, lat, lng);
     }
 }
