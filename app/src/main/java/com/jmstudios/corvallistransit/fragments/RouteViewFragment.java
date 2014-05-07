@@ -140,7 +140,7 @@ public class RouteViewFragment extends ListFragment
 
     private void getEtasForRoute(final Route route, boolean fromSwipe, int start, int end) {
         new ArrivalsTask(getActivity(), route.name, this, fromSwipe)
-                .execute(Utils.getStopRange(route.stopList, start, end));
+                .execute(route.stopList);
     }
 
     private Route getRoute() {
