@@ -59,6 +59,7 @@ public class NavigationDrawerFragment extends Fragment {
                     "Route CVA"
             };
     public static int mCurrentSelectedPosition = 0;
+    public static boolean mapOpen = false;
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
@@ -72,7 +73,6 @@ public class NavigationDrawerFragment extends Fragment {
     private View mFragmentContainerView;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
-    private boolean mapOpen = false;
 
     public NavigationDrawerFragment() {
     }

@@ -226,6 +226,7 @@ public class MainActivity extends Activity
 
     @Override
     public void onEtaCardClick(double lat, double lng) {
+        NavigationDrawerFragment.mapOpen = true;
         onRouteMapButtonPressed(NavigationDrawerFragment.mCurrentSelectedPosition,
                 true, lat, lng);
     }
