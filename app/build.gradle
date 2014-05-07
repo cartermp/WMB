@@ -16,6 +16,15 @@ android {
     compileSdkVersion 19
     buildToolsVersion "19.0.3"
 
+    signingConfigs {
+        release {
+            storeFile file('WMBKeystore.jks')
+            storePassword "bigbadbannanas"
+            keyAlias "CarterP"
+            keyPassword "littlenicebannanas"
+        }
+    }
+
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 19
@@ -26,6 +35,7 @@ android {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
         }
     }
 }
