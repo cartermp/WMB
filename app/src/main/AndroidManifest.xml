@@ -41,10 +41,15 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <!-- Debug Key.  Use this when using a debug apk. -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBbhnqr3kCThKdIGr3tkgFbiFg3WyzJFi4" />
+            android:value="AIzaSyDTALYkeMXCTT_dHEOz0HM7UTCJ61IVf_0" />
+
+        <!-- Release Key.  Use this when using a signed release apk. -->
+        <!--<meta-data-->
+        <!--android:name="com.google.android.maps.v2.API_KEY"-->
+        <!--android:value="AIzaSyBbhnqr3kCThKdIGr3tkgFbiFg3WyzJFi4" />-->
     </application>
-
-
 </manifest>
