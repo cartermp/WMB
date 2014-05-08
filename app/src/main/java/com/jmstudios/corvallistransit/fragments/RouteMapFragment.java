@@ -89,8 +89,16 @@ public class RouteMapFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
 
-        if (mf != null) {
-            fm.beginTransaction().remove(mf).commit();
+        if (mf != null)
+        {
+            try
+            {
+                fm.beginTransaction().remove(mf).commit();
+            }
+            catch(IllegalStateException ise)
+            {
+                //caught illegal state exception!
+            }
         }
     }
 
