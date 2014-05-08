@@ -59,6 +59,7 @@ public class NavigationDrawerFragment extends Fragment {
                     "Route CVA"
             };
     public static int mCurrentSelectedPosition = 0;
+    public static boolean mapOpen = false;
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
@@ -208,6 +209,7 @@ public class NavigationDrawerFragment extends Fragment {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
         if (mCallbacks != null) {
+            mapOpen = false;
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
     }
@@ -261,8 +263,12 @@ public class NavigationDrawerFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_map) {
-            mCallbacks.onRouteMapButtonPressed(mCurrentSelectedPosition,
-                    false, 0.0, 0.0);
+            if (!mapOpen) {
+                mCallbacks.onRouteMapButtonPressed(mCurrentSelectedPosition,
+                        false, 0.0, 0.0);
+                mapOpen = true;
+            }
+
             return true;
         } else if (id == R.id.action_alarm) {
             boolean result = SystemUtils.doAlertDialogTimerSetup(getActivity());

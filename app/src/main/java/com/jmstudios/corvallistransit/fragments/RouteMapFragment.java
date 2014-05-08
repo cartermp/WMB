@@ -22,6 +22,7 @@ import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.Utils;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class RouteMapFragment extends Fragment {
@@ -99,6 +100,22 @@ public class RouteMapFragment extends Fragment {
             {
                 //caught illegal state exception!
             }
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 
