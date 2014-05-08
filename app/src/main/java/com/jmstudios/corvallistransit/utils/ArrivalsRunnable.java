@@ -31,14 +31,14 @@ public class ArrivalsRunnable implements Runnable {
     public void run() {
         String url = arrivalsUrl + WebUtils.stopsToIdCsv(mStopSlice);
 
-        List<Stop> stopsWithTimes = new ArrayList<Stop>();
-        stopsWithTimes.addAll(getArrivalsData(url, mStopSlice));
+//        List<Stop> stopsWithTimes = new ArrayList<Stop>();
+//        stopsWithTimes.addAll(getArrivalsData(url, mStopSlice));
 
-        stopsWithTimes = Utils.filterTimes(stopsWithTimes);
+        mStopSlice = getArrivalsData(url, mStopSlice);
 
-        Collections.sort(stopsWithTimes, new BusStopComparer());
+        Collections.sort(mStopSlice, new BusStopComparer());
 
-        mListener.onSliceParsed(stopsWithTimes);
+        mListener.onSliceParsed(mStopSlice);
     }
 
     private List<Stop> getArrivalsData(String url, List<Stop> stopsWithoutArrival) {

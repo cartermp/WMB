@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
     package="com.jmstudios.corvallistransit"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="2">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -45,7 +46,7 @@
         <!-- Debug Key.  Use this when using a debug apk. -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDTALYkeMXCTT_dHEOz0HM7UTCJ61IVf_0" />
+            android:value="AIzaSyDinX8NfEVEJMspAqNhspQpCM3KoZ26OsA"/>
 
         <!-- Release Key.  Use this when using a signed release apk. -->
         <!--<meta-data-->

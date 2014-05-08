@@ -7,9 +7,12 @@ import android.os.AsyncTask;
 import com.jmstudios.corvallistransit.interfaces.ArrivalsSliceParsed;
 import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
 import com.jmstudios.corvallistransit.models.BusStopComparer;
+import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.ArrivalsRunnable;
 import com.jmstudios.corvallistransit.utils.Utils;
+
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,15 +24,15 @@ import java.util.concurrent.TimeUnit;
 
 public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
         implements ArrivalsSliceParsed {
-    private static String mRouteName;
+    private static Route mRoute;
     private ConcurrentLinkedQueue<Stop> mCclq = new ConcurrentLinkedQueue<Stop>();
     private ArrivalsTaskCompleted listener;
     private ProgressDialog progressDialog;
     private boolean mIsFromSwipeOrLoad;
 
-    public ArrivalsTask(Context context, String routeName,
+    public ArrivalsTask(Context context, Route route,
                         ArrivalsTaskCompleted listener, boolean fromSwipeOrLoad) {
-        mRouteName = routeName;
+        mRoute = route;
         this.listener = listener;
         if (!mIsFromSwipeOrLoad) {
             progressDialog = new ProgressDialog(context);
@@ -64,7 +67,7 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
         ExecutorService executorService = Executors.newCachedThreadPool();
 
         for (List<Stop> slice : slices) {
-            Runnable worker = new ArrivalsRunnable(this, slice, mRouteName);
+            Runnable worker = new ArrivalsRunnable(this, slice, mRoute.name);
             executorService.execute(worker);
         }
 
@@ -83,6 +86,15 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
          * should take barely any time at all.
          */
         Collections.sort(stopsWithUpdatedTimes, new BusStopComparer());
+
+        /*
+         * Need to filter here - can't do it for each thread.  This is
+         * because some stops may still end up as duplicates if they exist
+         * in different threads.
+         */
+        stopsWithUpdatedTimes = Utils.filterTimes(stopsWithUpdatedTimes);
+
+        mRoute.lastStopTimeUpdated = DateTime.now();
 
         return stopsWithUpdatedTimes;
     }

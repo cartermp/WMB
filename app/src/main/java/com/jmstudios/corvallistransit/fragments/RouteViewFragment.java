@@ -137,8 +137,8 @@ public class RouteViewFragment extends ListFragment
                 .setup(mPullToRefreshLayout);
     }
 
-    private void getEtasForRoute(final Route route, boolean fromSwipe, int start, int end) {
-        new ArrivalsTask(getActivity(), route.name, this, fromSwipe)
+    private void getEtasForRoute(final Route route, boolean fromSwipe) {
+        new ArrivalsTask(getActivity(), route, this, fromSwipe)
                 .execute(route.stopList);
     }
 
@@ -166,6 +166,8 @@ public class RouteViewFragment extends ListFragment
      * invokes the route/eta refresh on the main thread.
      */
     private void doRefresh(final boolean fromSwipe) {
+        final Route route = getRoute();
+
         setListShown(false);
 
         new AsyncTask<Void, Void, Void>() {
@@ -186,6 +188,10 @@ public class RouteViewFragment extends ListFragment
                     }
                 }
 
+                if (route == null || route.stopsUpToDate()) {
+                    return null;
+                }
+
                 if (activity != null) {
                     activity.runOnUiThread(new Runnable() {
                         @Override
@@ -195,11 +201,7 @@ public class RouteViewFragment extends ListFragment
                                         (RouteTaskCompleted) activity, activity, true);
                             }
 
-                            Route route = getRoute();
-
-                            if (route != null) {
-                                getEtasForRoute(route, fromSwipe, 0, relativeEnd);
-                            }
+                            getEtasForRoute(route, fromSwipe);
                         }
                     });
                 }

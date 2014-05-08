@@ -57,11 +57,11 @@ public class Utils {
                     iterator.remove();
                 }
             }
-        }
 
-        LinkedHashSet<Stop> lhs = new LinkedHashSet<Stop>(stops);
-        stops.clear();
-        stops.addAll(lhs);
+            LinkedHashSet<Stop> lhs = new LinkedHashSet<Stop>(stops);
+            stops.clear();
+            stops.addAll(lhs);
+        }
 
         return stops;
     }
