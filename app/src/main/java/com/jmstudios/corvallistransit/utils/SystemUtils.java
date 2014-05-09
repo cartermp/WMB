@@ -94,12 +94,11 @@ public class SystemUtils {
     public static void doVibrate(Context context) {
         if (context != null) {
             Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            v.vibrate(1000);
 
-            long[] pattern = {0, 1000, 200, 1000, 200, 1000, 200, 1000, 200, 1000};
+            long[] pattern = {0, 1000, 200, 1000, 200, 1000, 200, 1000, 200, 1000, 200};
 
-            // we want this alarm to repeat, hence we pass in 0 to have it repeat this pattern.
-            v.vibrate(pattern, 0);
+            // don't repeat the alarm yo
+            v.vibrate(pattern, -1);
         }
     }
 
