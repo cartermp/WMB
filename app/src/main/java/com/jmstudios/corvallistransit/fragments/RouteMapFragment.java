@@ -90,14 +90,11 @@ public class RouteMapFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
 
-        if (mf != null)
-        {
-            try
-            {
+        if (mf != null) {
+            try {
                 fm.beginTransaction().remove(mf).commit();
-            }
-            catch(IllegalStateException ise)
-            {
+            } catch (IllegalStateException ise) {
+                ise.printStackTrace();
                 //caught illegal state exception!
             }
         }
@@ -111,7 +108,6 @@ public class RouteMapFragment extends Fragment {
             Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
-
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -139,44 +135,52 @@ public class RouteMapFragment extends Fragment {
 
         setUpMapUI();
 
-        PolylineOptions polylineOptions = new PolylineOptions();
-        polylineOptions.addAll(route.polyLinePositions);
-        polylineOptions.color(Color.parseColor("#" + route.color));
+        if (map != null) {
+            PolylineOptions polylineOptions = new PolylineOptions();
+            polylineOptions.addAll(route.polyLinePositions);
+            polylineOptions.color(Color.parseColor("#" + route.color));
 
-        map.addPolyline(polylineOptions);
+            map.addPolyline(polylineOptions);
+        }
     }
 
     private void setUpClusterer() {
-        mClusterManager = new ClusterManager<Stop>(getActivity(), map);
+        if (map != null) {
+            mClusterManager = new ClusterManager<Stop>(getActivity(), map);
 
-        map.setInfoWindowAdapter(mClusterManager.getMarkerManager());
+            map.setInfoWindowAdapter(mClusterManager.getMarkerManager());
 
-        mClusterManager.getMarkerCollection().setOnInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                int i = Utils.findStopByLocation(route.stopList, marker.getPosition());
-                if (i >= 0) {
-                    Stop s = route.stopList.get(i);
-                    if (s != null) {
-                        marker.setTitle(s.etaText());
-                        marker.setSnippet(s.name);
-                    }
-
+            mClusterManager.getMarkerCollection().setOnInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
                     return null;
                 }
-                return null;
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    if (route != null && route.stopList != null && !route.stopList.isEmpty()) {
+                        int i = Utils.findStopByLocation(route.stopList, marker.getPosition());
+                        if (i >= 0) {
+                            Stop s = route.stopList.get(i);
+                            if (s != null) {
+                                marker.setTitle(s.etaText());
+                                marker.setSnippet(s.name);
+                            }
+
+                            return null;
+                        }
+                    }
+                    return null;
+                }
+            });
+
+            map.setOnCameraChangeListener(mClusterManager);
+            map.setOnMarkerClickListener(mClusterManager);
+
+            if (route != null && route.stopList != null && !route.stopList.isEmpty()) {
+                mClusterManager.addItems(route.stopList);
             }
-        });
-
-        map.setOnCameraChangeListener(mClusterManager);
-        map.setOnMarkerClickListener(mClusterManager);
-
-        mClusterManager.addItems(route.stopList);
+        }
     }
 
     private void setUpMapUI() {
@@ -199,15 +203,16 @@ public class RouteMapFragment extends Fragment {
     }
 
     private void animateMap(boolean fromStop) {
-        LatLng pos = fromStop ? new LatLng(stopLat, stopLng) : CORVALLIS;
-        float zoom = fromStop ? 15 : 13;
+        if (map != null) {
+            LatLng pos = fromStop ? new LatLng(stopLat, stopLng) : CORVALLIS;
+            float zoom = fromStop ? 15 : 13;
 
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(pos)
-                .zoom(zoom)
-                        //.tilt(30)
-                .build();
-        //map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(pos)
+                    .zoom(zoom)
+                            //.tilt(30)
+                    .build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
     }
 }

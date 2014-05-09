@@ -92,13 +92,15 @@ public class SystemUtils {
      * Vibrates a user's phone for 1 second 5 times.
      */
     public static void doVibrate(Context context) {
-        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(1000);
+        if (context != null) {
+            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(1000);
 
-        long[] pattern = {0, 1000, 200, 1000, 200, 1000, 200, 1000, 200, 1000};
+            long[] pattern = {0, 1000, 200, 1000, 200, 1000, 200, 1000, 200, 1000};
 
-        // -1 as the second parameter allows it to follow the pattern once
-        v.vibrate(pattern, -1);
+            // we want this alarm to repeat, hence we pass in 0 to have it repeat this pattern.
+            v.vibrate(pattern, 0);
+        }
     }
 
     /**
@@ -107,40 +109,42 @@ public class SystemUtils {
      * @param context The Application Contex.
      */
     public static void notifyPhone(Context context) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("Corvallis Transit")
-                        .setContentText("Get to your bus stop!");
+        if (context != null) {
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.drawable.ic_launcher)
+                            .setContentTitle("Corvallis Transit")
+                            .setContentText("Get to your bus stop!");
 
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(context, MainActivity.class);
+            // Creates an explicit intent for an Activity in your app
+            Intent resultIntent = new Intent(context, MainActivity.class);
 
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            // The stack builder object will contain an artificial back stack for the
+            // started Activity.
+            // This ensures that navigating backward from the Activity leads out of
+            // your application to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MainActivity.class);
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(MainActivity.class);
 
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
+            // Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                            0,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
 
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Set the notification to clear once the user uses it to go to the main activity.
-        Notification n = mBuilder.build();
-        n.flags = Notification.FLAG_AUTO_CANCEL;
+            // Set the notification to clear once the user uses it to go to the main activity.
+            Notification n = mBuilder.build();
+            n.flags = Notification.FLAG_AUTO_CANCEL;
 
-        mNotificationManager.notify(0, n);
+            mNotificationManager.notify(0, n);
+        }
     }
 }

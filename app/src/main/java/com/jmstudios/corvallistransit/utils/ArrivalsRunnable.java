@@ -42,6 +42,10 @@ public class ArrivalsRunnable implements Runnable {
     }
 
     private List<Stop> getArrivalsData(String url, List<Stop> stopsWithoutArrival) {
+        if (stopsWithoutArrival == null) {
+            return stopsWithoutArrival;
+        }
+
         List<Stop> stopsWithArrival = new ArrayList<Stop>();
         try {
             String json = WebUtils.downloadUrl(url);

@@ -20,7 +20,7 @@
     <string name="action_alarm">Set Alarm</string>
     <string name="connection_error">Error with network connection</string>
     <string name="xml_error">Error with data feed</string>
-    <string name="no_route_info">No route info retrieved</string>
+    <string name="no_route_info">No ETA info received</string>
     <string name="sunday_message">No routes running on Sunday!</string>
     <string name="timer">Add a Reminder</string>
     <string name="timer_5">5 Minutes From Now</string>

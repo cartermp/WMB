@@ -103,7 +103,6 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
                 if (mCallbacks != null) {
                     mCallbacks.onEtaCardClick(s.latitude, s.longitude);
                 }
-                //Toast.makeText(mContext, "Map goes here!", Toast.LENGTH_LONG).show();
             }
         });
 

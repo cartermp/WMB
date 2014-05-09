@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jmstudios.corvallistransit"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="2">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -43,10 +42,15 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <!-- Debug Key.  Use this when using a debug apk. -->
+        <!-- Phillip Work Computer Debug Key. -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDinX8NfEVEJMspAqNhspQpCM3KoZ26OsA"/>
+            android:value="AIzaSyDinX8NfEVEJMspAqNhspQpCM3KoZ26OsA" />
+
+        <!-- Phillip Laptop Debug Key. -->
+        <!--<meta-data-->
+        <!--android:name="com.google.android.maps.v2.API_KEY"-->
+        <!--android:value="BLAHBLAHBLAH"/>-->
 
         <!-- Release Key.  Use this when using a signed release apk. -->
         <!--<meta-data-->

@@ -18,6 +18,7 @@ import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.utils.WebUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -238,6 +239,19 @@ public class RouteViewFragment extends ListFragment
             setupTheAdapter(routeColor);
 
             mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onArrivalsTaskTimeout() {
+        final Activity a = getActivity();
+        if (a != null) {
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    WebUtils.launchCheckConnectionDialog(a);
+                }
+            });
         }
     }
 }

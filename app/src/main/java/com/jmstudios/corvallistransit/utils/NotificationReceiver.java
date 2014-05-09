@@ -13,7 +13,9 @@ import android.content.Intent;
 public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        SystemUtils.notifyPhone(context);
-        SystemUtils.doVibrate(context);
+        if (context != null) {
+            SystemUtils.notifyPhone(context);
+            SystemUtils.doVibrate(context);
+        }
     }
 }

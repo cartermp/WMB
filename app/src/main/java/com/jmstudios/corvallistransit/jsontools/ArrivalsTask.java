@@ -56,27 +56,12 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
             return null;
         }
 
-        List<List<Stop>> slices = new ArrayList<List<Stop>>();
+        List<List<Stop>> slices = getSlices(stupidSyntaxStops[0]);
 
-        int sliceSize = 10;
+        boolean completedInTime = handleSliceThreads(slices);
 
-        for (int i = 0; i < stupidSyntaxStops[0].size(); i += sliceSize) {
-            slices.add(Utils.getStopRange(stupidSyntaxStops[0], i, i + sliceSize));
-        }
-
-        ExecutorService executorService = Executors.newCachedThreadPool();
-
-        for (List<Stop> slice : slices) {
-            Runnable worker = new ArrivalsRunnable(this, slice, mRoute.name);
-            executorService.execute(worker);
-        }
-
-        executorService.shutdown();
-
-        try {
-            executorService.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            //whatever
+        if (!completedInTime) {
+            return null;
         }
 
         List<Stop> stopsWithUpdatedTimes = new ArrayList<Stop>(mCclq);
@@ -97,6 +82,43 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
         mRoute.lastStopTimeUpdated = DateTime.now();
 
         return stopsWithUpdatedTimes;
+    }
+
+    private boolean handleSliceThreads(List<List<Stop>> slices) {
+        ExecutorService executorService = Executors.newCachedThreadPool();
+
+        for (List<Stop> slice : slices) {
+            Runnable worker = new ArrivalsRunnable(this, slice, mRoute.name);
+            executorService.execute(worker);
+        }
+
+        executorService.shutdown();
+
+        boolean finished = true;
+
+        try {
+            finished = executorService.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            // stuff
+        }
+
+        if (!finished) {
+            listener.onArrivalsTaskTimeout();
+            return false;
+        }
+
+        return true;
+    }
+
+    private List<List<Stop>> getSlices(List<Stop> stupidSyntaxStop) {
+        List<List<Stop>> slices = new ArrayList<List<Stop>>();
+
+        int sliceSize = 10;
+
+        for (int i = 0; i < stupidSyntaxStop.size(); i += sliceSize) {
+            slices.add(Utils.getStopRange(stupidSyntaxStop, i, i + sliceSize));
+        }
+        return slices;
     }
 
     @Override

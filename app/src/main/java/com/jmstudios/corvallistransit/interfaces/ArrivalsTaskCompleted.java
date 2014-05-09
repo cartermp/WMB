@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface ArrivalsTaskCompleted {
     public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival);
+
+    public void onArrivalsTaskTimeout();
 }

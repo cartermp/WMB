@@ -51,14 +51,15 @@ public class Utils {
 
     public static List<Stop> filterTimes(List<Stop> stops) {
         if (stops != null) {
-            for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext(); ) {
+            LinkedHashSet<Stop> lhs = new LinkedHashSet<Stop>(stops);
+
+            for (Iterator<Stop> iterator = lhs.iterator(); iterator.hasNext(); ) {
                 Stop s = iterator.next();
                 if (s.eta() < 1 || s.eta() > 30) {
                     iterator.remove();
                 }
             }
 
-            LinkedHashSet<Stop> lhs = new LinkedHashSet<Stop>(stops);
             stops.clear();
             stops.addAll(lhs);
         }
@@ -70,14 +71,21 @@ public class Utils {
      * Guess what this does.
      */
     public static List<Stop> getStopRange(List<Stop> stops, int start, int end) {
+        if (stops == null || stops.isEmpty()) {
+            return stops;
+        }
+
         return stops.subList(start, stops.size() < end ? stops.size() : end);
     }
 
-    public static boolean isNullOrEmpty(String s) {
-        return s == null || s.equals("");
-    }
-
+    /**
+     * Finds the index in the list of stops whose location
+     */
     public static int findStopByLocation(List<Stop> stops, LatLng location) {
+        if (stops == null || stops.isEmpty()) {
+            return -1;
+        }
+
         int i;
         int size = stops.size();
 

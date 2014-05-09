@@ -37,8 +37,8 @@ public class WebUtils {
     public static void launchCheckConnectionDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setMessage("Your network connection is bad!")
-                .setPositiveButton("I'll move somewhere else", new DialogInterface.OnClickListener() {
+        builder.setMessage("ETA retrieval timed out.  Check your connection.")
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // do nothing; this will just bring us back to the main view
                     }
@@ -78,11 +78,6 @@ public class WebUtils {
 
     /**
      * Reads an input stream and converts it to a string.
-     *
-     * @param stream
-     * @return
-     * @throws IOException
-     * @throws UnsupportedEncodingException
      */
     public static String readIt(InputStream stream) throws IOException, UnsupportedEncodingException {
         Reader reader = new InputStreamReader(stream, "UTF-8");
@@ -100,9 +95,6 @@ public class WebUtils {
      * Converts a list of Stops into a CSV of Stop Ids.
      * <p/>
      * Format: "1234,1234,1234,1234"
-     *
-     * @param stops
-     * @return
      */
     public static String stopsToIdCsv(List<Stop> stops) {
         if (stops == null || stops.isEmpty()) {
