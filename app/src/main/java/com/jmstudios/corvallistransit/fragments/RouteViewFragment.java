@@ -158,12 +158,9 @@ public class RouteViewFragment extends ListFragment
 
     private void setupTheAdapter(String routeColor) {
         if (stops != null) {
-            Activity a = getActivity();
-            if (a != null && a.isFinishing()) {
-                mAdapter = new RouteAdapter(getActivity(),
-                        (RouteAdapter.MapListenerCallbacks) getActivity(), stops, routeColor);
-                setListAdapter(mAdapter);
-            }
+            mAdapter = new RouteAdapter(getActivity(),
+                    (RouteAdapter.MapListenerCallbacks) getActivity(), stops, routeColor);
+            setListAdapter(mAdapter);
         }
     }
 
