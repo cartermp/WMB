@@ -17,11 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.jmstudios.corvallistransit.R;
+import com.jmstudios.corvallistransit.adapters.RouteNavDrawerAdapter;
 import com.jmstudios.corvallistransit.utils.SystemUtils;
 
 /**
@@ -113,11 +113,18 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+
+        mDrawerListView.setAdapter(new RouteNavDrawerAdapter(
                 getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                mActiveRouteNames));
+                R.layout.textview_route_name,
+                R.id.route_name,
+                mActiveRouteNames
+        ));
+
+        mDrawerListView.setDivider(null);
+        mDrawerListView.setDividerHeight(0);
+
+
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
