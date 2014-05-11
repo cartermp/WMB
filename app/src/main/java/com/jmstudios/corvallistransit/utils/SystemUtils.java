@@ -63,18 +63,15 @@ public class SystemUtils {
 
         switch (id) {
             case 0:
-                delay = millisecondMultiplierForMinutes / 6;
-                break;
-            case 1:
                 delay = 5 * millisecondMultiplierForMinutes;
                 break;
-            case 2:
+            case 1:
                 delay = 10 * millisecondMultiplierForMinutes;
                 break;
-            case 3:
+            case 2:
                 delay = 15 * millisecondMultiplierForMinutes;
                 break;
-            case 4:
+            case 3:
                 delay = 20 * millisecondMultiplierForMinutes;
                 break;
             default:

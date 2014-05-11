@@ -88,14 +88,16 @@ public class RouteMapFragment extends Fragment {
         super.onDestroyView();
 
         FragmentManager fm = getFragmentManager();
-        MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
+        if (fm != null) {
+            MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
 
-        if (mf != null) {
-            try {
-                fm.beginTransaction().remove(mf).commit();
-            } catch (IllegalStateException ise) {
-                ise.printStackTrace();
-                //caught illegal state exception!
+            if (mf != null) {
+                try {
+                    fm.beginTransaction().remove(mf).commit();
+                } catch (IllegalStateException ise) {
+                    ise.printStackTrace();
+                    //caught illegal state exception!
+                }
             }
         }
     }
@@ -118,10 +120,13 @@ public class RouteMapFragment extends Fragment {
     private void setupMapIfNeeded(boolean fromStop) {
         if (map == null) {
             FragmentManager fm = getFragmentManager();
-            MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
+            if (fm != null) {
+                MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
 
-            map = mf.getMap();
-
+                if (mf != null) {
+                    map = mf.getMap();
+                }
+            }
             if (map != null) {
                 setupMap(fromStop);
             }
@@ -192,11 +197,14 @@ public class RouteMapFragment extends Fragment {
     private Route getRoute() {
         Route route = null;
 
-        int routeIndex = getArguments().getInt(ROUTE_IDX);
-        List<Route> routes = MainActivity.mRoutes;
+        Bundle b = getArguments();
+        if (b != null) {
+            int routeIndex = b.getInt(ROUTE_IDX);
+            List<Route> routes = MainActivity.mRoutes;
 
-        if (routes != null && routes.size() > routeIndex) {
-            route = routes.get(routeIndex);
+            if (routes != null && routes.size() > routeIndex) {
+                route = routes.get(routeIndex);
+            }
         }
 
         return route;

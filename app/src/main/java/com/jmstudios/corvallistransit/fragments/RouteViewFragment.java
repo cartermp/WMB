@@ -41,10 +41,6 @@ public class RouteViewFragment extends ListFragment
      */
     public static int mSectionNumber;
 
-    /**
-     * Since we can only load 20 at a time, set the initial relative end of the list to that.
-     */
-    private static int relativeEnd = 20;
     public List<Stop> stops = new ArrayList<Stop>();
     private PullToRefreshLayout mPullToRefreshLayout;
     private RouteAdapter mAdapter;
