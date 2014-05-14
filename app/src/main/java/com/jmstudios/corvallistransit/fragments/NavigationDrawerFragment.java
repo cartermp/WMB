@@ -29,7 +29,7 @@ import com.jmstudios.corvallistransit.utils.SystemUtils;
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class NavigationDrawerFragment extends Fragment{
     /**
      * Remember the position of the selected item.
      */
@@ -277,11 +277,23 @@ public class NavigationDrawerFragment extends Fragment {
             }
 
             return true;
-        } else if (id == R.id.action_alarm) {
-            boolean result = SystemUtils.doAlertDialogTimerSetup(getActivity());
-            if (!result) {
-                Toast.makeText(getActivity(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-            }
+        }
+        else if (id == R.id.action_alarm)
+        {
+
+            /**
+             * For now this is OK, however in the future we should manage all our timers,
+             * and be able to cancel them more importantly
+             */
+            new TimePickerFragment()
+            {
+                @Override
+                public void onTimeReceived(int hour, int minute)
+                {
+                    SystemUtils.doNotificationBusiness(hour * 60 + minute, getActivity());
+                    Toast.makeText(getActivity(), getString(R.string.timer_set_1) + " "+ Integer.toString(hour*60 + minute) + " " + getString(R.string.time_set_2), Toast.LENGTH_SHORT).show();
+                }
+            }.show(getFragmentManager(), "timePicker");
 
             return true;
         }

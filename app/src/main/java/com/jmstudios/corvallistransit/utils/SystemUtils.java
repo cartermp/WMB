@@ -1,7 +1,9 @@
 package com.jmstudios.corvallistransit.utils;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,14 +14,14 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
-
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
+import com.jmstudios.corvallistransit.fragments.TimePickerFragment;
 
 /**
  * Container for various system utilities such as Notifications, Timers, Location, etc.
  */
-public class SystemUtils {
+public class SystemUtils{
     private static final int millisecondMultiplierForMinutes = 60000;
 
     /**
@@ -33,6 +35,7 @@ public class SystemUtils {
             return false;
         }
 
+        /*
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         builder.setTitle(R.string.timer);
@@ -50,6 +53,7 @@ public class SystemUtils {
         AlertDialog alert = builder.create();
         alert.setCanceledOnTouchOutside(true);
         alert.show();
+        */
 
         return true;
     }
@@ -58,9 +62,10 @@ public class SystemUtils {
      * Based on the user's selection, sets an Alarm to wake up their device
      * after a certain time (5, 10, 15, or 20 minutes).
      */
-    private static void doNotificationBusiness(int id, final Context context) {
+    public static void doNotificationBusiness(int id, final Context context) {
         int delay;
 
+        /*
         switch (id) {
             case 0:
                 delay = 5 * millisecondMultiplierForMinutes;
@@ -78,6 +83,8 @@ public class SystemUtils {
                 delay = 0;
                 break;
         }
+        */
+        delay = id * millisecondMultiplierForMinutes;
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 

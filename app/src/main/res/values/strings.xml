@@ -27,4 +27,7 @@
     <string name="timer_10">10 Minutes From Now</string>
     <string name="timer_15">15 Minutes From Now</string>
 
+    <string name="timer_set_1">A timer has been set for</string>
+    <string name="time_set_2">minutes from now</string>
+
 </resources>

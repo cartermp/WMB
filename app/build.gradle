@@ -18,7 +18,10 @@ android {
 
     signingConfigs {
         release {
-            
+            storeFile file('WMBKeystore.jks')
+            storePassword "bigbadbannanas"
+            keyAlias "CarterP"
+            keyPassword "littlenicebannanas"
         }
     }
 
