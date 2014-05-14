@@ -128,7 +128,9 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
             progressDialog.hide();
         }
 
-        listener.onArrivalsTaskCompleted(stopsWithArrival);
+        if (stopsWithArrival != null) {
+            listener.onArrivalsTaskCompleted(stopsWithArrival);
+        }
     }
 
     @Override
