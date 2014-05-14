@@ -100,12 +100,12 @@ public class RouteViewFragment extends ListFragment
             }
         }
 
-        if (noStopsToShow) {
+        //if (noStopsToShow) {
             View v = getListView().getEmptyView();
             if (v != null) {
                 v.setBackgroundColor(Color.parseColor(Utils.routeColors[idx]));
             }
-        }
+        //}
 
         setListShownNoAnimation(true);
     }

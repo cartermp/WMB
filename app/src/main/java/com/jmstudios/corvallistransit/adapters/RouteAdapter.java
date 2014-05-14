@@ -45,8 +45,6 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
             LayoutInflater inflater = mContext.getLayoutInflater();
             rowView = inflater.inflate(R.layout.fragment_main, null);
 
-            setColor(rowView);
-
             ViewHolder viewHolder = new ViewHolder();
 
             viewHolder.stopView = (TextView) rowView.findViewById(R.id.stop_text);
@@ -80,14 +78,6 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
     public boolean isEnabled(int position) {
         // Since we don't want the list items themselves clickable, always return false
         return false;
-    }
-
-    private void setColor(View rowView) {
-        if (routeColor != null && rowView != null) {
-            rowView.setBackgroundColor(Color.parseColor("#" + routeColor));
-        } else if (rowView != null) {
-            rowView.setBackgroundColor(Color.parseColor("#000000"));
-        }
     }
 
     private Card setUpCard(final Stop s) {

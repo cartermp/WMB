@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.utils.Utils;
 
 public class RouteNavDrawerAdapter extends ArrayAdapter<String> {
@@ -39,10 +40,7 @@ public class RouteNavDrawerAdapter extends ArrayAdapter<String> {
             ViewHolder holder = new ViewHolder();
 
             holder.routeNameView = (TextView) rowView.findViewById(mTextViewResourceId);
-
-            holder.routeNameView.setText(routeName);
-
-            holder.routeNameView.setBackgroundColor(Color.parseColor(Utils.routeColors[position]));
+            holder.routeColorStrip = rowView.findViewById(R.id.route_color_strip);
 
             rowView.setTag(holder);
         }
@@ -50,13 +48,13 @@ public class RouteNavDrawerAdapter extends ArrayAdapter<String> {
         ViewHolder holder = (ViewHolder) rowView.getTag();
 
         holder.routeNameView.setText(routeName);
-
-        holder.routeNameView.setBackgroundColor(Color.parseColor(Utils.routeColors[position]));
+        holder.routeColorStrip.setBackgroundColor(Color.parseColor(Utils.routeColors[position]));
 
         return rowView;
     }
 
     static class ViewHolder {
         public TextView routeNameView;
+        public View routeColorStrip;
     }
 }
