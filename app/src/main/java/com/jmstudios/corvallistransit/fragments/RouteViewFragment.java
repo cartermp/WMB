@@ -2,6 +2,7 @@ package com.jmstudios.corvallistransit.fragments;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.utils.Utils;
 import com.jmstudios.corvallistransit.utils.WebUtils;
 
 import java.util.ArrayList;
@@ -66,7 +68,17 @@ public class RouteViewFragment extends ListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        boolean noStopsToShow = false;
+
+        ListView lv = getListView();
+        int idx = getRouteIndex();
+
+        if (lv != null) {
+            getListView().setBackgroundColor(Color.parseColor(Utils.routeColors[idx]));
+        }
+
         if (MainActivity.dayOfWeek == Calendar.SUNDAY) {
+            noStopsToShow = true;
             setEmptyText(getResources().getString(R.string.sunday_message));
         } else {
             Route route = getRoute();
@@ -79,10 +91,19 @@ public class RouteViewFragment extends ListFragment
                 if (stops != null && !stops.isEmpty()) {
                     setupTheAdapter(routeColor);
                 } else {
+                    noStopsToShow = true;
                     setEmptyText(getResources().getString(R.string.no_route_info));
                 }
             } else {
+                noStopsToShow = true;
                 setEmptyText(getResources().getString(R.string.no_route_info));
+            }
+        }
+
+        if (noStopsToShow) {
+            View v = getListView().getEmptyView();
+            if (v != null) {
+                v.setBackgroundColor(Color.parseColor(Utils.routeColors[idx]));
             }
         }
 
@@ -139,10 +160,21 @@ public class RouteViewFragment extends ListFragment
                 .execute(route.stopList);
     }
 
+    private int getRouteIndex() {
+        int routeIndex = 0;
+
+        Bundle args = getArguments();
+        if (args != null) {
+            routeIndex = args.getInt(ARG_SECTION_NUMBER) - 1;
+        }
+
+        return routeIndex;
+    }
+
     private Route getRoute() {
         Route route = null;
 
-        int routeIndex = getArguments().getInt(ARG_SECTION_NUMBER) - 1;
+        int routeIndex = getRouteIndex();
         List<Route> routes = MainActivity.mRoutes;
 
         if (routes != null && routes.size() > routeIndex) {

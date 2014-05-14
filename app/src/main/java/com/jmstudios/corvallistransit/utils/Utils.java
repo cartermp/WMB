@@ -29,6 +29,24 @@ public class Utils {
         monthPairs.put("Dec", 12);
     }
 
+    public static String[] routeColors = new String[]{
+            "#00ADEF",
+            "#88279F",
+            "#F2652F",
+            "#8CC530",
+            "#BD5590",
+            "#034DAF",
+            "#f14a43",
+            "#00854F",
+            "#3cb50c",
+            "#FFAA0F",
+            "#005BEF",
+            "#61463F",
+            "#0076AF",
+            "#bb0a58",
+            "#3F288F",
+    };
+
     /**
      * Given a Stringified Date in RFC822Z format,
      * converts it to a NodaTime DateTime object.
