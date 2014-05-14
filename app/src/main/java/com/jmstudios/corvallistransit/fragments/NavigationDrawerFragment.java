@@ -290,8 +290,11 @@ public class NavigationDrawerFragment extends Fragment{
                 @Override
                 public void onTimeReceived(int hour, int minute)
                 {
-                    SystemUtils.doNotificationBusiness(hour * 60 + minute, getActivity());
-                    Toast.makeText(getActivity(), getString(R.string.timer_set_1) + " "+ Integer.toString(hour*60 + minute) + " " + getString(R.string.time_set_2), Toast.LENGTH_SHORT).show();
+                    if(hour + minute > 0)
+                    {
+                        SystemUtils.doNotificationBusiness(hour * 60 + minute, getActivity());
+                        Toast.makeText(getActivity(), getString(R.string.timer_set_1) + " " + Integer.toString(hour * 60 + minute) + " " + getString(R.string.time_set_2), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }.show(getFragmentManager(), "timePicker");
 
