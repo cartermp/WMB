@@ -63,32 +63,12 @@ public class SystemUtils{
      * after a certain time (5, 10, 15, or 20 minutes).
      */
     public static void doNotificationBusiness(int id, final Context context) {
-        int delay;
-
-        /*
-        switch (id) {
-            case 0:
-                delay = 5 * millisecondMultiplierForMinutes;
-                break;
-            case 1:
-                delay = 10 * millisecondMultiplierForMinutes;
-                break;
-            case 2:
-                delay = 15 * millisecondMultiplierForMinutes;
-                break;
-            case 3:
-                delay = 20 * millisecondMultiplierForMinutes;
-                break;
-            default:
-                delay = 0;
-                break;
-        }
-        */
-        delay = id * millisecondMultiplierForMinutes;
+        int delay = id * millisecondMultiplierForMinutes;
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, NotificationReceiver.class);
+
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
