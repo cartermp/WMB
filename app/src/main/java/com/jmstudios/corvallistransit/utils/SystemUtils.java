@@ -1,7 +1,9 @@
 package com.jmstudios.corvallistransit.utils;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,17 +11,21 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
-
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
+import com.jmstudios.corvallistransit.fragments.TimePickerFragment;
+
+import java.net.URI;
+import java.util.Calendar;
 
 /**
  * Container for various system utilities such as Notifications, Timers, Location, etc.
  */
-public class SystemUtils {
+public class SystemUtils{
     private static final int millisecondMultiplierForMinutes = 60000;
 
     /**
@@ -33,6 +39,7 @@ public class SystemUtils {
             return false;
         }
 
+        /*
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         builder.setTitle(R.string.timer);
@@ -50,6 +57,7 @@ public class SystemUtils {
         AlertDialog alert = builder.create();
         alert.setCanceledOnTouchOutside(true);
         alert.show();
+        */
 
         return true;
     }
@@ -58,34 +66,58 @@ public class SystemUtils {
      * Based on the user's selection, sets an Alarm to wake up their device
      * after a certain time (5, 10, 15, or 20 minutes).
      */
-    private static void doNotificationBusiness(int id, final Context context) {
-        int delay;
+    public static byte doNotificationBusiness(int hour, int minute,int id, final Context context) {
+        int delay = id * millisecondMultiplierForMinutes;
 
-        switch (id) {
-            case 0:
-                delay = 5 * millisecondMultiplierForMinutes;
-                break;
-            case 1:
-                delay = 10 * millisecondMultiplierForMinutes;
-                break;
-            case 2:
-                delay = 15 * millisecondMultiplierForMinutes;
-                break;
-            case 3:
-                delay = 20 * millisecondMultiplierForMinutes;
-                break;
-            default:
-                delay = 0;
+        SharedPreferences sp = context.getSharedPreferences("alerts", Context.MODE_PRIVATE);
+        byte hasSaved = 0;
+        final Calendar c = Calendar.getInstance();
+        int calendarHour = c.get(Calendar.HOUR_OF_DAY);
+        int calendarMinute = c.get(Calendar.MINUTE);
+        int calendarSeconds = c.get(Calendar.SECOND);
+        for(int x = 0; x < 1; x++)
+        {
+
+            //if(sp.getString("time"+x, "").equals(""))
+            //{
+
+                if(calendarHour+hour > 24)
+                {
+                    calendarHour+=(hour-24);
+                }
+                else
+                {
+                    calendarHour+=hour;
+                }
+
+                if(calendarMinute+minute>60)
+                {
+                    calendarMinute+=(minute-60);
+                }
+                else
+                {
+                    calendarMinute+=minute;
+                }
+
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(context, NotificationReceiver.class);
+                intent.putExtra("intent"+x, 1);
+                PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                //SAVE THIS INTENT
+                SharedPreferences.Editor editor = sp.edit();
+
+                editor.putString("time"+x,calendarHour+":"+calendarMinute);
+                editor.putString("intent"+x,intent.toUri(Intent.URI_INTENT_SCHEME));
+                editor.commit();
+
+                hasSaved = 1;
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        SystemClock.elapsedRealtime() + delay - (calendarSeconds * 1000), alarmIntent);
                 break;
         }
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent intent = new Intent(context, NotificationReceiver.class);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + delay, alarmIntent);
+        return hasSaved;
     }
 
     /**

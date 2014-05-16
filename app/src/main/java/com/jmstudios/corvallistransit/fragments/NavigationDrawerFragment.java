@@ -32,7 +32,7 @@ import com.jmstudios.corvallistransit.utils.Utils;
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class NavigationDrawerFragment extends Fragment{
     /**
      * Remember the position of the selected item.
      */
@@ -284,11 +284,17 @@ public class NavigationDrawerFragment extends Fragment {
             }
 
             return true;
-        } else if (id == R.id.action_alarm) {
-            boolean result = SystemUtils.doAlertDialogTimerSetup(getActivity());
-            if (!result) {
-                Toast.makeText(getActivity(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-            }
+        }
+        else if (id == R.id.action_alarm)
+        {
+
+            /**
+             * For now this is OK, however in the future we should manage all our timers,
+             * and be able to cancel them more importantly
+             */
+
+            AlarmManagerFragment alarmManager = new AlarmManagerFragment();
+            alarmManager.show(getFragmentManager(), "alarmManager");
 
             return true;
         }
