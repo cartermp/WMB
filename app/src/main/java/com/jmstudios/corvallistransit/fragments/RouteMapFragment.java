@@ -88,15 +88,16 @@ public class RouteMapFragment extends Fragment {
 
         FragmentManager fm = getFragmentManager();
         if (fm != null) {
-            MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
-
-            if (mf != null) {
-                try {
-                    fm.beginTransaction().remove(mf).commit();
-                } catch (IllegalStateException ise) {
-                    //caught illegal state exception!
-                    // do some error-handling here eventually
-                }
+            try {
+                /*
+                 * Apparently, the activity that controls this fragment can sometimes be
+                 * destroyed already - which makes this method pointless.  Need more research
+                 * and more phones to test on.
+                 */
+                fm.beginTransaction().remove(this).commit();
+            } catch (IllegalStateException ise) {
+                //caught illegal state exception!
+                // do some error-handling here eventually
             }
         }
     }

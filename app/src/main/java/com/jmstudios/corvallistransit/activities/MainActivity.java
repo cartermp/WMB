@@ -3,7 +3,6 @@ package com.jmstudios.corvallistransit.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
@@ -16,7 +15,6 @@ import com.jmstudios.corvallistransit.fragments.NavigationDrawerFragment;
 import com.jmstudios.corvallistransit.fragments.RouteMapFragment;
 import com.jmstudios.corvallistransit.fragments.RouteViewFragment;
 import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
-import com.jmstudios.corvallistransit.jsontools.RoutesTask;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.utils.WebUtils;
 
@@ -40,13 +38,6 @@ public class MainActivity extends Activity
      */
     private CharSequence mTitle;
 
-    /**
-     * Static call updates ALL routes
-     */
-    public static void retrieveAllRoutes(RouteTaskCompleted listener, Context context, boolean fromSwipe) {
-        new RoutesTask(listener, context, fromSwipe).execute();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +57,7 @@ public class MainActivity extends Activity
     private void doRoutesSetup() {
         if (mRoutes.isEmpty()) {
             boolean canConnect = WebUtils.checkConnection(this);
-            if (canConnect) {
-                retrieveAllRoutes(this, this, false);
-            } else {
+            if (!canConnect) {
                 WebUtils.launchCheckConnectionDialog(this);
             }
         }

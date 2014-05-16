@@ -3,7 +3,6 @@ package com.jmstudios.corvallistransit.fragments;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +11,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.jmstudios.corvallistransit.AsyncTasks.RefreshTask;
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.adapters.RouteAdapter;
 import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
-import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
-import com.jmstudios.corvallistransit.jsontools.ArrivalsTask;
+import com.jmstudios.corvallistransit.interfaces.RefreshTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.Utils;
@@ -33,7 +32,7 @@ import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 public class RouteViewFragment extends ListFragment
-        implements ArrivalsTaskCompleted {
+        implements ArrivalsTaskCompleted, RefreshTaskCompleted {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -66,6 +65,21 @@ public class RouteViewFragment extends ListFragment
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mParentActivity = activity;
+        mMapCallbacks = (RouteAdapter.MapListenerCallbacks) activity;
+        ((MainActivity) activity).onSectionAttached(
+                getArguments().getInt(ARG_SECTION_NUMBER));
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mMapCallbacks = null;
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -79,7 +93,11 @@ public class RouteViewFragment extends ListFragment
         if (Utils.getCurrentDay() == Calendar.SUNDAY) {
             setEmptyText(getResources().getString(R.string.sunday_message));
         } else {
-            doRefresh(false);
+            if (stops == null || stops.isEmpty()) {
+                Log.d("RouteViewFrag", "stops are null or empty!");
+                doRefresh(false);
+            }
+
             setEmptyText(getResources().getString(R.string.no_route_info));
         }
 
@@ -136,17 +154,6 @@ public class RouteViewFragment extends ListFragment
                 .setup(mPullToRefreshLayout);
     }
 
-    private void getEtasForRoute(final Route route, boolean fromSwipe) {
-        if (mParentActivity == null) {
-            Log.d("RouteViewFrag", "mParentActivity null from getEtasForRoute!");
-        } else {
-            Log.d("RouteViewFrag", "mParentActivity is not null when getting Arrivals!");
-        }
-
-        new ArrivalsTask(mParentActivity, route, this, fromSwipe)
-                .execute(route.stopList);
-    }
-
     private int getRouteIndex() {
         int routeIndex = 0;
 
@@ -185,94 +192,16 @@ public class RouteViewFragment extends ListFragment
         }
     }
 
-    /**
-     * Performs the refresh via a quick AsyncTask.  This AsyncTask
-     * invokes the route/eta refresh on the main thread.
-     */
-    private void doRefresh(final boolean fromSwipe) {
-        final Route route = getRoute();
-
-        setListShown(false);
-
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                final Activity activity = getActivity();
-
-                /*
-                 * No heuristic here.  Sleep for a second to give users the impression
-                 * that it's doing something, since quick refreshes make it look like nothing
-                 * was updated.
-                 */
-                if (fromSwipe) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if (route == null || route.stopsUpToDate()) {
-                    return null;
-                }
-
-                if (activity != null) {
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (MainActivity.mRoutes == null || MainActivity.mRoutes.isEmpty()) {
-                                MainActivity.retrieveAllRoutes(
-                                        (RouteTaskCompleted) activity, activity, true);
-                            }
-
-                            getEtasForRoute(route, fromSwipe);
-                        }
-                    });
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                super.onPostExecute(result);
-
-                mPullToRefreshLayout.setRefreshComplete();
-
-                if (getView() != null) {
-                    setListShown(true);
-                }
-            }
-        }.execute();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mParentActivity = activity;
-        mMapCallbacks = (RouteAdapter.MapListenerCallbacks) activity;
-        Log.d("RouteViewFrag", "Attaching!");
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d("RouteViewFrag", "Detaching!");
-        mParentActivity = null;
-        mMapCallbacks = null;
-    }
-
     @Override
     public void onArrivalsTaskCompleted(List<Stop> stopsWithArrival) {
         if (stopsWithArrival != null && !stopsWithArrival.isEmpty()) {
             stops = stopsWithArrival;
 
-            //always setup the adapter to refresh the data
             setupTheAdapter();
 
-            mAdapter.notifyDataSetChanged();
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -288,4 +217,29 @@ public class RouteViewFragment extends ListFragment
             });
         }
     }
+
+    @Override
+    public void onRefreshTaskComplete() {
+        if (mPullToRefreshLayout != null) {
+            mPullToRefreshLayout.setRefreshComplete();
+        }
+
+        if (getView() != null) {
+            setListShown(true);
+        }
+    }
+
+    /**
+     * Performs the refresh via a quick AsyncTask.  This AsyncTask
+     * invokes the route/eta refresh on the main thread.
+     */
+    private void doRefresh(final boolean fromSwipe) {
+        final Route route = getRoute();
+
+        setListShown(false);
+
+        new RefreshTask(mParentActivity, route, this, this, fromSwipe)
+                .execute();
+    }
+
 }

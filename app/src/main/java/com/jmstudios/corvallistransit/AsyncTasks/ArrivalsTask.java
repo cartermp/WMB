@@ -1,4 +1,4 @@
-package com.jmstudios.corvallistransit.jsontools;
+package com.jmstudios.corvallistransit.AsyncTasks;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,7 +9,6 @@ import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
 import com.jmstudios.corvallistransit.models.BusStopComparer;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
-import com.jmstudios.corvallistransit.utils.ArrivalsRunnable;
 import com.jmstudios.corvallistransit.utils.Utils;
 
 import org.joda.time.DateTime;

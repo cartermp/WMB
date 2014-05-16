@@ -1,8 +1,9 @@
-package com.jmstudios.corvallistransit.utils;
+package com.jmstudios.corvallistransit.AsyncTasks;
 
 import com.jmstudios.corvallistransit.interfaces.ArrivalsSliceParsed;
 import com.jmstudios.corvallistransit.models.BusStopComparer;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.utils.WebUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
