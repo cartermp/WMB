@@ -285,18 +285,9 @@ public class NavigationDrawerFragment extends Fragment{
              * For now this is OK, however in the future we should manage all our timers,
              * and be able to cancel them more importantly
              */
-            new TimePickerFragment()
-            {
-                @Override
-                public void onTimeReceived(int hour, int minute)
-                {
-                    if(hour + minute > 0)
-                    {
-                        SystemUtils.doNotificationBusiness(hour * 60 + minute, getActivity());
-                        Toast.makeText(getActivity(), getString(R.string.timer_set_1) + " " + Integer.toString(hour * 60 + minute) + " " + getString(R.string.time_set_2), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }.show(getFragmentManager(), "timePicker");
+
+            AlarmManagerFragment alarmManager = new AlarmManagerFragment();
+            alarmManager.show(getFragmentManager(), "alarmManager");
 
             return true;
         }
