@@ -1,15 +1,11 @@
 package com.jmstudios.corvallistransit.utils;
 
-import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
@@ -17,9 +13,6 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
-import com.jmstudios.corvallistransit.fragments.TimePickerFragment;
-
-import java.net.URI;
 import java.util.Calendar;
 
 /**

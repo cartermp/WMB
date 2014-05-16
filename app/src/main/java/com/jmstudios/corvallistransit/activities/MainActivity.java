@@ -17,6 +17,10 @@ import com.jmstudios.corvallistransit.fragments.RouteViewFragment;
 import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.utils.WebUtils;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,12 @@ import java.util.List;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         RouteTaskCompleted, RouteAdapter.MapListenerCallbacks {
+
+    /**
+     * Used by Mixpanel to properly identify our session
+     */
+    private static final String MIXPANEL_TOKEN = "3733fd953730250288a417e9f7522751";
+    private MixpanelAPI mixPanel;
     /**
      * Used to store Bus Routes in the application.
      */
@@ -46,12 +56,33 @@ public class MainActivity extends Activity
         initialize();
 
         doRoutesSetup();
+
+        setupMixpanel();
     }
+
+    private void setupMixpanel()
+    {
+        mixPanel = MixpanelAPI.getInstance( getApplication(), MIXPANEL_TOKEN);
+        JSONObject props = new JSONObject();
+        try {
+            props.put("appOpen (android)", 1);
+        }catch(JSONException jse){}
+
+        mixPanel.track("appOpen (Android)", props);
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
         doRoutesSetup();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        mixPanel.flush();
+        super.onDestroy();
     }
 
     private void doRoutesSetup() {
