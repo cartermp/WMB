@@ -68,7 +68,7 @@ public class MainActivity extends Activity
             props.put("appOpen (android)", 1);
         }catch(JSONException jse){}
 
-        mixPanel.track("appOpen (Android)", props);
+        mixPanel.track("appOpen", props);
     }
 
 
