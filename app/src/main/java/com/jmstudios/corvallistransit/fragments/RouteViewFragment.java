@@ -5,6 +5,7 @@ import android.app.ListFragment;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,11 +43,11 @@ public class RouteViewFragment extends ListFragment
      * Used for on-demand fragment refresh
      */
     public static int mSectionNumber;
-
     public List<Stop> stops = new ArrayList<Stop>();
+    private Activity mParentActivity;
+    private RouteAdapter.MapListenerCallbacks mMapCallbacks;
     private PullToRefreshLayout mPullToRefreshLayout;
     private RouteAdapter mAdapter;
-    private String routeColor;
 
     public RouteViewFragment() {
     }
@@ -68,8 +69,6 @@ public class RouteViewFragment extends ListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        boolean noStopsToShow = false;
-
         ListView lv = getListView();
         int idx = getRouteIndex();
 
@@ -77,35 +76,17 @@ public class RouteViewFragment extends ListFragment
             getListView().setBackgroundColor(Color.parseColor(Utils.routeColors[idx]));
         }
 
-        if (MainActivity.dayOfWeek == Calendar.SUNDAY) {
-            noStopsToShow = true;
+        if (Utils.getCurrentDay() == Calendar.SUNDAY) {
             setEmptyText(getResources().getString(R.string.sunday_message));
         } else {
-            Route route = getRoute();
-
-            if (route != null) {
-                doRefresh(false);
-
-                routeColor = route.color;
-
-                if (stops != null && !stops.isEmpty()) {
-                    setupTheAdapter(routeColor);
-                } else {
-                    noStopsToShow = true;
-                    setEmptyText(getResources().getString(R.string.no_route_info));
-                }
-            } else {
-                noStopsToShow = true;
-                setEmptyText(getResources().getString(R.string.no_route_info));
-            }
+            doRefresh(false);
+            setEmptyText(getResources().getString(R.string.no_route_info));
         }
 
-        //if (noStopsToShow) {
-            View v = getListView().getEmptyView();
-            if (v != null) {
-                v.setBackgroundColor(Color.parseColor(Utils.routeColors[idx]));
-            }
-        //}
+        View v = getListView().getEmptyView();
+        if (v != null) {
+            v.setBackgroundColor(Color.parseColor(Utils.routeColors[idx]));
+        }
 
         setListShownNoAnimation(true);
     }
@@ -156,7 +137,13 @@ public class RouteViewFragment extends ListFragment
     }
 
     private void getEtasForRoute(final Route route, boolean fromSwipe) {
-        new ArrivalsTask(getActivity(), route, this, fromSwipe)
+        if (mParentActivity == null) {
+            Log.d("RouteViewFrag", "mParentActivity null from getEtasForRoute!");
+        } else {
+            Log.d("RouteViewFrag", "mParentActivity is not null when getting Arrivals!");
+        }
+
+        new ArrivalsTask(mParentActivity, route, this, fromSwipe)
                 .execute(route.stopList);
     }
 
@@ -184,11 +171,17 @@ public class RouteViewFragment extends ListFragment
         return route;
     }
 
-    private void setupTheAdapter(String routeColor) {
+    private void setupTheAdapter() {
         if (stops != null) {
-            mAdapter = new RouteAdapter(getActivity(),
-                    (RouteAdapter.MapListenerCallbacks) getActivity(), stops, routeColor);
-            setListAdapter(mAdapter);
+            if (mParentActivity != null) {
+                Route route = getRoute();
+                if (route != null) {
+                    mAdapter = new RouteAdapter(mParentActivity, mMapCallbacks, stops, route.color);
+                    setListAdapter(mAdapter);
+                }
+            } else {
+                Log.d("RouteViewFrag", "activity is null when setting up the adapter!");
+            }
         }
     }
 
@@ -256,8 +249,19 @@ public class RouteViewFragment extends ListFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        mParentActivity = activity;
+        mMapCallbacks = (RouteAdapter.MapListenerCallbacks) activity;
+        Log.d("RouteViewFrag", "Attaching!");
         ((MainActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("RouteViewFrag", "Detaching!");
+        mParentActivity = null;
+        mMapCallbacks = null;
     }
 
     @Override
@@ -266,7 +270,7 @@ public class RouteViewFragment extends ListFragment
             stops = stopsWithArrival;
 
             //always setup the adapter to refresh the data
-            setupTheAdapter(routeColor);
+            setupTheAdapter();
 
             mAdapter.notifyDataSetChanged();
         }

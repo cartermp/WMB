@@ -100,7 +100,7 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
             // Wait 10 seconds.
             finished = executorService.awaitTermination(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            // stuff
+            // do some error-handling here eventually
         }
 
         if (!finished) {

@@ -5,6 +5,7 @@ import com.jmstudios.corvallistransit.models.Stop;
 
 import org.joda.time.DateTime;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -128,5 +129,10 @@ public class Utils {
         }
 
         return true;
+    }
+
+    public static int getCurrentDay() {
+        Calendar c = Calendar.getInstance();
+        return c.get(Calendar.DAY_OF_WEEK);
     }
 }

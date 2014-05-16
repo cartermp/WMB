@@ -31,9 +31,6 @@ public class ArrivalsRunnable implements Runnable {
     public void run() {
         String url = arrivalsUrl + WebUtils.stopsToIdCsv(mStopSlice);
 
-//        List<Stop> stopsWithTimes = new ArrayList<Stop>();
-//        stopsWithTimes.addAll(getArrivalsData(url, mStopSlice));
-
         mStopSlice = getArrivalsData(url, mStopSlice);
 
         Collections.sort(mStopSlice, new BusStopComparer());
@@ -43,15 +40,16 @@ public class ArrivalsRunnable implements Runnable {
 
     private List<Stop> getArrivalsData(String url, List<Stop> stopsWithoutArrival) {
         if (stopsWithoutArrival == null) {
-            return stopsWithoutArrival;
+            return null;
         }
 
         List<Stop> stopsWithArrival = new ArrayList<Stop>();
+
         try {
             String json = WebUtils.downloadUrl(url);
             stopsWithArrival = parseStopArrivals(json, stopsWithoutArrival);
         } catch (IOException e) {
-            // stuff
+            // do some error-handling here eventually
         }
 
         return stopsWithArrival;
@@ -88,7 +86,7 @@ public class ArrivalsRunnable implements Runnable {
                 }
             }
         } catch (JSONException e) {
-            // stuff
+            // do some error-handling here eventually
         }
 
         return stopsWithoutArrival;

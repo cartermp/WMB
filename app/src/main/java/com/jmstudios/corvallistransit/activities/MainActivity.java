@@ -21,7 +21,6 @@ import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.utils.WebUtils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends Activity
@@ -31,8 +30,6 @@ public class MainActivity extends Activity
      * Used to store Bus Routes in the application.
      */
     public static List<Route> mRoutes = new ArrayList<Route>();
-
-    public static int dayOfWeek;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -57,6 +54,16 @@ public class MainActivity extends Activity
 
         initialize();
 
+        doRoutesSetup();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        doRoutesSetup();
+    }
+
+    private void doRoutesSetup() {
         if (mRoutes.isEmpty()) {
             boolean canConnect = WebUtils.checkConnection(this);
             if (canConnect) {
@@ -78,9 +85,6 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        Calendar c = Calendar.getInstance();
-        dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
     }
 
     /**

@@ -22,7 +22,6 @@ import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
 import com.jmstudios.corvallistransit.utils.Utils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class RouteMapFragment extends Fragment {
@@ -95,25 +94,10 @@ public class RouteMapFragment extends Fragment {
                 try {
                     fm.beginTransaction().remove(mf).commit();
                 } catch (IllegalStateException ise) {
-                    ise.printStackTrace();
                     //caught illegal state exception!
+                    // do some error-handling here eventually
                 }
             }
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        try {
-            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-            childFragmentManager.setAccessible(true);
-            childFragmentManager.set(this, null);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -140,7 +124,7 @@ public class RouteMapFragment extends Fragment {
 
         setUpMapUI();
 
-        if (map != null) {
+        if (map != null && route != null) {
             PolylineOptions polylineOptions = new PolylineOptions();
             polylineOptions.addAll(route.polyLinePositions);
             polylineOptions.color(Color.parseColor("#" + route.color));

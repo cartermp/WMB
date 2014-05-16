@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -18,11 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.adapters.RouteNavDrawerAdapter;
 import com.jmstudios.corvallistransit.utils.SystemUtils;
+import com.jmstudios.corvallistransit.utils.Utils;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -110,6 +113,11 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView routeName = (TextView) view.findViewById(R.id.route_name);
+                if (routeName != null) {
+                    routeName.setBackgroundColor(Color.parseColor(Utils.routeColors[position]));
+                }
+
                 selectItem(position);
             }
         });
@@ -209,6 +217,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     private void selectItem(int position) {
         mCurrentSelectedPosition = position;
+
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);
         }
@@ -252,12 +261,10 @@ public class NavigationDrawerFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // If the drawer is open, show the global app actions in the action bar. See also
-        // showGlobalContextActionBar, which controls the top-left area of the action bar.
         if (mDrawerLayout != null && isDrawerOpen()) {
-            inflater.inflate(R.menu.global, menu);
             showGlobalContextActionBar();
         }
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -308,18 +315,13 @@ public class NavigationDrawerFragment extends Fragment {
      * Loads up the initial arrivals, called after all routes have been retrieved
      */
     public void loadInitialArrivals() {
-        selectItem(mCurrentSelectedPosition);
+        if (mCallbacks != null) {
+            mCallbacks.onNavigationDrawerItemSelected(mCurrentSelectedPosition);
+        }
     }
 
-    /**
-     * Callbacks interface that all activities using this fragment must implement.
-     */
     public static interface NavigationDrawerCallbacks {
-        /**
-         * Called when an item in the navigation drawer is selected.
-         */
         void onNavigationDrawerItemSelected(int position);
-
         void onRouteMapButtonPressed(int position, boolean fromStop, double lat, double lng);
     }
 }
