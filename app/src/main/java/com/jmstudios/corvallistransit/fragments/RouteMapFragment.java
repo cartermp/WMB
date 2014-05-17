@@ -1,7 +1,6 @@
 package com.jmstudios.corvallistransit.fragments;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +9,8 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -34,9 +34,11 @@ public class RouteMapFragment extends Fragment {
     private double stopLat;
     private double stopLng;
     private boolean fromStop = false;
-    private GoogleMap map;
     private Route route;
+
     private ClusterManager<Stop> mClusterManager;
+    private GoogleMap map;
+    private MapView mapView;
 
     public static RouteMapFragment newInstance(int routeIdx, boolean fromStop,
                                                double lat, double lng) {
@@ -59,6 +61,59 @@ public class RouteMapFragment extends Fragment {
 
         Bundle args = getArguments();
 
+        setUpBundleArgs(args);
+
+        View v = inflater.inflate(R.layout.fragment_route_map, container, false);
+
+        if (v != null) {
+            mapView = (MapView) v.findViewById(R.id.map);
+            if (mapView != null) {
+                mapView.onCreate(savedInstanceState);
+            }
+        }
+
+        MapsInitializer.initialize(this.getActivity());
+
+        route = getRoute();
+
+        setupMapIfNeeded(fromStop);
+
+        return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mapView != null) {
+            mapView.onResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mapView != null) {
+            mapView.onPause();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mapView != null) {
+            mapView.onDestroy();
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (mapView != null) {
+            mapView.onLowMemory();
+        }
+    }
+
+    private void setUpBundleArgs(Bundle args) {
         if (args != null) {
             if (args.containsKey(FROM_STOP)) {
                 fromStop = args.getBoolean(FROM_STOP);
@@ -72,46 +127,14 @@ public class RouteMapFragment extends Fragment {
                 stopLng = args.getDouble(STOP_LNG);
             }
         }
-
-        final View theView = inflater.inflate(R.layout.fragment_route_map, container, false);
-
-        route = getRoute();
-
-        setupMapIfNeeded(fromStop);
-
-        return theView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        FragmentManager fm = getFragmentManager();
-        if (fm != null) {
-            try {
-                /*
-                 * Apparently, the activity that controls this fragment can sometimes be
-                 * destroyed already - which makes this method pointless.  Need more research
-                 * and more phones to test on.
-                 */
-                fm.beginTransaction().remove(this).commit();
-            } catch (IllegalStateException ise) {
-                //caught illegal state exception!
-                // do some error-handling here eventually
-            }
-        }
     }
 
     private void setupMapIfNeeded(boolean fromStop) {
         if (map == null) {
-            FragmentManager fm = getFragmentManager();
-            if (fm != null) {
-                MapFragment mf = (MapFragment) fm.findFragmentById(R.id.map);
-
-                if (mf != null) {
-                    map = mf.getMap();
-                }
+            if (mapView != null) {
+                map = mapView.getMap();
             }
+
             if (map != null) {
                 setupMap(fromStop);
             }
@@ -203,7 +226,6 @@ public class RouteMapFragment extends Fragment {
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(pos)
                     .zoom(zoom)
-                            //.tilt(30)
                     .build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
