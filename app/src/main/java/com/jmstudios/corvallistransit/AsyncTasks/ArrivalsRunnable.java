@@ -50,7 +50,7 @@ public class ArrivalsRunnable implements Runnable {
             String json = WebUtils.downloadUrl(url);
             stopsWithArrival = parseStopArrivals(json, stopsWithoutArrival);
         } catch (IOException e) {
-            // do some error-handling here eventually
+            mListener.onSliceParseFailed();
         }
 
         return stopsWithArrival;
@@ -87,7 +87,7 @@ public class ArrivalsRunnable implements Runnable {
                 }
             }
         } catch (JSONException e) {
-            // do some error-handling here eventually
+            mListener.onSliceParseFailed();
         }
 
         return stopsWithoutArrival;

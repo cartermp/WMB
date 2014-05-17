@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -19,20 +18,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.adapters.RouteNavDrawerAdapter;
-import com.jmstudios.corvallistransit.utils.SystemUtils;
-import com.jmstudios.corvallistransit.utils.Utils;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment{
+public class NavigationDrawerFragment extends Fragment {
     /**
      * Remember the position of the selected item.
      */
@@ -113,11 +108,6 @@ public class NavigationDrawerFragment extends Fragment{
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView routeName = (TextView) view.findViewById(R.id.route_name);
-                if (routeName != null) {
-                    routeName.setBackgroundColor(Color.parseColor(Utils.routeColors[position]));
-                }
-
                 selectItem(position);
             }
         });
@@ -284,9 +274,7 @@ public class NavigationDrawerFragment extends Fragment{
             }
 
             return true;
-        }
-        else if (id == R.id.action_alarm)
-        {
+        } else if (id == R.id.action_alarm) {
 
             /**
              * For now this is OK, however in the future we should manage all our timers,
@@ -328,6 +316,7 @@ public class NavigationDrawerFragment extends Fragment{
 
     public static interface NavigationDrawerCallbacks {
         void onNavigationDrawerItemSelected(int position);
+
         void onRouteMapButtonPressed(int position, boolean fromStop, double lat, double lng);
     }
 }

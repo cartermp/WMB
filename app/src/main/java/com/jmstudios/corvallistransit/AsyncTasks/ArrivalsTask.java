@@ -138,4 +138,9 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
             mCclq.addAll(slice);
         }
     }
+
+    @Override
+    public void onSliceParseFailed() {
+        listener.onArrivalsTaskError();
+    }
 }

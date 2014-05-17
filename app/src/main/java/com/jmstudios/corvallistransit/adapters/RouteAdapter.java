@@ -23,15 +23,13 @@ import it.gmariotti.cardslib.library.view.CardView;
 public class RouteAdapter extends ArrayAdapter<Stop> {
     private final Activity mContext;
     private final List<Stop> mStops;
-    private final String routeColor;
     private MapListenerCallbacks mCallbacks;
 
     public RouteAdapter(Activity context, MapListenerCallbacks listener,
-                        List<Stop> stops, String color) {
+                        List<Stop> stops) {
         super(context, R.layout.fragment_main, stops);
         mContext = context;
         mStops = stops;
-        routeColor = color;
         mCallbacks = listener;
     }
 

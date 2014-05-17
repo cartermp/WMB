@@ -40,6 +40,7 @@ public class RouteNavDrawerAdapter extends ArrayAdapter<String> {
             ViewHolder holder = new ViewHolder();
 
             holder.routeNameView = (TextView) rowView.findViewById(mTextViewResourceId);
+
             holder.routeColorStrip = rowView.findViewById(R.id.route_color_strip);
 
             rowView.setTag(holder);

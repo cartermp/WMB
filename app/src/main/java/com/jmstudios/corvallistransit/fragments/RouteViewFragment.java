@@ -19,6 +19,7 @@ import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
 import com.jmstudios.corvallistransit.interfaces.RefreshTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.utils.SystemUtils;
 import com.jmstudios.corvallistransit.utils.Utils;
 import com.jmstudios.corvallistransit.utils.WebUtils;
 
@@ -183,7 +184,7 @@ public class RouteViewFragment extends ListFragment
             if (mParentActivity != null) {
                 Route route = getRoute();
                 if (route != null) {
-                    mAdapter = new RouteAdapter(mParentActivity, mMapCallbacks, stops, route.color);
+                    mAdapter = new RouteAdapter(mParentActivity, mMapCallbacks, stops);
                     setListAdapter(mAdapter);
                 }
             } else {
@@ -213,6 +214,19 @@ public class RouteViewFragment extends ListFragment
                 @Override
                 public void run() {
                     WebUtils.launchCheckConnectionDialog(a);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onArrivalsTaskError() {
+        final Activity a = getActivity();
+        if (a != null) {
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    SystemUtils.doArrivalsErrorDialogSetup(a);
                 }
             });
         }

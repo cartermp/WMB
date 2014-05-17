@@ -27,6 +27,10 @@
     <string name="timer_10">10 Minutes From Now</string>
     <string name="timer_15">15 Minutes From Now</string>
 
+    <string name="error_msg_title">Something Went Wrong!</string>
+    <string name="error_msg">Give it another go</string>
+    <string name="error_msg_okay">OK</string>
+
     <string name="timer_set_1">A timer has been set for</string>
     <string name="time_set_2">minutes from now</string>
     <string name="non_plural_set">minute from now</string>

@@ -33,11 +33,11 @@ public class MainActivity extends Activity
      * Used by Mixpanel to properly identify our session
      */
     private static final String MIXPANEL_TOKEN = "3733fd953730250288a417e9f7522751";
-    private MixpanelAPI mixPanel;
     /**
      * Used to store Bus Routes in the application.
      */
     public static List<Route> mRoutes = new ArrayList<Route>();
+    private MixpanelAPI mixPanel;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -60,13 +60,13 @@ public class MainActivity extends Activity
         setupMixpanel();
     }
 
-    private void setupMixpanel()
-    {
-        mixPanel = MixpanelAPI.getInstance( getApplication(), MIXPANEL_TOKEN);
+    private void setupMixpanel() {
+        mixPanel = MixpanelAPI.getInstance(getApplication(), MIXPANEL_TOKEN);
         JSONObject props = new JSONObject();
         try {
             props.put("appOpen (android)", 1);
-        }catch(JSONException jse){}
+        } catch (JSONException jse) {
+        }
 
         mixPanel.track("appOpen (Android)", props);
     }
@@ -79,8 +79,7 @@ public class MainActivity extends Activity
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         mixPanel.flush();
         super.onDestroy();
     }
