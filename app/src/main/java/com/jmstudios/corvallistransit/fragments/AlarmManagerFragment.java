@@ -11,11 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,9 +22,7 @@ import com.jmstudios.corvallistransit.utils.SystemUtils;
 
 import org.joda.time.LocalTime;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -38,6 +32,9 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
 {
     private Alert primaryAlert;
     private TextView alert_time_text;
+    private Button addAlert;
+    private Button changeAlert;
+    private Button removeAlert;
 
     static class Holder
     {
@@ -53,11 +50,14 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
         View v = li.inflate(R.layout.alarm_manager_fragment, null);
         builder.setView(v);
 
-        Button setAlert = (Button)v.findViewById(R.id.set_alert);
-        setAlert.setOnClickListener(this);
+        addAlert = (Button)v.findViewById(R.id.add_alert);
+        addAlert.setOnClickListener(this);
 
-        Button resetAlert = (Button)v.findViewById(R.id.reset_alert);
-        resetAlert.setOnClickListener(this);
+        changeAlert = (Button)v.findViewById(R.id.change_alert);
+        changeAlert.setOnClickListener(this);
+
+        removeAlert = (Button)v.findViewById(R.id.remove_alert);
+        removeAlert.setOnClickListener(this);
 
         alert_time_text = (TextView)v.findViewById(R.id.current_alert);
 
@@ -139,9 +139,43 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
     {
         primaryAlert = retrieveAllItems();
         if(primaryAlert != null)
-            alert_time_text.setText(primaryAlert.alert_time);
+        {
+            alert_time_text.setText(getString(R.string.alarm_for)+" "+primaryAlert.alert_time);
+            addAlert.setVisibility(Button.GONE);
+            changeAlert.setVisibility(Button.VISIBLE);
+            removeAlert.setVisibility(Button.VISIBLE);
+        }
         else
-            alert_time_text.setText("00:00");
+        {
+            alert_time_text.setText(getString(R.string.no_alarm_set));
+            addAlert.setVisibility(Button.VISIBLE);
+            changeAlert.setVisibility(Button.GONE);
+            removeAlert.setVisibility(Button.GONE);
+        }
+    }
+
+    private void showTimeDialog()
+    {
+        new TimePickerFragment()
+        {
+            @Override
+            public void onTimeReceived(int hour, int minute)
+            {
+                if(hour + minute > 0)
+                {
+                    byte result = SystemUtils.doNotificationBusiness(hour, minute,hour * 60 + minute, getActivity());
+                    if(result == 1)
+                    {
+                        String pluralOrNot = getString(R.string.time_set_2);
+                        if(hour*60 + minute == 1)
+                            pluralOrNot = getString(R.string.non_plural_set);
+                        Toast.makeText(getActivity(), getString(R.string.timer_set_1) + " " + Integer.toString(hour * 60 + minute) + " " + pluralOrNot, Toast.LENGTH_SHORT).show();
+                    }
+
+                    updateArrayAdapter();
+                }
+            }
+        }.show(getFragmentManager(), "timePicker");
     }
 
     @Override
@@ -149,30 +183,15 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
     {
         switch(v.getId())
         {
-            case R.id.set_alert:
-                new TimePickerFragment()
-                {
-                    @Override
-                    public void onTimeReceived(int hour, int minute)
-                    {
-                        if(hour + minute > 0)
-                        {
-                            byte result = SystemUtils.doNotificationBusiness(hour, minute,hour * 60 + minute, getActivity());
-                            if(result == 1)
-                            {
-                                String pluralOrNot = getString(R.string.time_set_2);
-                                if(hour*60 + minute == 1)
-                                    pluralOrNot = getString(R.string.non_plural_set);
-                                Toast.makeText(getActivity(), getString(R.string.timer_set_1) + " " + Integer.toString(hour * 60 + minute) + " " + pluralOrNot, Toast.LENGTH_SHORT).show();
-                            }
-
-                            updateArrayAdapter();
-                        }
-                    }
-                }.show(getFragmentManager(), "timePicker");
+            case R.id.add_alert:
+                showTimeDialog();
                 break;
 
-            case R.id.reset_alert:
+            case R.id.change_alert:
+                showTimeDialog();
+                break;
+
+            case R.id.remove_alert:
                 Alert alert = primaryAlert;
                 if(alert != null)
                 {
