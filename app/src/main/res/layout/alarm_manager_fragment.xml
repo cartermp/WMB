@@ -4,6 +4,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/add_alert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_alert_text"
+        android:gravity="center"/>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -12,18 +19,18 @@
         >
 
         <Button
-            android:id="@+id/reset_alert"
+            android:id="@+id/remove_alert"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/reset_alert_text"
+            android:text="@string/remove_alert_text"
             android:gravity="center"
             android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/set_alert"
+            android:id="@+id/change_alert"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/set_alert_text"
+            android:text="@string/change_alert_text"
             android:gravity="center"
             android:layout_weight="1"/>
 

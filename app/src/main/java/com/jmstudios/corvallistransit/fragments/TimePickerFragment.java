@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.widget.TimePicker;
+import com.jmstudios.corvallistransit.R;
 
 /**
  * Created by Bfriedman on 5/13/14.
@@ -20,7 +21,7 @@ public abstract class TimePickerFragment extends DialogFragment implements TimeP
 
         // Create a new instance of TimePickerDialog and return it
         TimePickerDialog tpd = new TimePickerDialog(getActivity(), this, hour, minute, true);
-        tpd.setMessage("Set a timer (hours : minutes)");
+        tpd.setMessage(getString(R.string.set_time_from_now));
         return tpd;
     }
 

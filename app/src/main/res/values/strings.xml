@@ -35,7 +35,11 @@
     <string name="time_set_2">minutes from now</string>
     <string name="non_plural_set">minute from now</string>
     <string name="alert_string">Your timed alerts</string>
-    <string name="set_alert_text">Set Alert</string>
-    <string name="reset_alert_text">Reset Alert</string>
+    <string name="change_alert_text">Change Alert</string>
+    <string name="remove_alert_text">Remove Alert</string>
+    <string name="add_alert_text">Set Alert</string>
+    <string name="no_alarm_set">No alarm set</string>
+    <string name="alarm_for">Alarm set for</string>
+    <string name="set_time_from_now">Set a timer (hours : minutes) from now</string>
 
 </resources>
