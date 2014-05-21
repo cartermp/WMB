@@ -16,6 +16,9 @@ Disclaimer: this app was built entirely in Android Studio.  If you prefer comman
 5. Download the Android Support Repository and Android Support Library packages.
 6. Request the debug.keystore file - you will not be able to render maps on your device unless you use the debug.keystore file the Maps API key is registered with.
 
+Contribution Policy:
+====================
+Don't be a dick.  Pull requests are welcome, but are reviewed for anything malicious.  That said, if you find something that could stand improvements, go for it!  This project will only get better with more developers scrutinizing and fixing things.
 
 Features and Screenshots:
 =========================
@@ -25,24 +28,4 @@ Features and Screenshots:
 - Pull-to-refresh updating on a per-route basis
 - Map View for each route
 - Map View for an individual stop
-- (Planned) Walking directions, via Google Maps, to a particular stop
-
-Arrivals View:
-
-![alt tag](http://i.imgur.com/DFKnT7y.png?1)
-
-Route Map View (Zoomed out, clustered stops):
-
-![alt tag](http://i.imgur.com/Z96DrrR.png?1)
-
-Route Map View (Stop Marker pressed, zoomed in more):
-
-![alt tag](http://i.imgur.com/q2Q1aGZ.png?1)
-
-Reminders View:
-
-![alt tag](http://i.imgur.com/uNsoxqT.png?1)
-
-Nav Drawer:
-
-![alt tag](http://i.imgur.com/MmcFFNv.png?1)
+- (Planned) Favorite Stops and Routes
