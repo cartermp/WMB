@@ -57,7 +57,6 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
 
         AlertDialog alert = builder.create();
         alert.setCanceledOnTouchOutside(true);
-
         return alert;
     }
 
