@@ -1,10 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="timer_options">
-        <!--<item>10 seconds from now (Test)</item>-->
-        <item>5 minute from now</item>
-        <item>10 minutes from now</item>
-        <item>15 minutes from now</item>
-        <item>20 minutes from now</item>
-    </string-array>
-</resources>
+<resources></resources>

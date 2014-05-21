@@ -24,9 +24,24 @@ public class Stop implements ClusterItem {
     }
 
     public String etaText() {
-        return (eta() == 1) ? eta() + " min away" :
-                (eta() <= 0) ? "Bus already passed stop" :
-                        eta() + " mins away";
+        int eta = eta();
+        String text;
+
+        if (eta > 1) {
+            text = eta + " mins away";
+        } else if (eta == 1) {
+            text = "1 min away";
+        } else if (eta < 1 && eta >= 0) {
+            if (this.expectedTimeString == null || this.expectedTime.equals("")) {
+                text = "No expected arrivals";
+            } else {
+                text = "Bus at stop";
+            }
+        } else {
+            text = "Bus passed stop";
+        }
+
+        return text;
     }
 
     /*

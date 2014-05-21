@@ -18,29 +18,29 @@
     <string name="action_settings">Settings</string>
     <string name="action_map">Map</string>
     <string name="action_alarm">Set Alarm</string>
+
     <string name="connection_error">Error with network connection</string>
     <string name="xml_error">Error with data feed</string>
     <string name="no_route_info">No ETA info received</string>
     <string name="sunday_message">No routes running on Sunday!</string>
-    <string name="timer">Add a Reminder</string>
-    <string name="timer_5">5 Minutes From Now</string>
-    <string name="timer_10">10 Minutes From Now</string>
-    <string name="timer_15">15 Minutes From Now</string>
 
     <string name="error_msg_title">Something Went Wrong!</string>
-    <string name="error_msg">Give it another go</string>
+    <string name="error_msg">Try reloading or moving to another location</string>
     <string name="error_msg_okay">OK</string>
 
-    <string name="timer_set_1">A timer has been set for</string>
+    <string name="timer_set_1">Reminder set for</string>
     <string name="time_set_2">minutes from now</string>
     <string name="non_plural_set">minute from now</string>
-    <string name="alert_string">Your timed alerts</string>
-    <string name="change_alert_text">Change Alert</string>
-    <string name="remove_alert_text">Remove Alert</string>
-    <string name="add_alert_text">Set Alert</string>
-    <string name="no_alarm_set">No alarm set</string>
-    <string name="alarm_for">Alarm set for</string>
-    <string name="set_time_from_now">Set a timer (hours : minutes) from now</string>
+    <string name="alert_string">Your timed reminders</string>
+    <string name="change_alert_text">Change reminder</string>
+    <string name="remove_alert_text">Remove reminder</string>
+    <string name="add_alert_text">Set a reminder</string>
+    <string name="no_alarm_set">No reminder set</string>
+    <string name="set_time_from_now">(hrs : mins) from now</string>
     <string name="time_format">h:mm a</string>
+    <string name="timer_title">Set a reminder</string>
+
+    <string name="notif_title">Corvallis Transit</string>
+    <string name="notif_content_text">Get to your bus stop!</string>
 
 </resources>

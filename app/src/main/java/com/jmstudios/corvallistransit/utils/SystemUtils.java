@@ -124,10 +124,9 @@ public class SystemUtils {
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context)
                             .setSmallIcon(R.drawable.ic_launcher)
-                            .setContentTitle("Corvallis Transit")
-                            .setContentText("Get to your bus stop!");
+                            .setContentTitle(context.getString(R.string.notif_title))
+                            .setContentText(context.getString(R.string.notif_content_text));
 
-            // Creates an explicit intent for an Activity in your app
             Intent resultIntent = new Intent(context, MainActivity.class);
 
             PendingIntent resultPendingIntent =

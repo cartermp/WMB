@@ -42,13 +42,13 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
         View v = li.inflate(R.layout.alarm_manager_fragment, null);
         builder.setView(v);
 
-        addAlert = (Button)v.findViewById(R.id.add_alert);
+        addAlert = (Button) v.findViewById(R.id.add_alert);
         addAlert.setOnClickListener(this);
 
-        changeAlert = (Button)v.findViewById(R.id.change_alert);
+        changeAlert = (Button) v.findViewById(R.id.change_alert);
         changeAlert.setOnClickListener(this);
 
-        removeAlert = (Button)v.findViewById(R.id.remove_alert);
+        removeAlert = (Button) v.findViewById(R.id.remove_alert);
         removeAlert.setOnClickListener(this);
 
         alert_time_text = (TextView) v.findViewById(R.id.current_alert);
@@ -85,7 +85,7 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
                 int calendarMinute = c.get(Calendar.MINUTE);
 
                 LocalTime localtime = LocalTime.parse(time);
-                String localTimeString = localtime.toString( getString(R.string.time_format), locale);
+                String localTimeString = localtime.toString(getString(R.string.time_format), locale);
 
                 //need to add support for month,day,year stuff as well, one fat string we'll parse of course
                 boolean isGoodToGo = true;
@@ -122,15 +122,12 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
 
     private void updateArrayAdapter() {
         primaryAlert = retrieveAllItems();
-        if(primaryAlert != null)
-        {
-            alert_time_text.setText(getString(R.string.alarm_for)+" "+primaryAlert.alert_time);
+        if (primaryAlert != null) {
+            alert_time_text.setText(primaryAlert.alert_time);
             addAlert.setVisibility(Button.GONE);
             changeAlert.setVisibility(Button.VISIBLE);
             removeAlert.setVisibility(Button.VISIBLE);
-        }
-        else
-        {
+        } else {
             alert_time_text.setText(getString(R.string.no_alarm_set));
             addAlert.setVisibility(Button.VISIBLE);
             changeAlert.setVisibility(Button.GONE);
@@ -138,18 +135,14 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
         }
     }
 
-    private void showTimeDialog()
-    {
-        new TimePickerFragment()
-        {
+    private void showTimeDialog() {
+        new TimePickerFragment() {
             @Override
-            public void onTimeReceived(int hour, int minute)
-            {
-                if(hour + minute > 0)
-                {
-                    SystemUtils.doNotificationBusiness(hour, minute,hour * 60 + minute, getActivity());
+            public void onTimeReceived(int hour, int minute) {
+                if (hour + minute > 0) {
+                    SystemUtils.doNotificationBusiness(hour, minute, hour * 60 + minute, getActivity());
                     String pluralOrNot = getString(R.string.time_set_2);
-                    if(hour*60 + minute == 1)
+                    if (hour * 60 + minute == 1)
                         pluralOrNot = getString(R.string.non_plural_set);
                     Toast.makeText(getActivity(), getString(R.string.timer_set_1) + " " + Integer.toString(hour * 60 + minute) + " " + pluralOrNot, Toast.LENGTH_SHORT).show();
 
@@ -160,10 +153,8 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
     }
 
     @Override
-    public void onClick(View v)
-    {
-        switch(v.getId())
-        {
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.add_alert:
                 showTimeDialog();
                 break;

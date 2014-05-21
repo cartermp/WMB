@@ -101,13 +101,9 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         boolean pastDue = false;
         int eta = stop.eta();
 
-        if (eta > 1) {
-            header.setTitle(stop.eta() + " mins away");
-        } else if (eta == 1) {
-            header.setTitle(stop.eta() + " min away");
-        } else if (eta < 1 && eta > 0) {
-            header.setTitle("Bus has arrived!");
-        } else {
+        header.setTitle(stop.etaText());
+
+        if (eta < 0) {
             pastDue = true;
         }
 
