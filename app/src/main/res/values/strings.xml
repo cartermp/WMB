@@ -41,5 +41,6 @@
     <string name="no_alarm_set">No alarm set</string>
     <string name="alarm_for">Alarm set for</string>
     <string name="set_time_from_now">Set a timer (hours : minutes) from now</string>
+    <string name="time_format">h:mm a</string>
 
 </resources>

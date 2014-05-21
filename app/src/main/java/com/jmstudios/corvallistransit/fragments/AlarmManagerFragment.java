@@ -85,7 +85,7 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
                 int calendarMinute = c.get(Calendar.MINUTE);
 
                 LocalTime localtime = LocalTime.parse(time);
-                String localTimeString = localtime.toString("h:mm a", locale);
+                String localTimeString = localtime.toString( getString(R.string.time_format), locale);
 
                 //need to add support for month,day,year stuff as well, one fat string we'll parse of course
                 boolean isGoodToGo = true;
