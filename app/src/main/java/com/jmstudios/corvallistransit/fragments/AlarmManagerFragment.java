@@ -55,7 +55,10 @@ public class AlarmManagerFragment extends DialogFragment implements View.OnClick
 
         updateArrayAdapter();
 
-        return builder.create();
+        AlertDialog alert = builder.create();
+        alert.setCanceledOnTouchOutside(true);
+
+        return alert;
     }
 
     private Alert retrieveAllItems() {

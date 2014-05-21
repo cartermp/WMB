@@ -281,8 +281,7 @@ public class NavigationDrawerFragment extends Fragment {
              * and be able to cancel them more importantly
              */
 
-            AlarmManagerFragment alarmManager = new AlarmManagerFragment();
-            alarmManager.show(getFragmentManager(), "alarmManager");
+            new AlarmManagerFragment().show(getFragmentManager(), "alarmManager");
 
             return true;
         }
