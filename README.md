@@ -5,6 +5,10 @@ Inspired by Wheresmyb.us and developed primarily during the OSU Bus App Hackatho
 
 [Play Store Listing](https://play.google.com/store/apps/details?id=com.jmstudios.corvallistransit)
 
+[News Spot](https://www.youtube.com/watch?v=OGDO1GZ7jFw)
+
+[OSU Hackathon news spot](http://www.dailybarometer.com/news/transport-app-tracks-bus-system-in-real-time/article_9a388d5a-dbe8-11e3-8360-0017a43b2370.html)
+
 How to Build
 ============
 Disclaimer: this app was built entirely in Android Studio.  If you prefer command-line configuration, you're on your own (but you probably don't need much help in setting this up anyways =) ).
@@ -20,7 +24,7 @@ Contribution Policy:
 ====================
 Don't be a dick.  Pull requests are welcome, but are reviewed for anything malicious.  That said, if you find something that could stand improvements, go for it!  This project will only get better with more developers scrutinizing and fixing things.
 
-Features and Screenshots:
+Features:
 =========================
 
 - Real-time ETA for stops on a per-route basis
