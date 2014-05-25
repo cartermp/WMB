@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.models.Stop;
 
 import java.io.BufferedReader;
@@ -37,8 +38,8 @@ public class WebUtils {
     public static void launchCheckConnectionDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setMessage("ETA retrieval timed out.  Check your connection.")
-                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+        builder.setMessage(context.getString(R.string.no_internet))
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // do nothing; this will just bring us back to the main view
                     }

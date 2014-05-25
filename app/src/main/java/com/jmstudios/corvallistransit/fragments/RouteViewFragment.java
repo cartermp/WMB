@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.jmstudios.corvallistransit.AsyncTasks.RefreshTask;
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.adapters.RouteAdapter;
@@ -19,6 +17,7 @@ import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
 import com.jmstudios.corvallistransit.interfaces.RefreshTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.models.Stop;
+import com.jmstudios.corvallistransit.tasks.RefreshTask;
 import com.jmstudios.corvallistransit.utils.SystemUtils;
 import com.jmstudios.corvallistransit.utils.Utils;
 import com.jmstudios.corvallistransit.utils.WebUtils;
@@ -88,14 +87,13 @@ public class RouteViewFragment extends ListFragment
         int idx = getRouteIndex();
 
         if (lv != null) {
-            getListView().setBackgroundColor(Color.parseColor(Utils.routeColors[idx]));
+            lv.setBackgroundColor(Color.parseColor(Utils.routeColors[idx]));
         }
 
         if (Utils.getCurrentDay() == Calendar.SUNDAY) {
             setEmptyText(getResources().getString(R.string.sunday_message));
         } else {
             if (stops == null || stops.isEmpty()) {
-                Log.d("RouteViewFrag", "stops are null or empty!");
                 doRefresh(false);
             }
 
@@ -121,7 +119,6 @@ public class RouteViewFragment extends ListFragment
         ListView lv = (ListView) layout.findViewById(android.R.id.list);
         ViewGroup parent = (ViewGroup) lv.getParent();
 
-        // Remove ListView and add CustomView  in its place
         int lvIndex = parent.indexOfChild(lv);
         parent.removeViewAt(lvIndex);
 
@@ -187,8 +184,6 @@ public class RouteViewFragment extends ListFragment
                     mAdapter = new RouteAdapter(mParentActivity, mMapCallbacks, stops);
                     setListAdapter(mAdapter);
                 }
-            } else {
-                Log.d("RouteViewFrag", "activity is null when setting up the adapter!");
             }
         }
     }

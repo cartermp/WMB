@@ -1,4 +1,4 @@
-package com.jmstudios.corvallistransit.AsyncTasks;
+package com.jmstudios.corvallistransit.tasks;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -28,6 +28,7 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
     private ArrivalsTaskCompleted listener;
     private ProgressDialog progressDialog;
     private boolean mIsFromSwipeOrLoad;
+    private int failCount = 0;
 
     public ArrivalsTask(Context context, Route route,
                         ArrivalsTaskCompleted listener, boolean fromSwipeOrLoad) {
@@ -107,6 +108,10 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
             return false;
         }
 
+        if (failCount > 0) {
+            return false;
+        }
+
         return true;
     }
 
@@ -118,6 +123,7 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
         for (int i = 0; i < stupidSyntaxStop.size(); i += sliceSize) {
             slices.add(Utils.getStopRange(stupidSyntaxStop, i, i + sliceSize));
         }
+
         return slices;
     }
 
@@ -127,7 +133,7 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
             progressDialog.hide();
         }
 
-        if (stopsWithArrival != null) {
+        if (stopsWithArrival != null && failCount == 0) {
             listener.onArrivalsTaskCompleted(stopsWithArrival);
         }
     }
@@ -141,6 +147,11 @@ public class ArrivalsTask extends AsyncTask<List<Stop>, Void, List<Stop>>
 
     @Override
     public void onSliceParseFailed() {
-        listener.onArrivalsTaskError();
+        /* Only show one failed dialog */
+        if (failCount == 0) {
+            listener.onArrivalsTaskError();
+        }
+
+        failCount++;
     }
 }

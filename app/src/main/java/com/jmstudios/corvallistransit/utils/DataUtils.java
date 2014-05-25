@@ -2,13 +2,12 @@ package com.jmstudios.corvallistransit.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
-import com.jmstudios.corvallistransit.AsyncTasks.ArrivalsTask;
-import com.jmstudios.corvallistransit.AsyncTasks.RoutesTask;
 import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
 import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
+import com.jmstudios.corvallistransit.tasks.ArrivalsTask;
+import com.jmstudios.corvallistransit.tasks.RoutesTask;
 
 public class DataUtils {
 
@@ -24,12 +23,6 @@ public class DataUtils {
      */
     public static void getEtasForRoute(Activity activity, ArrivalsTaskCompleted listener,
                                        Route route, boolean fromSwipe) {
-        if (activity == null) {
-            Log.d("RouteViewFrag", "mParentActivity null from getEtasForRoute!");
-        } else {
-            Log.d("RouteViewFrag", "mParentActivity is not null when getting Arrivals!");
-        }
-
         new ArrivalsTask(activity, route, listener, fromSwipe)
                 .execute(route.stopList);
     }

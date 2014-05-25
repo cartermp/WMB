@@ -1,4 +1,4 @@
-package com.jmstudios.corvallistransit.AsyncTasks;
+package com.jmstudios.corvallistransit.tasks;
 
 import com.jmstudios.corvallistransit.interfaces.ArrivalsSliceParsed;
 import com.jmstudios.corvallistransit.models.BusStopComparer;

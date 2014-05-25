@@ -32,7 +32,7 @@ public class Stop implements ClusterItem {
         } else if (eta == 1) {
             text = "1 min away";
         } else if (eta < 1 && eta >= 0) {
-            if (this.expectedTimeString == null || this.expectedTime.equals("")) {
+            if (this.expectedTimeString == null || this.expectedTimeString.equals("")) {
                 text = "No expected arrivals";
             } else {
                 text = "Bus at stop";

@@ -38,24 +38,6 @@ public class NavigationDrawerFragment extends Fragment {
      * expands it. This shared preference tracks this.
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
-    public static String[] mActiveRouteNames = new String[]
-            {
-                    "Route 1",
-                    "Route 2",
-                    "Route 3",
-                    "Route 4",
-                    "Route 5",
-                    "Route 6",
-                    "Route 7",
-                    "Route 8",
-                    "Route BBN",
-                    "Route BBSE",
-                    "Route BBSW",
-                    "Route C1",
-                    "Route C2",
-                    "Route C3",
-                    "Route CVA"
-            };
     public static int mCurrentSelectedPosition = 0;
     public static boolean mapOpen = false;
     /**
@@ -116,7 +98,7 @@ public class NavigationDrawerFragment extends Fragment {
                 getActionBar().getThemedContext(),
                 R.layout.textview_route_name,
                 R.id.route_name,
-                mActiveRouteNames
+                getResources().getStringArray(R.array.route_titles)
         ));
 
         mDrawerListView.setDivider(null);

@@ -1,8 +1,7 @@
-package com.jmstudios.corvallistransit.AsyncTasks;
+package com.jmstudios.corvallistransit.tasks;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.jmstudios.corvallistransit.activities.MainActivity;
 import com.jmstudios.corvallistransit.interfaces.ArrivalsTaskCompleted;
@@ -33,6 +32,28 @@ public class RefreshTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         final Activity activity = mActivity;
 
+        if (mRoute != null && mRoute.stopsUpToDate()) {
+            return null;
+        }
+
+        if (activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (MainActivity.mRoutes == null || MainActivity.mRoutes.isEmpty()) {
+                        DataUtils.retrieveAllRoutes(
+                                (RouteTaskCompleted) activity, activity, mFromSwipe);
+                    }
+
+                    if (mRoute != null) {
+                        DataUtils.getEtasForRoute(mActivity,
+                                mArrivalsListener, mRoute, mFromSwipe);
+                    }
+                }
+            });
+        }
+
+
         /*
          * No heuristic here.  Sleep for a second to give users the impression
          * that it's doing something, since quick refreshes make it look like nothing
@@ -44,29 +65,6 @@ public class RefreshTask extends AsyncTask<Void, Void, Void> {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-
-        if (mRoute != null && mRoute.stopsUpToDate()) {
-            return null;
-        }
-
-        if (activity != null) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (MainActivity.mRoutes == null || MainActivity.mRoutes.isEmpty()) {
-                        Log.d("doRefresh", "getting routes");
-                        DataUtils.retrieveAllRoutes(
-                                (RouteTaskCompleted) activity, activity, mFromSwipe);
-                    }
-
-                    if (mRoute != null) {
-                        Log.d("doRefresh", "getting arrivals");
-                        DataUtils.getEtasForRoute(mActivity,
-                                mArrivalsListener, mRoute, mFromSwipe);
-                    }
-                }
-            });
         }
 
         return null;

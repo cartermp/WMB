@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="route_titles">
+        <item>Route 1</item>
+        <item>Route 2</item>
+        <item>Route 3</item>
+        <item>Route 4</item>
+        <item>Route 5</item>
+        <item>Route 6</item>
+        <item>Route 7</item>
+        <item>Route 8</item>
+        <item>Route BBN</item>
+        <item>Route BBSE</item>
+        <item>Route BBSW</item>
+        <item>Route C1</item>
+        <item>Route C2</item>
+        <item>Route C3</item>
+        <item>Route CVA</item>
+    </string-array>
+</resources>

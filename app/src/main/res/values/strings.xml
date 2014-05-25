@@ -19,6 +19,8 @@
     <string name="action_map">Map</string>
     <string name="action_alarm">Set Alarm</string>
 
+    <string name="no_internet">Bad network connection.</string>
+
     <string name="connection_error">Error with network connection</string>
     <string name="xml_error">Error with data feed</string>
     <string name="no_route_info">No ETA info received</string>

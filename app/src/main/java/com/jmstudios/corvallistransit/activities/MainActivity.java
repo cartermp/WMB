@@ -48,14 +48,14 @@ public class MainActivity extends Activity
      */
     private CharSequence mTitle;
 
+    private boolean routesTimedOut = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         initialize();
-
-        doRoutesSetup();
 
         setupMixpanel();
     }
@@ -71,26 +71,10 @@ public class MainActivity extends Activity
         mixPanel.track("appOpen", props);
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        doRoutesSetup();
-    }
-
     @Override
     protected void onDestroy() {
         mixPanel.flush();
         super.onDestroy();
-    }
-
-    private void doRoutesSetup() {
-        if (mRoutes.isEmpty()) {
-            boolean canConnect = WebUtils.checkConnection(this);
-            if (!canConnect) {
-                WebUtils.launchCheckConnectionDialog(this);
-            }
-        }
     }
 
     /**
@@ -148,53 +132,8 @@ public class MainActivity extends Activity
     }
 
     public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = "Route 1 ETA";
-                break;
-            case 2:
-                mTitle = "Route 2 ETA";
-                break;
-            case 3:
-                mTitle = "Route 3 ETA";
-                break;
-            case 4:
-                mTitle = "Route 4 ETA";
-                break;
-            case 5:
-                mTitle = "Route 5 ETA";
-                break;
-            case 6:
-                mTitle = "Route 6 ETA";
-                break;
-            case 7:
-                mTitle = "Route 7 ETA";
-                break;
-            case 8:
-                mTitle = "Route 8 ETA";
-                break;
-            case 9:
-                mTitle = "Route BBN ETA";
-                break;
-            case 10:
-                mTitle = "Route BBSE ETA";
-                break;
-            case 11:
-                mTitle = "Route BBSW ETA";
-                break;
-            case 12:
-                mTitle = "Route C1 ETA";
-                break;
-            case 13:
-                mTitle = "Route C2 ETA";
-                break;
-            case 14:
-                mTitle = "Route C3 ETA";
-                break;
-            case 15:
-                mTitle = "Route CVA ETA";
-                break;
-        }
+        String[] routeTitles = getResources().getStringArray(R.array.route_titles);
+        mTitle = routeTitles[number - 1] + " ETA";
     }
 
     public void restoreActionBar() {
@@ -234,7 +173,9 @@ public class MainActivity extends Activity
         mRoutes = routes;
 
         //calls method to alert NavDrawer to update content for eta's
-        loadInitialArrivalTimes();
+        if (!routesTimedOut && routes != null && !routes.isEmpty()) {
+            loadInitialArrivalTimes();
+        }
     }
 
     /**
@@ -245,6 +186,8 @@ public class MainActivity extends Activity
     @Override
     public void onRoutesTaskTimeout() {
         WebUtils.launchCheckConnectionDialog(this);
+
+        routesTimedOut = true;
     }
 
     @Override
