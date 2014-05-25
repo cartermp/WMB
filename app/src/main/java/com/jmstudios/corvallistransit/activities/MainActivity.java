@@ -50,10 +50,14 @@ public class MainActivity extends Activity
 
     private boolean routesTimedOut = false;
 
+    private boolean fromInit = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        fromInit = true;
 
         initialize();
 
@@ -146,6 +150,12 @@ public class MainActivity extends Activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
+            if (fromInit) {
+                MenuItem listMenu = menu.findItem(R.id.action_list);
+                if (listMenu != null) {
+                    listMenu.setVisible(false);
+                }
+            }
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
@@ -153,7 +163,39 @@ public class MainActivity extends Activity
             restoreActionBar();
             return true;
         }
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Used to show/hide the map/list menu items depending on
+     * if we're in Map View or List View of the app.
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (NavigationDrawerFragment.mapOpen) {
+            MenuItem mapMenu = menu.findItem(R.id.action_map);
+            if (mapMenu != null) {
+                mapMenu.setVisible(false);
+            }
+
+            MenuItem listMenu = menu.findItem(R.id.action_list);
+            if (listMenu != null) {
+                listMenu.setVisible(true);
+            }
+        } else {
+            MenuItem mapMenu = menu.findItem(R.id.action_map);
+            if (mapMenu != null) {
+                mapMenu.setVisible(true);
+            }
+
+            MenuItem listMenu = menu.findItem(R.id.action_list);
+            if (listMenu != null) {
+                listMenu.setVisible(false);
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -195,5 +237,8 @@ public class MainActivity extends Activity
         NavigationDrawerFragment.mapOpen = true;
         onRouteMapButtonPressed(NavigationDrawerFragment.mCurrentSelectedPosition,
                 true, lat, lng);
+
+        /* We want to show the List menu item when we go to a Map View */
+        this.invalidateOptionsMenu();
     }
 }

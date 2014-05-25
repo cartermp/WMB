@@ -16,6 +16,6 @@
     <item
         android:id="@+id/action_list"
         android:icon="@drawable/_list_menu"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/action_list" />
 </menu>

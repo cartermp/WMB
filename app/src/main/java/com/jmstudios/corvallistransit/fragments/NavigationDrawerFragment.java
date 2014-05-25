@@ -253,6 +253,7 @@ public class NavigationDrawerFragment extends Fragment {
                 mCallbacks.onRouteMapButtonPressed(mCurrentSelectedPosition,
                         false, 0.0, 0.0);
                 mapOpen = true;
+                getActivity().invalidateOptionsMenu();
             }
 
             return true;
@@ -261,6 +262,7 @@ public class NavigationDrawerFragment extends Fragment {
             if (mCallbacks != null) {
                 mCallbacks.onNavigationDrawerItemSelected(mCurrentSelectedPosition);
                 mapOpen = false;
+                getActivity().invalidateOptionsMenu();
             }
         } else if (id == R.id.action_alarm) {
 
