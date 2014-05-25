@@ -3,8 +3,6 @@ package com.jmstudios.corvallistransit.utils;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import com.jmstudios.corvallistransit.R;
 import com.jmstudios.corvallistransit.models.Stop;
@@ -14,24 +12,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
 public class WebUtils {
-    /**
-     * Uses the Connectivity Service to check a user's web connection.
-     */
-    public static boolean checkConnection(Context context) {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-
     /**
      * Launches an Alert Dialog to let the user know their connection is bad.
      */
@@ -80,7 +65,7 @@ public class WebUtils {
     /**
      * Reads an input stream and converts it to a string.
      */
-    public static String readIt(InputStream stream) throws IOException, UnsupportedEncodingException {
+    public static String readIt(InputStream stream) throws IOException {
         Reader reader = new InputStreamReader(stream, "UTF-8");
         BufferedReader bfr = new BufferedReader(reader);
         StringBuilder sb = new StringBuilder();

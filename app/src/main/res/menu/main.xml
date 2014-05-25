@@ -12,4 +12,10 @@
         android:icon="@drawable/_location_map"
         android:showAsAction="ifRoom"
         android:title="@string/action_map" />
+
+    <item
+        android:id="@+id/action_list"
+        android:icon="@drawable/_list_menu"
+        android:showAsAction="always"
+        android:title="@string/action_list" />
 </menu>

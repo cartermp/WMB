@@ -256,6 +256,12 @@ public class NavigationDrawerFragment extends Fragment {
             }
 
             return true;
+
+        } else if (id == R.id.action_list) {
+            if (mCallbacks != null) {
+                mCallbacks.onNavigationDrawerItemSelected(mCurrentSelectedPosition);
+                mapOpen = false;
+            }
         } else if (id == R.id.action_alarm) {
 
             /**
