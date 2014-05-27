@@ -78,7 +78,9 @@ public class ArrivalsRunnable implements Runnable {
                             String jsonRouteName = jobj2.getString("Route");
                             if (mRouteName.equals(jsonRouteName.trim())) {
                                 s.expectedTimeString = jobj2.getString("Expected");
-                                s.expectedTime = s.getScheduledTime();
+                                s.scheduledTimeString = jobj2.getString("Scheduled");
+                                s.expectedTime = s.getExpectedTime();
+                                s.scheduledTime = s.getScheduledTime();
 
                                 foundStop = true;
                             }

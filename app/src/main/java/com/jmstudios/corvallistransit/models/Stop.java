@@ -16,15 +16,21 @@ public class Stop implements ClusterItem {
     public double longitude;
     public int id;
     public DateTime expectedTime;
+    public DateTime scheduledTime;
     public String expectedTimeString;
+    public String scheduledTimeString;
 
     public int eta() {
-        Period period = new Period(DateTime.now(), this.expectedTime);
-        return period.getMinutes();
+        return etaAsPeriod().getMinutes();
+    }
+
+    public Period etaAsPeriod() {
+        return new Period(DateTime.now(), this.expectedTime);
     }
 
     public String etaText() {
         int eta = eta();
+        Period period = etaAsPeriod();
         String text;
 
         if (eta > 1) {
@@ -35,7 +41,12 @@ public class Stop implements ClusterItem {
             if (this.expectedTimeString == null || this.expectedTimeString.equals("")) {
                 text = "No expected arrivals";
             } else {
-                text = "Bus at stop";
+                int seconds = period.getSeconds();
+                if (seconds > 30) {
+                    text = "1 min away";
+                } else {
+                    text = "Bus at stop";
+                }
             }
         } else {
             text = "Bus passed stop";
@@ -58,8 +69,12 @@ public class Stop implements ClusterItem {
         return this.name.hashCode();
     }
 
-    public DateTime getScheduledTime() {
+    public DateTime getExpectedTime() {
         return Utils.convertToDateTime(this.expectedTimeString);
+    }
+
+    public DateTime getScheduledTime() {
+        return Utils.convertToDateTime(this.scheduledTimeString);
     }
 
     @Override
