@@ -46,4 +46,6 @@
     <string name="notif_title">Corvallis Transit</string>
     <string name="notif_content_text">Get to your bus stop!</string>
 
+    <string name="card_expand_title">Stop data:</string>
+
 </resources>

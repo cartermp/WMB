@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.jmstudios.corvallistransit.R;
+import com.jmstudios.corvallistransit.models.RouteExpandCard;
 import com.jmstudios.corvallistransit.models.Stop;
 
 import java.util.List;
@@ -80,8 +81,13 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
 
     private Card setUpCard(final Stop s) {
         CardHeader ch = new CardHeader(mContext);
+        ch.setButtonExpandVisible(true);
+
+        RouteExpandCard re = new RouteExpandCard(mContext, s);
+
         Card card = new Card(mContext);
         card.addCardHeader(ch);
+        card.addCardExpand(re);
 
         card.setTitle("Press for Map");
 
@@ -101,7 +107,7 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         boolean pastDue = false;
         int eta = stop.eta();
 
-        header.setTitle(stop.etaText());
+        header.setTitle(stop.etaDisplayText());
 
         if (eta < 0) {
             pastDue = true;

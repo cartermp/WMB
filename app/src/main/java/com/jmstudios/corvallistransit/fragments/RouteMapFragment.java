@@ -176,7 +176,7 @@ public class RouteMapFragment extends Fragment {
                         if (i >= 0) {
                             Stop s = route.stopList.get(i);
                             if (s != null) {
-                                marker.setTitle(s.etaText());
+                                marker.setTitle(s.etaDisplayText());
                                 marker.setSnippet(s.name);
                             }
 
