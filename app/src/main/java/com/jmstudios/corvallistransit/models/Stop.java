@@ -6,6 +6,8 @@ import com.jmstudios.corvallistransit.utils.Utils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class Stop implements ClusterItem {
     public String name;
@@ -28,7 +30,7 @@ public class Stop implements ClusterItem {
         return new Period(DateTime.now(), this.expectedTime);
     }
 
-    public String etaText() {
+    public String etaDisplayText() {
         int eta = eta();
         Period period = etaAsPeriod();
         String text;
@@ -53,6 +55,12 @@ public class Stop implements ClusterItem {
         }
 
         return text;
+    }
+
+    public String scheduledDisplayText() {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
+
+        return scheduledTime.toString(formatter);
     }
 
     /*

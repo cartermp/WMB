@@ -9,12 +9,12 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.jmstudios.corvallistransit.R;
-import com.jmstudios.corvallistransit.models.RouteExpandCard;
 import com.jmstudios.corvallistransit.models.Stop;
 
 import java.util.List;
 
 import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardExpand;
 import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.view.CardView;
 
@@ -61,7 +61,9 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         Card card = holder.cardView.getCard();
         CardHeader header = card.getCardHeader();
 
-        if (!setEta(stop, header)) {
+        CardExpand ce = card.getCardExpand();
+
+        if (!setEta(stop, header, ce)) {
             holder.cardView.refreshCard(card);
             holder.stopView.setText(stop.name);
             holder.stopView.setTextColor(Color.WHITE);
@@ -83,11 +85,11 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         CardHeader ch = new CardHeader(mContext);
         ch.setButtonExpandVisible(true);
 
-        RouteExpandCard re = new RouteExpandCard(mContext, s);
-
         Card card = new Card(mContext);
         card.addCardHeader(ch);
-        card.addCardExpand(re);
+
+        CardExpand ce = new CardExpand(mContext);
+        card.addCardExpand(ce);
 
         card.setTitle("Press for Map");
 
@@ -103,11 +105,12 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         return card;
     }
 
-    private boolean setEta(Stop stop, CardHeader header) {
+    private boolean setEta(Stop stop, CardHeader header, CardExpand ce) {
         boolean pastDue = false;
         int eta = stop.eta();
 
         header.setTitle(stop.etaDisplayText());
+        ce.setTitle("Scheduled Time: " + stop.scheduledDisplayText());
 
         if (eta < 0) {
             pastDue = true;
