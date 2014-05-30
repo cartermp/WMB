@@ -29,10 +29,12 @@ public class RouteMapFragment extends Fragment {
     private static final String FROM_STOP = "from_stop";
     private static final String STOP_LAT = "stop_latitude";
     private static final String STOP_LNG = "stop_longitude";
+    private static final String STOP_BEARING = "stop_bearing";
     private final LatLng CORVALLIS = new LatLng(44.557285, -123.2852531);
 
     private double stopLat;
     private double stopLng;
+    private float stopBearing;
     private boolean fromStop = false;
     private Route route;
 
@@ -41,7 +43,7 @@ public class RouteMapFragment extends Fragment {
     private MapView mapView;
 
     public static RouteMapFragment newInstance(int routeIdx, boolean fromStop,
-                                               double lat, double lng) {
+                                               double lat, double lng, float bearing) {
         RouteMapFragment frag = new RouteMapFragment();
 
         Bundle bundle = new Bundle();
@@ -49,6 +51,7 @@ public class RouteMapFragment extends Fragment {
         bundle.putBoolean(FROM_STOP, fromStop);
         bundle.putDouble(STOP_LAT, lat);
         bundle.putDouble(STOP_LNG, lng);
+        bundle.putFloat(STOP_BEARING, bearing);
 
         frag.setArguments(bundle);
         return frag;
@@ -125,6 +128,10 @@ public class RouteMapFragment extends Fragment {
 
             if (args.containsKey(STOP_LNG)) {
                 stopLng = args.getDouble(STOP_LNG);
+            }
+
+            if (args.containsKey(STOP_BEARING)) {
+                stopBearing = args.getFloat(STOP_BEARING);
             }
         }
     }
@@ -221,11 +228,13 @@ public class RouteMapFragment extends Fragment {
     private void animateMap(boolean fromStop) {
         if (map != null) {
             LatLng pos = fromStop ? new LatLng(stopLat, stopLng) : CORVALLIS;
-            float zoom = fromStop ? 15 : 13;
+            float zoom = fromStop ? 17 : 14;
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .bearing(stopBearing)
                     .target(pos)
                     .zoom(zoom)
+                    .tilt(fromStop ? 50.0f : 0.0f)
                     .build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }

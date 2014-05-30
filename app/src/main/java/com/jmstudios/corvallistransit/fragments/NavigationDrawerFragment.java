@@ -251,7 +251,7 @@ public class NavigationDrawerFragment extends Fragment {
         if (id == R.id.action_map) {
             if (!mapOpen) {
                 mCallbacks.onRouteMapButtonPressed(mCurrentSelectedPosition,
-                        false, 0.0, 0.0);
+                        false, 0.0, 0.0, 0.0f);
                 mapOpen = true;
                 getActivity().invalidateOptionsMenu();
             }
@@ -306,6 +306,7 @@ public class NavigationDrawerFragment extends Fragment {
     public static interface NavigationDrawerCallbacks {
         void onNavigationDrawerItemSelected(int position);
 
-        void onRouteMapButtonPressed(int position, boolean fromStop, double lat, double lng);
+        void onRouteMapButtonPressed(int position, boolean fromStop,
+                                     double lat, double lng, float bearing);
     }
 }

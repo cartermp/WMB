@@ -133,7 +133,7 @@ public class RoutesTask extends AsyncTask<Void, Void, List<Route>> {
 
             stop.name = jobj.getString("Name").replace("\u0026", "&");
             stop.road = jobj.getString("Road").replace("\u0026", "&");
-            stop.bearing = jobj.getDouble("Bearing");
+            stop.bearing = (float) jobj.getDouble("Bearing");
             stop.adherehancePoint = jobj.getBoolean("AdherancePoint");
             stop.latitude = jobj.getDouble("Lat");
             stop.longitude = jobj.getDouble("Long");

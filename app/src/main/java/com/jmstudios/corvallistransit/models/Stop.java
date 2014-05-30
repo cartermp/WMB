@@ -12,7 +12,7 @@ import org.joda.time.format.DateTimeFormatter;
 public class Stop implements ClusterItem {
     public String name;
     public String road;
-    public double bearing;
+    public float bearing;
     public boolean adherehancePoint;
     public double latitude;
     public double longitude;

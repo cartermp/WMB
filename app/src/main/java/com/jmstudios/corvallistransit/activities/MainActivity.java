@@ -103,7 +103,7 @@ public class MainActivity extends Activity
 
     @Override
     public void onRouteMapButtonPressed(final int position, final boolean fromStop,
-                                        final double lat, final double lng) {
+                                        final double lat, final double lng, final float bearing) {
         final Handler handler = new Handler();
 
         handler.post(new Runnable() {
@@ -112,7 +112,7 @@ public class MainActivity extends Activity
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, RouteMapFragment.newInstance(
-                                position, fromStop, lat, lng))
+                                position, fromStop, lat, lng, bearing))
                         .commit();
             }
         });
@@ -233,10 +233,10 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onEtaCardClick(double lat, double lng) {
+    public void onEtaCardClick(double lat, double lng, float bearing) {
         NavigationDrawerFragment.mapOpen = true;
         onRouteMapButtonPressed(NavigationDrawerFragment.mCurrentSelectedPosition,
-                true, lat, lng);
+                true, lat, lng, bearing);
 
         /* We want to show the List menu item when we go to a Map View */
         this.invalidateOptionsMenu();

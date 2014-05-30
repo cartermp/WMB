@@ -97,7 +97,7 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
             @Override
             public void onClick(Card card, View view) {
                 if (mCallbacks != null) {
-                    mCallbacks.onEtaCardClick(s.latitude, s.longitude);
+                    mCallbacks.onEtaCardClick(s.latitude, s.longitude, s.bearing);
                 }
             }
         });
@@ -127,7 +127,7 @@ public class RouteAdapter extends ArrayAdapter<Stop> {
         /**
          * When invoked, moves the camera to the Stop the user clicked on.
          */
-        void onEtaCardClick(double lat, double lng);
+        void onEtaCardClick(double lat, double lng, float bearing);
     }
 
     static class ViewHolder {
