@@ -51,53 +51,33 @@ public class SystemUtils {
 
     /**
      * Based on the user's selection, sets an Alarm to wake up their device
-     * after a certain time (5, 10, 15, or 20 minutes).
+     * after a certain time.
      */
-    public static boolean doNotificationBusiness(int hour, int minute, int id, final Context context) {
+    public static void doNotificationBusiness(int hour, int minute, int id, final Context context) {
         int delay = id * millisecondMultiplierForMinutes;
 
         SharedPreferences sp = context.getSharedPreferences("alerts", Context.MODE_PRIVATE);
-        boolean hasSaved = false;
         final Calendar c = Calendar.getInstance();
         int calendarHour = c.get(Calendar.HOUR_OF_DAY);
         int calendarMinute = c.get(Calendar.MINUTE);
         int calendarSeconds = c.get(Calendar.SECOND);
-        for (int x = 0; x < 1; x++) {
 
-            //if(sp.getString("time"+x, "").equals(""))
-            //{
+        calendarHour += hour % 24;
+        calendarMinute += minute % 60;
 
-            if (calendarHour + hour > 24) {
-                calendarHour += (hour - 24);
-            } else {
-                calendarHour += hour;
-            }
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, NotificationReceiver.class);
+        intent.putExtra("reminder_intent", 1);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-            if (calendarMinute + minute > 60) {
-                calendarMinute += (minute - 60);
-            } else {
-                calendarMinute += minute;
-            }
+        SharedPreferences.Editor editor = sp.edit();
 
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(context, NotificationReceiver.class);
-            intent.putExtra("intent" + x, 1);
-            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        editor.putString("time", calendarHour + ":" + calendarMinute);
+        editor.putString("reminder_intent", intent.toUri(Intent.URI_INTENT_SCHEME));
+        editor.apply();
 
-            //SAVE THIS INTENT
-            SharedPreferences.Editor editor = sp.edit();
-
-            editor.putString("time" + x, calendarHour + ":" + calendarMinute);
-            editor.putString("intent" + x, intent.toUri(Intent.URI_INTENT_SCHEME));
-            editor.commit();
-
-            hasSaved = true;
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + delay - (calendarSeconds * 1000), alarmIntent);
-            break;
-        }
-
-        return hasSaved;
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + delay - (calendarSeconds * 1000), alarmIntent);
     }
 
     /**

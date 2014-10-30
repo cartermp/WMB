@@ -13,11 +13,6 @@ import com.jmstudios.corvallistransit.models.Stop;
 
 import java.util.List;
 
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardExpand;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.view.CardView;
-
 /**
  * Adapter for displaying route info.
  */

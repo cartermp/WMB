@@ -17,10 +17,6 @@ import com.jmstudios.corvallistransit.fragments.RouteViewFragment;
 import com.jmstudios.corvallistransit.interfaces.RouteTaskCompleted;
 import com.jmstudios.corvallistransit.models.Route;
 import com.jmstudios.corvallistransit.utils.WebUtils;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +24,11 @@ import java.util.List;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         RouteTaskCompleted, RouteAdapter.MapListenerCallbacks {
-
-    /**
-     * Used by Mixpanel to properly identify our session
-     */
-    private static final String MIXPANEL_TOKEN = "3733fd953730250288a417e9f7522751";
     /**
      * Used to store Bus Routes in the application.
      */
     public static List<Route> mRoutes = new ArrayList<Route>();
-    private MixpanelAPI mixPanel;
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -60,24 +51,10 @@ public class MainActivity extends Activity
         fromInit = true;
 
         initialize();
-
-        setupMixpanel();
-    }
-
-    private void setupMixpanel() {
-        mixPanel = MixpanelAPI.getInstance(getApplication(), MIXPANEL_TOKEN);
-        JSONObject props = new JSONObject();
-        try {
-            props.put("appOpen (android)", 1);
-        } catch (JSONException jse) {
-        }
-
-        mixPanel.track("appOpen", props);
     }
 
     @Override
     protected void onDestroy() {
-        mixPanel.flush();
         super.onDestroy();
     }
 
@@ -206,9 +183,7 @@ public class MainActivity extends Activity
     }
 
     /**
-     * Our callback for when Routes have been downloaded..
-     * <p/>
-     * This is called on the UI thread.
+     * Callback for when Routes have been downloaded.
      */
     @Override
     public void onRoutesTaskCompleted(List<Route> routes) {
@@ -221,14 +196,11 @@ public class MainActivity extends Activity
     }
 
     /**
-     * Our callback for when we got a timeout from Routes.
-     * <p/>
-     * This is called on the UI thread.
+     * Callback for when we got a timeout from Routes.
      */
     @Override
     public void onRoutesTaskTimeout() {
         WebUtils.launchCheckConnectionDialog(this);
-
         routesTimedOut = true;
     }
 
@@ -238,7 +210,7 @@ public class MainActivity extends Activity
         onRouteMapButtonPressed(NavigationDrawerFragment.mCurrentSelectedPosition,
                 true, lat, lng, bearing);
 
-        /* We want to show the List menu item when we go to a Map View */
+        // We want to show the List menu item when we go to a Map View
         this.invalidateOptionsMenu();
     }
 }
