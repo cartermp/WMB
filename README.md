@@ -20,10 +20,6 @@ Disclaimer: this app was built entirely in Android Studio.  If you prefer comman
 5. Download the Android Support Repository and Android Support Library packages.
 6. Request the debug.keystore file - you will not be able to render maps on your device unless you use the debug.keystore file the Maps API key is registered with.
 
-Contribution Policy:
-====================
-Don't be a dick.  Pull requests are welcome, but are reviewed for anything malicious.  That said, if you find something that could stand improvements, go for it!  This project will only get better with more developers scrutinizing and fixing things.
-
 Features:
 =========================
 
